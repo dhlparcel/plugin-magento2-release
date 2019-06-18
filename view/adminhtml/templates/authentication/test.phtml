@@ -1,0 +1,68 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+
+<?php /* @var $block \DHLParcel\Shipping\Block\Adminhtml\Authentication\Test */ ?>
+<script type="text/javascript">
+require([
+    'jquery',
+    'prototype',
+    'mage/backend/validation',
+    'jquery/validate'
+], function(jQuery){
+    jQuery('#dhlparcel_authentication_test').click(function () {
+        jQuery.ajax({
+            url: "<?php echo $block->getAjaxUrl(); ?>",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                'userId' : jQuery('#carriers_dhlparcel_api_user').val(),
+                'apiKey' : jQuery('#carriers_dhlparcel_api_key').val()
+            },
+            showLoader: true,
+        }).done(function(returnData){
+            // Replace OrganizationID
+            if (returnData.status == 'success') {
+                // Autenticaton Succesfull
+
+                // Replace input by select if multiple accounts
+                if (returnData.data.accounts.length > 1) {
+                    var oldAccountIdField = jQuery('#carriers_dhlparcel_api_account_id');
+                    var oldAccountIdValue = oldAccountIdField.val();
+                    var selectBox = jQuery('<select name="' + oldAccountIdField.attr('name') + '" id="carriers_dhlparcel_api_account_id" />');
+
+                    for (var key in returnData.data.accounts) {
+                        if (returnData.data.accounts.hasOwnProperty(key)) {
+                            selectBox.append('<option value="' + returnData.data.accounts[key] + '" ' + ((oldAccountIdValue == returnData.data.accounts[key]) ? 'selected="selected" ' : '') + '> ' + returnData.data.accounts[key] + '</option>');
+                        }
+                    }
+
+                    jQuery('#carriers_dhlparcel_api_account_id').replaceWith(selectBox);
+                } else  {
+                    jQuery('#carriers_dhlparcel_api_account_id').val(returnData.data.accounts[0]);
+                }
+
+                jQuery('#dhlparcel_authentication_test').removeClass('error').addClass('success');
+            } else {
+                // Failed
+                jQuery('#dhlparcel_authentication_test').removeClass('success').addClass('error');
+
+                // Empty Account & Organization ID Fields
+                jQuery('#carriers_dhlparcel_api_account_id').val('');
+            }
+
+            jQuery('#row_carriers_dhlparcel_api_test_authentication p.note span').text(returnData.message);
+        });
+
+    });
+
+});
+</script>
+
+<?= $block->getButtonHtml() ?>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+  ~ Dhl Shipping
+  ~
+  ~ DISCLAIMER
+  ~
+  ~ Do not edit or add to this file if you wish to upgrade this extension to
+  ~ newer versions in the future.
+  ~
+  ~ PHP version 5.6+
+  ~
+  ~ @category  DHLParcel
+  ~ @package   DHLParcel\Shipping
+  ~ @author    Ron Oerlemans <ron.oerlemans@dhl.com>
+  ~ @copyright 2017 DHLParcel
+  ~ @link      https://www.dhlparcel.nl/
+  -->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="DHLParcel_Shipping::css/legacy.css"/>
+    </head>
+</page>

@@ -1,0 +1,17 @@
+<div class="dhlparcel-shipping-deliverytimes-column-content">
+    <div class="dhlparcel-shipping-deliverytimes-shipping-day">
+        <div class="dhlparcel-shipping-deliverytimes-shipping-day-content <?php echo $block->getData('shipping_advice_class') ?>">
+            <?php echo $block->getData('shipping_advice') ?>
+        </div>
+    </div>
+    <div class="dhlparcel-shipping-deliverytimes-receiving-day">
+        <div class="dhlparcel-shipping-deliverytimes-receiving-day-content">
+            <?php if (!empty($block->getData('time_left'))) : ?>
+                <?php echo sprintf(__('Expected in %s'), '<b>'.__($block->getData('time_left')).'</b>') ?><br/>
+            <?php else : ?>
+                <b><?php echo __('Selected date has passed') ?></b><br/>
+            <?php endif ?>
+            <i>- <?php echo $block->getData('delivery_time')->date ?> <?php echo __('from') ?> <?php echo $block->getData('delivery_time')->startTime ?> <?php echo __('to') ?> <?php echo $block->getData('delivery_time')->endTime ?></i>
+        </div>
+    </div>
+</div>

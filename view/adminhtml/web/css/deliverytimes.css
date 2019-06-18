@@ -1,0 +1,51 @@
+/* Column */
+.dhlparcel-shipping-deliverytimes-column-content {
+    overflow: hidden;
+}
+
+.dhlparcel-shipping-deliverytimes-receiving-day,
+.dhlparcel-shipping-deliverytimes-shipping-day {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.dhlparcel-shipping-deliverytimes-shipping-day-content {
+    line-height: normal;
+    text-align: center;
+    border-radius: 4px;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 8px;
+}
+
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-asap {
+    background: #eba3a3;
+}
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-asap p {
+    color: #761919;
+}
+
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-soon {
+    background: #f8dda7;
+}
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-soon p {
+    color: #94660c;
+}
+
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-today {
+    background: #c6e1c6;
+}
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-today p {
+    color: #5b841b;
+}
+
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-backlog {
+    background: #c8d7e1;
+}
+.dhlparcel-shipping-deliverytimes-shipping-day-content.dhlparcel-shipping-advice-backlog p {
+    color: #2e4453;
+}
+
+.dhlparcel-shipping-deliverytimes-receiving-day-content {
+    line-height: normal;
+    text-align: left;
+}

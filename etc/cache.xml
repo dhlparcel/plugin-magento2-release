@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Cache/etc/cache.xsd">
+    <type name="dhlparcel_shipping" translate="label,description" instance="DHLParcel\Shipping\Model\Cache\Api">
+        <label>DHLParcel Shipping</label>
+        <description>Api request data responses</description>
+    </type>
+</config>

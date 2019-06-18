@@ -1,0 +1,34 @@
+<?php
+/* @var DHLParcel\Shipping\Block\Adminhtml\System\LogButtonsField $block */
+/* @var Magento\Framework\View\TemplateEngine\Php $this */
+?>
+<script type="text/javascript">
+    require([
+        'jquery',
+        'prototype',
+        'mage/backend/validation',
+        'jquery/validate'
+    ], function (jQuery) {
+        jQuery('#dhlparcel_debug_log_reset').click(function () {
+            jQuery.ajax({
+                url: "<?php echo $block->getAjaxUrl(); ?>",
+                type: 'get',
+                dataType: 'json',
+                showLoader: true,
+            }).done(function (returnData) {
+                jQuery('.dhlparcel_debug_messages').html(returnData.message);
+                if (returnData.status === 'success') {
+                    jQuery('#dhlparcel_debug_log_reset').removeClass('error').addClass('success');
+                } else {
+                    // Failed
+                    jQuery('#dhlparcel_debug_log_reset').removeClass('success').addClass('error');
+                }
+            });
+
+        });
+
+    });
+</script>
+<?= $block->getViewButtonHtml() ?>
+<?= $block->getResetButtonHtml() ?>
+<div class="dhlparcel_debug_messages"></div>

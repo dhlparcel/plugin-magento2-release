@@ -1,0 +1,35 @@
+{
+    "name": "dhlparcel/magento2-plugin",
+    "description": "DHL Parcel plugin for Magento 2",
+    "type": "magento2-module",
+    "version": "1.0.2",
+    "license": [
+        "OSL-3.0"
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "~6.0",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "DHLParcel\\Shipping\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "Shin Ho",
+            "email": "shin.ho@dhl.com"
+        },
+        {
+            "name": "Ron Oerlemans",
+            "email": "ron.oerlemans@dhl.com"
+        },
+        {
+            "name": "Rudger Gravestein",
+            "email": "rudger.gravestein@dhl.com"
+        }
+    ]
+}

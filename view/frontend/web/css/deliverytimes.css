@@ -1,0 +1,13 @@
+/* Info */
+#dhlparcel-shipping-deliverytimes-info {
+    margin-top: 2rem;
+}
+
+#dhlparcel-shipping-deliverytimes-info p {
+    margin-top: 2rem;
+}
+
+#dhlparcel-shipping-deliverytimes-info-error {
+    color:#e02b27;
+    font-size: 1.2rem;
+}

@@ -1,0 +1,184 @@
+@dhl-active: #fae17f;
+@dhl-passive: #efefef;
+
+#dhlparcel-options-container{
+    width: 100%;
+    display:none;
+    &:before {
+        content: "";
+        display: block;
+        clear: both;
+    }
+    ul{
+        list-style: none;
+    }
+    label{
+        cursor: pointer;
+    }
+    .dhlparcel-step-container {
+        .title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            display: block;
+            width: 100%;
+        }
+        .dhlparcel-audience{
+            input{
+                display:none;
+            }
+            label{
+                font-size: 1.4rem;
+                padding:10px;
+                background-color: @dhl-passive;
+                width: 120px;
+                display: inline-block;
+                text-align:center;
+                //border-radius: 10px;
+            }
+            input:checked + label{
+                background-color: @dhl-active;
+            }
+        }
+        .dhlparcel-delivery-options{
+            .dhlparcel-delivery-option{
+                width: 140px;
+                display: inline-block;
+                text-align: center;
+                img{
+                    height:40px;
+                    width:40px;
+                    margin: 0 auto;
+                    padding: 0;
+                    display:inline-block;
+                }
+                label{
+                    display: block;
+                    //border-radius: 10px;
+                    padding: 15px 10px 15px 10px;
+                    position: relative;
+                    background-color: @dhl-passive;
+                }
+                input:checked + label{
+                    background-color: @dhl-active;
+                }
+                input{
+                    display:none;
+                }
+                &.unavailable-option{
+                    display:none;
+                }
+            }
+        }
+        .dhlparcel-service-options{
+            .dhlparcel-service-option{
+                margin: 2px 0;
+                img{
+                    height:30px;
+                    width:30px;
+                    margin: 0 auto;
+                    display:inline-block;
+                    vertical-align: top;
+                    padding-top: 5px;
+                }
+                input:checked + label{
+                    background-color: @dhl-active;
+                }
+                label{
+                    display:inline-block;
+                    background-color: @dhl-passive;
+                    cursor:pointer;
+                    width: 100%;
+                    //border-radius: 10px;
+                    padding: 5px;
+                    .service-text{
+                        display: inline-block;
+                        width: 85%;
+                        padding-left:5px;
+                        line-height: 1.4rem;
+                        .service-title{
+                            font-size: 1.2rem;
+                            display:block;
+                        }
+                        .service-description{
+                            font-size: 1rem;
+                        }
+                    }
+                }
+                .service-input-field{
+                    display: none;
+                    input[type="number"],input[type="text"]{
+                        width: 100%;
+                    }
+                }
+                input:checked + label .service-input-field{
+                    display:block;
+                }
+                input[type="checkbox"]{
+                    display:none;
+                }
+                input:disabled + label{
+                    color: #303030;
+                    cursor: default;
+                    opacity: .5;
+                }
+                &.unavailable-option{
+                    display:none;
+                }
+            }
+        }
+    }
+
+    .dhlparcel-packages {
+        counter-reset: dhlparcel-package-count;
+
+        .dhlparcel-add-package,
+        .dhlparcel-remove-package {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        .dhlparcel-add-package {
+            display: none;
+        }
+
+        .dhlparcel-package {
+            &:first-child {
+                .dhlparcel-remove-package {
+                    display: none;
+                }
+
+                .dhlparcel-add-package {
+                    display: inline-block;
+                }
+
+                padding-top: 0;
+            }
+
+            padding-top: 20px;
+
+            .package-count {
+                &:before {
+                    counter-increment: dhlparcel-package-count;
+                    content: "#" counter(dhlparcel-package-count);
+                }
+            }
+        }
+    }
+}
+
+
+#test_button{
+    cursor: pointer;
+    background-color: #0f5293;
+    font-size: 1.4rem;
+    color: #fff;
+    padding: 10px;
+    display: inline-block;
+    &:hover{
+        background-color: #136abd;
+    }
+}

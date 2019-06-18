@@ -1,0 +1,130 @@
+<?php
+/* @var DHLParcel\Shipping\Block\Adminhtml\Order\Shipment\Create $block */
+/* @var Magento\Framework\View\TemplateEngine\Php $this */
+?>
+<?php if ($block->canCreateLabel()) : ?>
+    <div class="field choice admin__field admin__field-option field-create">
+        <input id="create_dhlparcel_shipping_label"
+               class="admin__control-checkbox"
+               name="shipment[create_dhlparcel_shipping_label]"
+               value="1"
+            <?php if ($block->createLabelByDefault()) : ?>
+                checked="checked"
+            <?php endif; ?>
+               type="checkbox"/>
+        <label class="admin__field-label"
+               for="create_dhlparcel_shipping_label">
+            <span><?= /* @escapeNotVerified */
+                __('Create DHL Shipping Label') ?></span>
+        </label>
+    </div>
+    <div id="dhlparcel-options-container" data-url-base="<?= $block->getDataUrl() ?>">
+        <div class="dhlparcel-step-container">
+            <span class="title"><?= __('Step 1 Recipient type') ?></span>
+            <div class="dhlparcel-audience">
+                <?php foreach ($block->getBusinessSwitch() as $audienceKey => $audienceData) : ?>
+                    <input type="radio"
+                           value="<?= $audienceKey ?>"
+                           name="dhlparcel[shipment][audience]"
+                           id="dhlparcel-shipping-audience-<?= $audienceKey ?>"
+                           class="dhlparcel-audience-selector"
+                        <?= $audienceData['default'] ? 'checked="checked"' : '' ?>/>
+                    <label for="dhlparcel-shipping-audience-<?= $audienceKey ?>"><?= $audienceData['label'] ?></label>
+                <?php endforeach ?>
+            </div>
+        </div>
+        <div class="dhlparcel-step-container">
+            <span class="title"><?= __('Step 2 Delivery method') ?></span>
+            <ul class="dhlparcel-delivery-options">
+                <?php foreach ($block->getMethods() as $methodKey => $methodData) : ?>
+                    <li class="dhlparcel-delivery-option" data-option="<?= $methodKey ?>">
+                        <input name="dhlparcel[shipment][method]"
+                               id="dhlparcel-delivery-option-<?= $methodKey ?>"
+                               value="<?= $methodKey ?>"
+                               type="radio"
+                            <?= $block->getOption($methodKey) ? 'checked="checked"' : '' ?>/>
+                        <label for="dhlparcel-delivery-option-<?= $methodKey ?>">
+                            <img alt="<?= $methodKey ?>"
+                                 src="<?= $block->getViewFileUrl('DHLParcel_Shipping::images/options/' . strtolower($methodKey) . '.svg'); ?>">
+                            <div><?= $methodData['label'] ?></div>
+                        </label>
+                    </li>
+                <?php endforeach ?></ul>
+            <div class="dhlparcel-delivery-options-data">
+                <?php foreach ($block->getMethodOptions() as $methodKey => $methodOptions) : ?>
+                    <?php foreach ($methodOptions as $methodOptionKey => $methodOption) : ?>
+                        <?php if ($methodOption['type'] === 'select') : ?>
+                            <select name="dhlparcel[shipment][method_options][<?= $methodOptionKey ?>]"
+                                    class="dhlparcel-method-option-<?= $methodOptionKey ?> select admin__control-select"
+                                    id="dhl-method-option-<?= $methodOptionKey ?>"
+                                    data-method="<?= $methodKey ?>">
+                                <?php foreach ($methodOption['options'] as $spKey => $spLabel) : ?>
+                                    <option value="<?= $spKey ?>" <?= $methodOption['data'] === $spKey ? 'selected="selected"' : '' ?>><?= $spLabel ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+                    <?php endforeach ?>
+                <?php endforeach ?>
+            </div>
+        </div>
+        <div class="dhlparcel-step-container">
+            <span class="title"><?= __('Step 3 Extra services') ?></span>
+            <ul class="dhlparcel-service-options">
+                <?php foreach ($block->getServiceOptions() as $optionKey => $optionData) : ?>
+                    <li class="dhlparcel-service-option" data-option="<?= $optionKey ?>">
+                        <input type="checkbox"
+                               name="dhlparcel[shipment][options][<?= $optionKey ?>][active]"
+                               value="<?= $optionKey ?>"
+                               id="dhlparcel-service-option-<?= $optionKey ?>"
+                               class="dhlparcel-service-option"
+                            <?= $block->getOption($optionKey) ? 'checked="checked"' : '' ?>/>
+                        <label for="dhlparcel-service-option-<?= $optionKey ?>">
+                            <img alt="<?= $optionKey ?>"
+                                 src="<?= $block->getViewFileUrl('DHLParcel_Shipping::images/options/' . strtolower($optionKey) . '.svg'); ?>">
+                            <span class="service-text">
+                            <span class="service-title"><?= $optionData['label'] ?></span>
+                            <span class="service-description"><?= $optionData['description'] ?></span>
+                        <?php if (isset($optionData['input'])) : ?>
+                            <span class="service-input-field">
+                                <?php if ($optionData['input'] == $block::INPUT_TYPE_CURRENCY) : ?>
+                                    <input class="validate-number validate-zero-or-greater input-text admin__control-text"
+                                           name="dhlparcel[shipment][options][<?= $optionKey ?>][data]"
+                                           value="<?= (int)$block->getOption($optionKey, false) ?>" type="number"
+                                           min="0"
+                                           step="1" max="<?= $optionData['max'] ?>">
+                                <?php endif ?>
+                                <?php if ($optionData['input'] == $block::INPUT_TYPE_TEXT) : ?>
+                                    <input class="input-text admin__control-text"
+                                           type="text"
+                                           name="dhlparcel[shipment][options][<?= $optionKey ?>][data]"
+                                           value="<?= $block->getOption($optionKey, false) ?>"
+                                           maxlength="<?= $optionData['max'] ?>">
+                                <?php endif ?>
+                            </span>
+                        <?php endif ?></span>
+                        </label>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+        <div class="dhlparcel-step-container">
+            <span class="title"><?= __('Step 4 Package choice') ?></span>
+            <div class="dhlparcel-packages">
+                <div class="dhlparcel-package">
+                    <h4><?= __('Package') ?> <span class="package-count"/></h4>
+                    <select class="dhlparcel-package-selection select admin__control-select"
+                            name="dhlparcel[shipment][package][]"></select>
+
+                    <button title="Add more packages" type="button"
+                            class="action-default scalable action-save action-secondary dhlparcel-add-package">
+                        <span><?= __('Add more packages') ?></span>
+                    </button>
+                    <button title="Remove package" type="button"
+                            class="action-default scalable action-save action-secondary dhlparcel-remove-package">
+                        <span><?= __('Remove package') ?></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif ?>

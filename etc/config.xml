@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!--
+  ~ Dhl Shipping
+  ~
+  ~ DISCLAIMER
+  ~
+  ~ Do not edit or add to this file if you wish to upgrade this extension to
+  ~ newer versions in the future.
+  ~
+  ~ PHP version 5.6+
+  ~
+  ~ @category  DHLParcel
+  ~ @package   DHLParcel\Shipping
+  ~ @author    Ron Oerlemans <ron.oerlemans@dhl.com>
+  ~ @copyright 2017 DHLParcel
+  ~ @link      https://www.dhlparcel.nl/
+  -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <carriers>
+            <dhlparcel>
+                <active>1</active>
+                <title>DHL Parcel</title>
+                <label>
+                    <create_label_by_default>1</create_label_by_default>
+                    <default_to_business>0</default_to_business>
+                    <default_extra_assured>0</default_extra_assured>
+                    <default_reference_enabled>1</default_reference_enabled>
+                    <default_reference_source>order_number</default_reference_source>
+                    <default_reference2_enabled>0</default_reference2_enabled>
+                    <default_return_label>0</default_return_label>
+                    <default_hide_shipper>0</default_hide_shipper>
+                    <alternative_tracking>
+                        <enabled>0</enabled>
+                        <url><![CDATA[https://www.dhlparcel.nl/nl/volg-uw-zending?tc={{trackerCode}}&pc={{postalCode}}]]></url>
+                    </alternative_tracking>
+                </label>
+                <shipping_methods>
+                    <door>
+                        <enabled>0</enabled>
+                        <title>Home delivery</title>
+                    </door>
+                    <no_neighbour>
+                        <enabled>0</enabled>
+                        <title>No neighbour delivery</title>
+                    </no_neighbour>
+                    <evening>
+                        <enabled>0</enabled>
+                        <title>Evening delivery</title>
+                    </evening>
+                    <no_neighbour_evening>
+                        <enabled>0</enabled>
+                        <title>No neighbour and evening delivery</title>
+                    </no_neighbour_evening>
+                    <saturday>
+                        <enabled>0</enabled>
+                        <title>Saturday delivery</title>
+                    </saturday>
+                    <morning>
+                        <enabled>0</enabled>
+                        <title>Morning delivery</title>
+                    </morning>
+                    <sameday>
+                        <enabled>0</enabled>
+                        <title>DHL today</title>
+                        <cutoff>8:00</cutoff>
+                    </sameday>
+                    <servicepoint>
+                        <enabled>0</enabled>
+                        <title>ServicePoint</title>
+                    </servicepoint>
+                </shipping_methods>
+                <delivery_times>
+                    <enabled>0</enabled>
+                    <in_stock_only>0</in_stock_only>
+                    <display_days>14</display_days>
+                    <transit_days>1</transit_days>
+                    <shipping_days>1, 2, 3, 4, 5</shipping_days>
+                    <cutoff>16:00</cutoff>
+                </delivery_times>
+                <usability>
+                    <bulk>
+                        <create>1</create>
+                        <download>1</download>
+                        <print>0</print>
+                    </bulk>
+                    <bulk_reports>
+                        <notification_status>1</notification_status>
+                        <notification_success>1</notification_success>
+                        <notification_error>notification_single</notification_error>
+                    </bulk_reports>
+                </usability>
+                <debug>
+                    <enabled>0</enabled>
+                    <alternative_api_enable>0</alternative_api_enable>
+                </debug>
+
+                <sallowspecific>0</sallowspecific>
+                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
+                <model>DHLParcel\Shipping\Model\Carrier</model>
+                <showmethod>1</showmethod>
+                <max_package_weight>30</max_package_weight>
+            </dhlparcel>
+        </carriers>
+    </default>
+</config>

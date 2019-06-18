@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Dhl Shipping
+  ~
+  ~ DISCLAIMER
+  ~
+  ~ Do not edit or add to this file if you wish to upgrade this extension to
+  ~ newer versions in the future.
+  ~
+  ~ PHP version 5.6+
+  ~
+  ~ @category  DHLParcel
+  ~ @package   DHLParcel\Shipping
+  ~ @author    Ron Oerlemans <ron.oerlemans@dhl.com>
+  ~ @copyright 2017 DHLParcel
+  ~ @link      https://www.dhlparcel.nl/
+  -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route frontName="dhlparcel_shipping" id="dhlparcel_shipping">
+            <module before="Magento_Backend" name="DHLParcel_Shipping"/>
+        </route>
+    </router>
+</config>
