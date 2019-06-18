@@ -20,3 +20,13 @@
 
 - When running in production, complete the installation by recompiling  
 `bin/magento setup:di:compile`
+
+## Installation with composer
+- Add the plugin to your composer with the command (recommended version range)
+`composer require dhlparcel/magento2-plugin:~1.0.0`
+
+- Upgrade the database  
+`bin/magento setup:upgrade`
+
+- When running in production, complete the installation by recompiling  
+`bin/magento setup:di:compile`
