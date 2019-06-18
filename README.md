@@ -4,7 +4,7 @@
 # Install
 
 ## Installation with composer
-- Add the plugin to your composer with the command (recommended version range)
+- Add the plugin to your composer with the command (recommended version range)  
 `composer require dhlparcel/magento2-plugin:~1.0.0`
 
 - Upgrade the database  
