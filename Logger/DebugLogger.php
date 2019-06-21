@@ -19,7 +19,7 @@ class DebugLogger extends \Monolog\Logger
      */
     public function __construct($name, Data $helper, $handlers = [], $processors = [])
     {
-        parent::__construct($name, $handlers, $processors);
+        parent::__construct(strval($name), $handlers, $processors);
         $this->helper = $helper;
         $this->active = boolval($this->helper->getConfigData('debug/enabled'));
     }
