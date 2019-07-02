@@ -41,6 +41,7 @@ class UpgradeData implements UpgradeDataInterface
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();
+
         $this->eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
         if (version_compare($context->getVersion(), "1.0.1", "<")) {
             $configs = [
@@ -48,6 +49,7 @@ class UpgradeData implements UpgradeDataInterface
             ];
             $this->updateConfigPaths($configs);
         }
+
         if (version_compare($context->getVersion(), "1.0.2", "<")) {
             $configs = [
                 'carriers/dhlparcel/usability/bulk/print' => 'carriers/dhlparcel/usability/bulk/download'
@@ -55,6 +57,11 @@ class UpgradeData implements UpgradeDataInterface
             $this->updateConfigPaths($configs);
             $this->addProductBlacklistAttributes();
         }
+
+        if (version_compare($context->getVersion(), "1.0.4", "<")) {
+            $this->updateProductBlacklistAttributeLabels();
+        }
+
         $setup->endSetup();
     }
 
@@ -125,6 +132,23 @@ class UpgradeData implements UpgradeDataInterface
             ]
         );
         $this->addAttributesToAttributeSets([Carrier::BLACKLIST_SERVICEPOINT, Carrier::BLACKLIST_GENERAL]);
+    }
+
+    private function updateProductBlacklistAttributeLabels()
+    {
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_SERVICEPOINT,
+            'label',
+            'Do not show delivery methods with ServicePoint service option in the checkout'
+        );
+
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_SERVICEPOINT,
+            'label',
+            'Do not show delivery methods with the following service options in the checkout'
+        );
     }
 
     private function addAttributesToAttributeSets($attributeCodes = [])

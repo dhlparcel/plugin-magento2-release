@@ -5,24 +5,24 @@
             <!-- DHL PARCEL -->
             <group id="dhlparcel" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>DHL Parcel</label>
-                <field id="active" translate="label" type="select" sortOrder="002" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="active" translate="label" type="select" sortOrder="002" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enabled</label>
                     <tooltip>Enable DHLParcel shipping</tooltip>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="003" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="title" translate="label" type="text" sortOrder="003" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
                 </field>
-                <field id="version" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\VersionField" sortOrder="004" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="version" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\VersionField" sortOrder="004" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Extension version</label>
                 </field>
-                <group id="api" translate="label" type="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="api" translate="label" type="label" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Account Settings</label>
-                    <field id="user" type="text" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="user" type="text" translate="label" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>API UserId</label>
                         <comment>Please enter the API userId</comment>
                     </field>
-                    <field id="key" type="text" translate="label" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="key" type="text" translate="label" sortOrder="200" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>API Key</label>
                         <comment>Please enter the API key</comment>
                     </field>
@@ -30,7 +30,7 @@
                         <frontend_model>DHLParcel\Shipping\Block\Adminhtml\Authentication\Test</frontend_model>
                         <comment>Make sure to test your filled credentials. We'll search for your account ID and Organization ID</comment>
                     </field>
-                    <field id="account_id" type="text" translate="label" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="account_id" type="text" translate="label" sortOrder="400" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>MDP Account ID</label>
                         <comment>Please enter your MDP account ID</comment>
                     </field>
@@ -123,7 +123,7 @@
                             <label>Enabled</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -163,7 +163,7 @@
                             <label>Enabled</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -203,7 +203,7 @@
                             <label>Enabled</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -243,7 +243,7 @@
                             <label>Enabled</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -284,7 +284,7 @@
                             <comment>This only applies to B2B customers and 'Send to business by default' must be set to Yes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -325,7 +325,7 @@
                             <comment>This only applies to B2B customers and 'Send to business by default' must be set to Yes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -366,7 +366,7 @@
                             <comment>This only applies to B2C customers and 'Send to business by default' must be set to No</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="cutoff" translate="Module" type="select" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -411,7 +411,7 @@
                             <label>Enabled</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                         </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">

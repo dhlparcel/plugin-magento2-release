@@ -100,7 +100,7 @@
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
                 <model>DHLParcel\Shipping\Model\Carrier</model>
                 <showmethod>1</showmethod>
-                <max_package_weight>30</max_package_weight>
+                <max_package_weight>9999999</max_package_weight>
             </dhlparcel>
         </carriers>
     </default>
