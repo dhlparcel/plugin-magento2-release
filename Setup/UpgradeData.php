@@ -62,6 +62,10 @@ class UpgradeData implements UpgradeDataInterface
             $this->updateProductBlacklistAttributeLabels();
         }
 
+        if (version_compare($context->getVersion(), "1.0.5", "<")) {
+            $this->updateProductBlacklistServicepointAttributeSourceModel();
+        }
+
         $setup->endSetup();
     }
 
@@ -76,6 +80,27 @@ class UpgradeData implements UpgradeDataInterface
                 $this->configWriter->save($newPath, $this->configReader->getValue($oldPath));
             }
             $this->configWriter->delete($oldPath);
+        }
+    }
+
+    private function addAttributesToAttributeSets($attributeCodes = [])
+    {
+        $entityTypeId = $this->eavSetup->getEntityTypeId('catalog_product');
+        $attributeSetIds = $this->eavSetup->getAllAttributeSetIds($entityTypeId);
+        $groupName = 'DHL Parcel';
+
+        $attributeIds = [];
+        foreach ($attributeCodes as $attributeCode) {
+            $attributeIds[] = $this->eavSetup->getAttributeId($entityTypeId, $attributeCode);
+        }
+        foreach ($attributeSetIds as $attributeSetId) {
+            $this->eavSetup->addAttributeGroup($entityTypeId, $attributeSetId, $groupName, 50);
+            $attributeGroupId = $this->eavSetup->getAttributeGroupId($entityTypeId, $attributeSetId, $groupName);
+            // Add existing attribute to group
+
+            foreach ($attributeIds as $attributeId) {
+                $this->eavSetup->addAttributeToGroup($entityTypeId, $attributeSetId, $attributeGroupId, $attributeId, null);
+            }
         }
     }
 
@@ -151,24 +176,13 @@ class UpgradeData implements UpgradeDataInterface
         );
     }
 
-    private function addAttributesToAttributeSets($attributeCodes = [])
+    private function updateProductBlacklistServicepointAttributeSourceModel()
     {
-        $entityTypeId = $this->eavSetup->getEntityTypeId('catalog_product');
-        $attributeSetIds = $this->eavSetup->getAllAttributeSetIds($entityTypeId);
-        $groupName = 'DHL Parcel';
-
-        $attributeIds = [];
-        foreach ($attributeCodes as $attributeCode) {
-            $attributeIds[] = $this->eavSetup->getAttributeId($entityTypeId, $attributeCode);
-        }
-        foreach ($attributeSetIds as $attributeSetId) {
-            $this->eavSetup->addAttributeGroup($entityTypeId, $attributeSetId, $groupName, 50);
-            $attributeGroupId = $this->eavSetup->getAttributeGroupId($entityTypeId, $attributeSetId, $groupName);
-            // Add existing attribute to group
-
-            foreach ($attributeIds as $attributeId) {
-                $this->eavSetup->addAttributeToGroup($entityTypeId, $attributeSetId, $attributeGroupId, $attributeId, null);
-            }
-        }
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_SERVICEPOINT,
+            'source_model',
+            \DHLParcel\Shipping\Model\Entity\Attribute\Source\NoYes::class
+        );
     }
 }
