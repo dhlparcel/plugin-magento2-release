@@ -1,26 +1,25 @@
 <div id="dhlparcel-shipping-deliverytimes-info" data-bind="if: showDeliveryTimes() && isEnabled()">
-    <div class="step-title">Delivery Options</div>
-
+    <div class="step-title" data-bind="i18n: 'Delivery Options'"></div>
     <div data-bind="if: showDayTimes()">
         <p>
-            Preferred moment of delivery
+            <span data-bind="i18n: 'Preferred moment of delivery'"></span>
             <select data-bind="options: dayTimes,
                                optionsText: 'displayLabel',
                                value: selectedTime,
                                optionsCaption: 'Choose...'"></select>
         </p>
     </div>
-
     <div data-bind="if: showNightTimes()">
         <p>
-            Preferred moment of delivery
+            <span data-bind="i18n: 'Preferred moment of delivery'"></span>
             <select data-bind="options: nightTimes,
                                optionsText: 'displayLabel',
                                value: selectedTime,
                                optionsCaption: 'Choose...'"></select>
         </p>
     </div>
-    <div id="dhlparcel-shipping-deliverytimes-info-error" style="display: none;">
-        Please choose the moment of delivery
+    <div id="dhlparcel-shipping-deliverytimes-info-error" data-bind="i18n: 'Please choose the moment of delivery'"
+         style="display: none;">
+
     </div>
 </div>

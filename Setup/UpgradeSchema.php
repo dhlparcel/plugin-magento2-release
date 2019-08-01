@@ -18,6 +18,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if (version_compare($context->getVersion(), "1.0.2", "<")) {
             $this->installDeliveryTimes($setup);
         }
+        if (version_compare($context->getVersion(), "1.0.6", "<")) {
+            $this->addServicePointToSalesOrderGrid($setup);
+        }
         $installer->endSetup();
     }
 
@@ -77,6 +80,19 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $setup->getConnection()->dropColumn(
             $setup->getTable('sales_order'),
             'dhlparcel_shipping_servicepoint_country'
+        );
+    }
+
+    public function addServicePointToSalesOrderGrid(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('sales_order_grid'),
+            'dhlparcel_shipping_servicepoint_id',
+            [
+                'type'     => 'text',
+                'nullable' => true,
+                'comment'  => 'DHL Parcel Shipping ServicePoint ID',
+            ]
         );
     }
 }

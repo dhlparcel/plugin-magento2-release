@@ -41,7 +41,7 @@ class Create extends \Magento\Backend\App\Action
     public function execute()
     {
         if ($this->_request->getParam('namespace') != 'sales_order_grid') {
-            $this->notificationService->error(__('DHL parcel bulk action called on a non sales_order_grid page'));
+            $this->notificationService->error(__('DHL Parcel bulk action called from an invalid page'));
             return $this->resultRedirectFactory->create()->setPath(self::REDIRECT_PATH);
         }
 
@@ -64,7 +64,7 @@ class Create extends \Magento\Backend\App\Action
         // Show success summary
         if ($this->helper->getConfigData('usability/bulk_reports/notification_success')) {
             if ($successCount) {
-                $this->notificationService->success(__('Succesfully created shipments and labels for following orders: %1', implode(', ', $success)));
+                $this->notificationService->success(__('Successfully created shipments and labels for following orders: %1', implode(', ', $success)));
             }
         }
 
@@ -83,7 +83,7 @@ class Create extends \Magento\Backend\App\Action
             }
 
             if ($successCount == 0 && $errorCount == 0) {
-                $this->notificationService->notice(__('Somewhat very unexpected happened, please contact your administrator', $errorCount));
+                $this->notificationService->notice(__('Something unexpected happened, please contact your administrator', $errorCount));
             }
         }
 
@@ -111,7 +111,7 @@ class Create extends \Magento\Backend\App\Action
             }
 
             if (!empty($faultyErrors)) {
-                $this->notificationService->error(__("Following orders do not have a valid combination of service options and wil require manual creation: %1", implode(", ", $faultyErrors)));
+                $this->notificationService->error(__("Following orders do not have a valid combination of service options and require manual creation: %1", implode(", ", $faultyErrors)));
             }
             if (!empty($createErrors)) {
                 $this->notificationService->error(__("Following orders had an error in the label creation process and can be retried but may require manual creation: %1", implode(", ", $createErrors)));

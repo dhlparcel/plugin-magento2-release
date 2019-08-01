@@ -1,0 +1,299 @@
+Test Authentication,Test Authenticatie
+consumer,consument
+business,zakelijk
+DHL ServicePoint,DHL ServicePoint
+We deliver your shipment to the address of the recipient,Wij bezorgen uw zending op het adres van de ontvanger
+At the door,Aan de deur
+We deliver your shipment to the recipient's nearest DHL ServicePoint ,Wij bezorgen uw zending op het dichtstbijzijnde DHL ServicePoint van de ontvanger
+In the mailbox,Door de brievenbus
+Delivery in the mailbox of the recipient,Bezorging door de brievenbus van de ontvanger
+Add a short reference for your own administration (max 15 characters).,Voeg een korte notitie toe voor uw eigen administratie (max. 15 karakters)
+Add a reference for your own administration (max 70 characters).,Voeg een notitie toe voor uw eigen administratie (max. 70 karakters)
+Print an extra label for return shipments,Print een extra label voor retourzendingen
+This option allows you to claim the value of your shipment in case of damage or loss (up to € 500.00).,Deze optie biedt u de mogelijkheid om een schadevergoeding (tot € 500.00) in te dienen bij schade of verlies
+We ask for a signature on delivery.,Wij vragen om een handtekening bij bezorging
+We deliver your shipment in the evening.,Wij bezorgen uw zending in de avond
+We do not deliver at neighbours in case the recipient is not at home.,Wij bezorgen uw zending niet bij buren als de ontvanger niet thuis is
+"Additional transport insurance. If the value of the goods exceeds € 50.000, please contact our Customer Service prior to shipping.",Aanvullende transportverzekering. Neem eerst contact op met de klantenservice als de waarde van uw zending hoger is dan € 50.000
+We deliver your shipment on Saturday.,Wij bezorgen uw zending op zaterdag
+We deliver your shipment before 11 AM.,Wij bezorgen uw zending vóór 11 uur in de ochtend
+We deliver your shipment only when the recipient pays the amount specified by you upon receipt.,Wij bezorgen uw zending wanneer de ontvanger het door u gespecificeerde bedrag betaalt
+We deliver your shipment on a site under construction.,Wij bezorgen uw zending op een bouwplaats
+Ex factory,Ex Works
+"Hide original shipper and use configuration ""Alternative Shipping Address for Hide Shipper Service""","Verberg de verzender en gebruik de invoer bij ""Alternatief verzendadres voor Verberg Verzender"""
+We will deliver your shipment today.,Wij bezorgen uw zending vandaag
+The recipient's age is checked (18+),De leeftijd van de ontvanger wordt gecontroleerd (18+)
+View Log,Bekijk log
+Reset log,Reset log
+Export CSV,Exporteer CSV
+Country,Land
+Region/State,Regio/Staat
+Zip/Postal Code,Postcode
+Shipping Price,Verzendkosten
+"Invalid system.xml configuration used, field required name is import","Onjuiste system.xml configuratie gebruikt, benodigde veldnaam is import"
+Authentication successful,Authenticatie succesvol
+Authentication failed. Please try again or contact customer service for help,Authenticatie mislukt. Probeer alstublieft opnieuw of neem contact op met onze klantenservice
+DHL Parcel bulk action called from an invalid page,DHL Parcel bulk actie aangeroepen vanaf een ongeldige pagina
+Successfully created shipments and labels for following orders: %1,Zendingen en labels aangemaakt voor de volgende orders:
+Successfully created shipments and labels for %1 orders,Zendingen en labels aangemaakt voor %1 orders
+Successfully created shipments and labels for %1 orders and %2 orders failed due to errors,Zendingen en labels aangemaakt voor %1 orders en mislukt voor %1 order vanwege fouten 
+"No shipments and labels where created, %1 orders failed due to errors","Geen zendingen en labels aangemaakt, %1 orders mislukt vanwege fouten"
+"Something unexpected happened, please contact your administrator","Er is een onverwachte fout opgetreden, neem contact op met uw beheerder"
+Following orders do not have a valid combination of service options and require manual creation: %1,De volgende orders hebben geen geldige combinatie van bezorgopties en moeten handmatig worden aagemaakt: %1
+Following orders had an error in the label creation process and can be retried but may require manual creation: %1,Er ging iets fout bij het aanmaken van labels voor de volgende orders. Probeer alstublieft opnieuw of maak handmatig aan: %1
+"Following orders have shipping methods that do not support tracking functionality, either change the shipping method to a DHL method or contact your developers: %1",De volgende orders hebben verzendopties die geen track en trace ondersteunen. Verander de verzendmethode naar een DHL methode of neem contact op met uw beheerder: %1
+"Following orders are not eligible to be shipped, or have been shipped already: %1",De volgende orders kunnen niet verstuurd worden of zijn al verstuurd: %1
+Following orders have not categorized errors: %1,De volgende orders hebben onbekende fouten: %1
+. ' ' .,. ' ' .
+Following orders failed to create a shipment and label: %1,Voor de volgende orders kon geen zending en label worden aangemaakt: %1
+None of the selected order(s) have DHL Parcel labels,Geen van de geselecteerde order(s) hebben DHL Parcel labels
+Successfully downloaded %1 label(s) for the following orders: %2,%1  label(s) gedownload voor de volgende orders: %2
+Successfully downloaded %1 order(s),%1 order(s) gedownload
+Successfully downloaded %1 order(s) and %2 order(s) did not have all labels downloaded due to errors,%1 order(s) gedownload en voor %2 order(s) konden niet alle labels gedownload worden door fouten
+None of the %1 order(s) have downloaded all their labels due to errors,Voor geen van de %1 order(s) konden labels worden gedownload door fouten
+Following orders have missing labels which could not be retrieved or the label ID was invalid: %1,Voor de volgende orders konden labels niet worden gevonden of het label ID was ongeldig: %1
+Following orders don't have any labels: %1,Voor de volgende orders zijn er geen labels: %1
+Following orders have missing labels: %1,Voor de volgende orders ontbreken er labels: %1
+Something went wrong when combining PDF's,Er ging iets fout bij het combineren van PDF-bestanden
+Successfully printed %1 label(s) for the following orders: %2,%1 labels geprint voor de volgende order(s): %2
+Successfully printed %1 order(s),%1 order(s) geprint
+Successfully printed %1 order(s) and %2 order(s) did not have all labels printed due to errors,%1 order(s) geprint en voor %2 order(s) konden niet alle labels worden geprint door fouten
+None of the %1 order(s) have printed all their labels due to errors,Voor geen van de %1 order(s) konden labels worden geprint door fouten
+Following orders could not be printed because no valid printer has been chosen: %1,De volgende order(s) konden niet worden geprint omdat er geen geldige printer is gekozen: %1
+Log file has been reset,Logbestand is gereset
+Log file did not exist,Logbestand bestaat niet
+The following error occurred: %1,Er ging iets mis: %1
+Log file is empty,Logbestand is leeg
+Log file not found,Logbestand niet gevonden
+Shipment not found,Zending niet gevonden
+No shipment ID provided in request,Er is geen zending ID opgegeven voor deze handeling
+Unable to acquire any printable labels,Geen labels gevonden die konden worden geprint
+%1 label(s) were not printed due to errors,%1 label(s) konden niet worden geprint door fouten
+successfully printed %1 label(s),%1 label(s) geprint
+Home delivery,Thuisbezorging
+Evening delivery,Avondbezorging
+No neighbour delivery,Niet bij de buren
+No neighbour and evening delivery,Niet bij de buren en avondbezorging
+Saturday delivery,Zaterdagbezorging
+DHL ServicePoint,DHL ServicePoint
+Morning delivery,Ochtendbezorging
+Same-day delivery,Vandaag bezorgen
+Invalid system.xml shipping method not found in ID,Ongeldige system.xml verzendmethode niet gevonden in ID
+"Display errors, orders stacked per error","Toon foutmeldingen, orders gezamelijk tonen per foutmelding"
+"Display errors, individually per order",Toon foutmeldingen per order
+"Hide all errors, but list order numbers","Verberg alle foutmeldingen, maar toon ordernummers"
+Hide all errors,Verberg alle foutmeldingen
+Show up to %s day ahead,Toon %s dag vooruit
+Show up to %s days ahead,Toon %s dagen vooruit
+Delivered the next day,Volgende dag bezorgd
+Delivered in %s days,Bezorgd in %s dagen
+Default (1 label per page),Standaard (1 label per pagina)
+Print 3 labels per A4 sheet,Print 3 labels op een A4 vel
+No printers found,Geen printers gevonden
+Price vs. Destination,Prijs vs. Bestemming
+Order Subtotal (and above),Orderbedrag (en hoger)
+Weight vs. Destination,Gewicht vs. Bestemming
+Order weight (and above),Ordergewicht (en hoger)
+Item count vs. Destination,Aantal producten vs. Bestemming
+Order items (and above),Aantal producten (en hoger)
+"Invalid condition code: ""%1""","Ongeldige conditie code: ""%1"""
+Flat pricing,Vast tarief
+Variable zone pricing,Variabel tarief
+Order number,Ordernummer
+Order ID,Order ID
+Custom text,Aangepaste tekst
+No,Nee
+Yes (and for bulk label creation: enable if available),Ja (voor bulk label creatie: label maken wanneer beschikbaar)
+Yes (and for bulk label creation: must be available),Ja (voor bulk label creatie: moet beschikbaar zijn om label te maken)
+Same-day delivery,DHL Vandaag
+Yes,Ja
+"Requested column ""%1"" cannot be resolved","Gevraagde kolom ""%1"" kan niet wordne "
+"Column ""%1"" not found","Kolom ""%1"" niet gevonden"
+Please correct Table Rates format in the Row #%1.,Corrigeer het Table Rates format in rij #%1
+"Please correct Country ""%1"" in the Row #%2.","Corrigeer Land ""%1"" in rij #%2"
+"Please correct Region/State ""%1"" in the Row #%2.","Corrigeer Regio/Staat ""%1"" in rij #%2"
+"Please correct %1 ""%2"" in the Row #%3.","Corrigeer %1 ""%2"" in rij #%3"
+"Please correct Shipping Price ""%1"" in the Row #%2.","Corrigeer Verzendkosten ""%1"" in rij #%2"
+Duplicate Row #%1 (duplicates row #%2),Dupliceer rij #%1 (dupliceert rij #%2)
+Please correct Table Rates File Format.,Corrigeer het Table Rates bestandformaat 
+Unable to import data,Data import niet gelukt
+Something went wrong while importing table rates.,Er ging iets mis hij het importeren van de tarieven
+Something went wrong while importing dhl shipping rates.,Er ging iets mis bij het importeren van de DHL verzendtarieven
+We couldn't import this file because of these errors: %1,Het bestand kon niet worden geïmporteerd vanwege de volgende fouten: %1
+Send\nASAP,Verzend\nz.s.m.
+Send\ntomorrow,Verzend\nmorgen
+Send in\n%s days,Verzend\n%s dagen
+Send\ntoday,Verzend\nvandaag
+%s min(s),%s minuten
+%s hour(s),%s uren
+%s day(s),%s dagen
+%s week(s),%s weken
+%s month(s),%s maanden
+%s year(s),%s jaren
+Unable to use tracks and thus does not have labels for shipment %1,Het is niet gelukt om tracks te gebruiken. Er zijn geen labels voor zending %1
+"No labels found for shipment %1, order number #%2","Geen labels gevonden voor zending %1, ordernummer #%2"
+Unable to retrieve label %1,Label %1 niet gevonden
+A shipment cannot be created for the order,Er kon geen zending worden aangemaakt voor de order
+At the door,Thuisbezorging
+In the mailbox,Door de brievenbus
+DHL ServicePoint delivery,Bezorging op een DHL ServicePoint
+Reference,Referentie
+Reference 2,Referentie 2
+Return label,Retourlabel
+Extra Assured,Extra Zeker
+Signature on delivery,Handtekening bij ontvangst
+Evening delivery (6 AM to 9 PM),Avondlevering (tussen 18u en 21u)
+No delivery to neighbour,Niet bij buren
+Shipment insurance,Aanvullende verzekering
+Saturday delivery (9 AM to 3 PM),Zaterdagbezorging (tussen 9u en 15u)
+Expresser,Expresser
+Cash on delivery,Rembours
+Delivery on construction site,Bouwplaatslevering
+Ex Works,Ex Works
+Hide Shipper,Verberg Verzender
+DHL Same-day delivery (6 p.m. to 9 p.m.),DHL Vandaag (tussen 18u en 21u)
+Age check (18+),Leeftijdscheck (18+)
+No printer selected,Geen printer geselecteerd
+This printer no longer exists,Deze printer bestaat niet meer
+One of the labels you are trying to print is invalid,Een van de labels die u probeert te printen is ongeldig
+Failed to create label,Label maken mislukt
+Failed to create return label,Retourlabel maken mislukt
+"Failed to create label, missing shipper street","Label maken mislukt, straatnaam van verzender ontbreekt"
+"Failed to create label, missing shipper street number","Label maken mislukt, huisnummer van verzender ontbreekt"
+"Failed to create label, missing receiver street","Label maken mislukt, straat van ontvanger ontbreekt"
+"Failed to create label, missing receiver street number","Label maken mislukt, huisnummer van ontvanger ontbreekt"
+"Failed to create label, missing hide shipper company name","Label maken mislukt, Verberg Verzender bedrijfsnaam ontbreekt"
+"Failed to create label, missing hide shipper street number","Label maken mislukt, Verberg Verzender huisnummer ontbreekt"
+"Failed to create label, missing hide shipper street","Label maken mislukt, Verberg Verzender straatnaam ontbreekt"
+"Failed to create label, missing hide shipper city","Label maken mislukt, Verberg Verzender stad ontbreekt"
+DHL Parcel extension has been turned on but user ID and API key combination is invalid,DHL Parcel plugin staat aan maar gebruiker ID en API-sleutel combinatie is ongeldig
+Unable to create DHL shipment because the shipment you are using does not support the ability to track it. Please contact your developer or use a different delivery method,DHL zending aanmaken mislukt omdat deze niet gevolgd kan worden. Gebruik een andere verzendmethode of neem contact op met uw beheerder. 
+No DHL services could be found for this order with the selected service options: %1,Er konden geen DHL services gevonden worden voor deze order met gekozen bezorgopties: %1
+Shipment option label form not present,Bezorgoptie label formulier niet aanwezig
+No shipping method selected,Geen verzendmethode gekozen
+Download DHL Labels,Download DHL labels
+Print DHL Labels,Print DHL labels
+Create labels,Creëer labels
+Create mailbox labels,Creëer brievenbuspakket labels
+Download labels,Download labels
+Print labels,Print labels
+No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.,Er is geen DHL Parcel bulk handeling ingeschakeld. Klik hier om naar Instellingen te gaan. Bulk handelingen vindt u in het scherm Toegankelijkheid
+Expected in %s,Wordt verwacht in %s
+Selected date has passed,Gekozen datum ligt in het verleden
+from,van
+to,tot
+Create DHL shipping label,Creëer DHL verzendlabels
+Step 1 Recipient type,Stap 1 Ontvangertype
+Step 2 Delivery method,Stap 2 Verzendmethode
+Step 3 Extra services,Stap 3 Extra services
+Step 4 Package choice,Stap 4 Package kiezen
+Package,Package
+Add more packages,Meer packages toevoegen
+Remove package,Verwijder package
+Order and Account information,Order- en accountinformatie
+The order confirmation email was sent,De bevestigingsmail voor de order is verzonden
+The order confirmation email is not sent,De bevestigingsmail voor de order is niet verzonden
+Order # %1,Order # %1
+Order Date,Order Datum
+Order Date (%1),Order Datum (%1)
+Order Status,Order Status
+Purchased From,Gekocht vanaf
+Link to the new order,Link naar nieuwe order
+Link to the previous order,Link naar vorige order
+Placed from IP,Geplaatst vanaf IP
+%1 / %2 rate:,%1 / %2 rate:
+Account Information,Accountinformatie
+Edit Customer,Klant aanpassen
+Customer Name,Naam klant
+Email,E-mail
+Customer Group,Klantgroep
+Address Information,Adresgegevens
+Billing Address,Factuuradres
+DHL Servicepoint,DHL ServicePoint
+Shipping Address,Verzendadres
+Select this ServicePoint,Kies dit DHL punt
+Delivery Options,Bezorgopties
+Preferred moment of delivery,Gewenst bezorgmoment
+Please choose the moment of delivery,Kies bezorgmoment
+DHL ServicePoint Options,DHL ServicePoint opties
+You have selected,U hebt geselecteerd
+Please choose a DHL ServicePoint.,Kies een DHL punt
+Choose a different DHL ServicePoint,Kies een ander DHL punt
+Field,Veld
+is required.,is verplicht
+DHL Parcel,DHL Parcel
+Enabled,Ingeschakeld
+Title,Titel
+Extension version,Plug-in versie
+Account Settings,Accountinstellingen
+API UserId,API gebruiker ID
+API Key,API-sleutel
+Make sure to test your filled credentials. We will search for your account ID and Organization ID,Controleer uw gegevens. Wij zoeken naar uw account ID en bedrijf ID
+My DHL Parcel Account ID,My DHL Parcel accountnummer
+Label Settings,Labelinstellingen
+Use DHL Parcel label for manual shipments,Gebruik DHL Parcel label voor handmatige zendingen
+Multiple labels per page,Meerdere labels per pagina
+Send to business,Verzend zakelijk
+Auto-enable: Extra assured,Standaard ingeschakeld: Extra Zeker
+Auto-enable: Reference,Standaard ingeschakeld: referentie
+Default text source for reference,Standaard tekstbron voor referentie
+Default text for reference,Standaardtekst voor referentie
+Auto-enable: Reference 2,Standaard ingeschakeld: referentie 2
+Default text source for reference 2,Standaard tekstbron voor referentie 2
+Default text for reference 2,Standaardtekst voor referentie 2
+Auto-enable: Return label,Standaard ingeschakeld: retourlabel
+Auto-enable: Age check 18+,Standaard ingeschakeld: leeftijdscheck (18+)
+Auto-enable: Hide shipper,Standaard ingeschakeld: Verberg Verzender
+Alternative tracking URL,Alternatieve tracking URL
+Shipping Methods,Verzendmethodes
+Regular,Normaal
+Pricing method,Tariefinstelling
+Flat price,Vaste prijs
+Condition,Conditie
+Export,Export
+Import,Import
+No neighbour,Niet bij buren
+Evening,Avondbezorging
+No neighbour and evening,Niet bij buren en avondbezorging
+Morning,Ochtendbezorging
+Google Maps Javascript API Key,Google Maps Javascript API-sleutel
+Delivery Times,Bezorgtijden
+In stock only,Alleen op voorraad
+Number of days,Aantal dagen
+Transit time,Bezorgduur
+Company name,Bedrijfsnaam
+First name,Voornaam
+Last name,Achternaam
+Street name,Straatnaam
+Housenumber,Huisnummer
+Housenumber addition,Toevoeging
+Postal Code,Postcode
+City,Stad
+Country Code,Landcode
+E-mailadress,E-mailadres
+Phonenumber,Telefoonnummer
+Alternative Return Address,Alternatief retouradres
+Return Address,Retouradres
+Alternative Shipping Address for Hide Shipper Service,Alternatief retouradres voor Verberg Verzender optie
+Usability,Toegankelijkheid
+Bulk Operations,Bulk acties
+Bulk Reports,Bulk rapporten
+Bulk status notification,Bulk status notificaties
+Bulk success notification,Bulk succes notificaties
+Bulk error notification method,Bulk foutmelding methode
+Print service settings,Print service-instellingen
+Enable print service usage,Print service inschakelen
+Zebra printer,Zebra printer
+Hide download button,Verberg downloadknop
+Developer Settings,Instellingen voor ontwikkelaars
+Debug mode,Debug modus
+Debug log,Debug log
+Enable alternative API,Alternatieve API inschakelen
+Alternative API URL,Alternatieven API URL
+DHL Parcel Shipping,DHL Parcel verzending
+API request data responses,API request data responses
+DHL Labels,DHL labels
+Delivery date,Bezorgdatum
+Servicepoint ID,DHL ServicePoint ID
+Are you sure?,Weet u het zeker?
+Are you sure you want these actions to be taken?,Weet u zeker dat u deze acties wilt uitvoeren?

@@ -32,7 +32,7 @@ class ImportRate extends \Magento\Framework\App\Config\Value
     public function afterSave()
     {
         if ($this->getData('field') !== 'import') {
-            throw new \Magento\Framework\Exception\LocalizedException(__('invalid system.xml shipping method not found in ID'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Invalid system.xml shipping method not found in ID'));
         }
         /** @var \DHLParcel\Shipping\Model\ResourceModel\Carrier\RateManager $rateManager */
         $rateManager = $this->rateManagerFactory->create();

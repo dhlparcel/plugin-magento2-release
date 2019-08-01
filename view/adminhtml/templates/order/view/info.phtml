@@ -25,7 +25,7 @@ $orderStoreDate = $block->formatDate(
 
 <section class="admin__page-section order-view-account-information">
     <div class="admin__page-section-title">
-        <span class="title"><?php echo $block->escapeHtml(__('Order & Account Information')) ?></span>
+        <span class="title"><?php echo $block->escapeHtml(__('Order and Account information')) ?></span>
     </div>
     <div class="admin__page-section-content">
         <div class="admin__page-section-item order-information">
@@ -65,7 +65,7 @@ $orderStoreDate = $block->formatDate(
                     <?php endif; ?>
                     <?php if ($order->getRelationChildId()): ?>
                         <tr>
-                            <th><?php echo $block->escapeHtml(__('Link to the New Order')) ?></th>
+                            <th><?php echo $block->escapeHtml(__('Link to the new order')) ?></th>
                             <td>
                                 <a href="<?php echo $block->escapeHtml($block->getViewUrl($order->getRelationChildId())) ?>">
                                     <?php echo $block->escapeHtml($order->getRelationChildRealId()) ?>
@@ -75,7 +75,7 @@ $orderStoreDate = $block->formatDate(
                     <?php endif; ?>
                     <?php if ($order->getRelationParentId()): ?>
                         <tr>
-                            <th><?php echo $block->escapeHtml(__('Link to the Previous Order')) ?></th>
+                            <th><?php echo $block->escapeHtml(__('Link to the previous order')) ?></th>
                             <td>
                                 <a href="<?php echo $block->escapeHtml($block->getViewUrl($order->getRelationParentId())) ?>">
                                     <?php echo $block->escapeHtml($order->getRelationParentRealId()) ?>
@@ -167,12 +167,12 @@ $orderStoreDate = $block->formatDate(
             <address class="admin__page-section-item-content"><?php /* @noEscape */ echo $block->getFormattedAddress($order->getBillingAddress()); ?></address>
         </div>
         <?php
-        /** DHL Servicepoints */
+        /** DHL ServicePoints */
         if ($block->getOrder()->getParcelshop() !== null) : ?>
             <div class="admin__page-section-item order-shipping-address">
                 <?php /* Shipping Address */ ?>
                 <div class="admin__page-section-item-title">
-                    <span class="title"><?php echo $block->escapeHtml(__('DHL Servicepoint')) ?></span>
+                    <span class="title"><?php echo $block->escapeHtml(__('DHL ServicePoint')) ?></span>
                 </div>
                 <?php $parcelShopAddress = $order->getParcelshop()->getAddress(); ?>
                 <address class="admin__page-section-item-content">
@@ -184,7 +184,7 @@ $orderStoreDate = $block->formatDate(
                     <?php /* @noEscape */ echo $parcelShopAddress['city']; ?> (<?php /* @noEscape */ echo $parcelShopAddress['countryCode']; ?>)
                 </address>
             </div>
-        <?php /** \ DHL Servicepoints */ ?>
+        <?php /** \ DHL ServicePoints */ ?>
         <?php else : ?>
             <?php if (!$block->getOrder()->getIsVirtual()): ?>
                 <div class="admin__page-section-item order-shipping-address">

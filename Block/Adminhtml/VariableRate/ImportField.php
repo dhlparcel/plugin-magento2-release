@@ -18,7 +18,7 @@ class ImportField extends \Magento\Framework\Data\Form\Element\AbstractElement
         $html = '<input id="' . $timeConditionId . '" type="hidden" name="' . $this->getName() . '" value="' . time() . '" />';
 
         if (!$conditionTarget = $this->getConditionTarget($this->getId())) {
-            return '<P class="message">'.__('invalid system.xml configuration used, field required name is import').'</P>';
+            return '<P class="message">'.__('Invalid system.xml configuration used, field required name is import').'</P>';
         }
         $html .= <<<EndHTML
         <script>

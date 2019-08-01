@@ -96,7 +96,7 @@ class Create extends \Magento\Backend\Block\Template
     {
         return [
             'private'  => [
-                'label'   => __('private'),
+                'label'   => __('consumer'),
                 'default' => boolval($this->presetService->defaultToBusiness() === false)
             ],
             'business' => [
@@ -126,12 +126,12 @@ class Create extends \Magento\Backend\Block\Template
     {
         return [
             'PS'   => [
-                'label'       => __('DHL service point'),
+                'label'       => __('DHL ServicePoint'),
                 'description' => __('We deliver your shipment to the address of the recipient')
             ],
             'DOOR' => [
                 'label'       => __('At the door'),
-                'description' => __('We deliver your shipment to the nearest DHL servicepoint of the recipient')
+                'description' => __("We deliver your shipment to the recipient's nearest DHL ServicePoint")
             ],
             'BP'   => [
                 'label'       => __('In the mailbox'),
@@ -179,7 +179,7 @@ class Create extends \Magento\Backend\Block\Template
             ],
             'ADD_RETURN_LABEL' => [
                 'label'       => $this->presetService->getTranslation('ADD_RETURN_LABEL'),
-                'description' => __('Print extra label for return shipment')
+                'description' => __('Print an extra label for return shipments')
             ],
             'EA'               => [
                 'label'       => $this->presetService->getTranslation('EA'),
@@ -209,7 +209,7 @@ class Create extends \Magento\Backend\Block\Template
             ],
             'EXP'              => [
                 'label'       => $this->presetService->getTranslation('EXP'),
-                'description' => __('We deliver your shipment before 11 a.m.')
+                'description' => __('We deliver your shipment before 11 AM.')
             ],
             'COD_CASH'         => [
                 'label'       => $this->presetService->getTranslation('COD_CASH'),
@@ -229,9 +229,13 @@ class Create extends \Magento\Backend\Block\Template
                 'label'       => $this->presetService->getTranslation('SSN'),
                 'description' => __('Hide original shipper and use configuration "Alternative Shipping Address for Hide Shipper Service"')
             ],
-            'SDD'             => [
+            'SDD'              => [
                 'label'       => $this->presetService->getTranslation('SDD'),
                 'description' => __('We will deliver your shipment today.')
+            ],
+            'AGE_CHECK'        => [
+                'label'       => $this->presetService->getTranslation('AGE_CHECK'),
+                'description' => __("The recipient's age is checked (18+)")
             ],
         ];
     }

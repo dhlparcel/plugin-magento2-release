@@ -117,30 +117,37 @@ class Preset
             }
         }
 
+        if (array_key_exists('AGE_CHECK', $presetOptions)) {
+            if ($this->helper->getConfigData('label/default_age_check') == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
+                $options[] = 'AGE_CHECK';
+            }
+        }
+
         return $options;
     }
 
     public function getTranslations()
     {
         return [
-            'DOOR'             => __('Door delivery'),
-            'BP'               => __('Mailbox delivery'),
-            'SP'               => __('ServicePoint delivery'),
+            'DOOR'             => __('At the door'),
+            'BP'               => __('In the mailbox'),
+            'SP'               => __('DHL ServicePoint delivery'),
             'REFERENCE'        => __('Reference'),
             'REFERENCE2'       => __('Reference 2'),
             'ADD_RETURN_LABEL' => __('Return label'),
             'EA'               => __('Extra Assured'),
             'HANDT'            => __('Signature on delivery'),
-            'EVE'              => __('Evening delivery (6 p.m. to 9 p.m.)'),
+            'EVE'              => __('Evening delivery (6 AM to 9 PM)'),
             'NBB'              => __('No delivery to neighbour'),
             'INS'              => __('Shipment insurance'),
-            'S'                => __('Saturday delivery (9 a.m. to 3 p.m.)'),
+            'S'                => __('Saturday delivery (9 AM to 3 PM)'),
             'EXP'              => __('Expresser'),
             'COD_CASH'         => __('Cash on delivery'),
             'BOUW'             => __('Delivery on construction site'),
-            'EXW'              => __('EX WORKS'),
+            'EXW'              => __('Ex Works'),
             'SSN'              => __('Hide Shipper'),
-            'SDD'              => __('DHL today (6 p.m. to 9 p.m.)'),
+            'SDD'              => __('DHL Same-day delivery (6 p.m. to 9 p.m.)'),
+            'AGE_CHECK'        => __('Age check (18+)'),
         ];
     }
 
@@ -155,20 +162,18 @@ class Preset
 
     /**
      * @param \Magento\Sales\Api\Data\OrderInterface|\Magento\Sales\Model\Order $order
-     * @param $configEnabled
-     * @param $configSource
-     * @param $configText
+     * @param string $type
      * @return bool|mixed
      */
     protected function getReference($order, $type = 'reference')
     {
         if ($type === 'reference') {
             $enabled = $this->helper->getConfigData('label/default_reference_enabled');
-            $referenceOption =  $this->helper->getConfigData('label/default_reference_source');
+            $referenceOption = $this->helper->getConfigData('label/default_reference_source');
             $customText = $this->helper->getConfigData('label/default_reference_text');
         } else {
             $enabled = $this->helper->getConfigData('label/default_reference2_enabled');
-            $referenceOption =  $this->helper->getConfigData('label/default_reference2_source');
+            $referenceOption = $this->helper->getConfigData('label/default_reference2_source');
             $customText = $this->helper->getConfigData('label/default_reference2_text');
         }
 

@@ -63,7 +63,7 @@
                     </morning>
                     <sameday>
                         <enabled>0</enabled>
-                        <title>DHL today</title>
+                        <title>Same-day delivery</title>
                         <cutoff>8:00</cutoff>
                     </sameday>
                     <servicepoint>

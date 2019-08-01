@@ -45,7 +45,7 @@ class AdminLogin implements \Magento\Framework\Event\ObserverInterface
         $response = $this->connector->testAuthenticate($this->helper->getConfigData('api/user'), $this->helper->getConfigData('api/key'));
         if ($response === false) {
             // invalid authentication message
-            $this->notificationService->error(__('DHLParcel extension has been turned on but user id and api key combination is invalid'));
+            $this->notificationService->error(__('DHL Parcel extension has been turned on but user ID and API key combination is invalid'));
         } else {
             // cache valid authentication to reduce unnecessary load
             $this->apiCache->save('valid', 'authentication', [], 86400);

@@ -59,7 +59,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         // Return if addTrack can not be called
         if (!is_callable([$shipment, 'addTrack'])) {
-            throw new NoTrackException(__("Unable to create DHL shipment because the shipment you are using doesn't support the ability to track it, please contact your developer or use a different delivery method"));
+            throw new NoTrackException(__("Unable to create DHL shipment because the shipment you are using does not support the ability to track it. Please contact your developer or use a different delivery method"));
         }
 
         if (!empty($this->request->getParam('shipment')['create_dhlparcel_shipping_label'])) {
@@ -117,7 +117,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             if (empty($sizes) || !is_array($sizes)) {
                 $translations = $this->presetService->getTranslations();
                 $translatedOptions = array_intersect_key($translations, $defaultOptions);
-                throw new FaultyServiceOptionException(__('no DHL services could be found for this order with the selected service options: %1', implode(', ', $translatedOptions)));
+                throw new FaultyServiceOptionException(__('No DHL services could be found for this order with the selected service options: %1', implode(', ', $translatedOptions)));
             }
         }
 

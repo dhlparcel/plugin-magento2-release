@@ -50,7 +50,7 @@ class Order
     public function createShipment(\Magento\Sales\Model\Order $order)
     {
         if (!$order->canShip()) {
-            throw new NotShippableException(__("A shipment cannot be created for order"));
+            throw new NotShippableException(__("A shipment cannot be created for the order"));
         }
 
         $shipment = $this->convertOrder->toShipment($order);

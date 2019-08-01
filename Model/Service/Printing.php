@@ -68,7 +68,7 @@ class Printing
      * @throws LabelNotFoundException
      * @throws NoPrinterException
      */
-    public function createPrintJob($labelIds = [], $retry = true)
+    public function sendPrintJob($labelIds = [], $retry = true)
     {
         $printerId = $this->helper->getConfigData('usability/printing_service/printer');
 
@@ -86,7 +86,7 @@ class Printing
         }
         if ($this->connector->errorCode === 409 && $retry) {
             // Retries with newly formed UUID
-            $response = $this->createPrintJob($labelIds, false);
+            $response = $this->sendPrintJob($labelIds, false);
         }
         if ($this->connector->errorCode === 400 && $retry) {
             throw new LabelNotFoundException(__('One of the labels you are trying to print is invalid'));

@@ -42,7 +42,7 @@ class Reset extends \Magento\Backend\App\Action
         } catch (\Exception $e) {
             $response->setData([
                 'status'  => 'failed',
-                'message' => __('the following error occured: %1', $e->getMessage())
+                'message' => __('The following error occurred: %1', $e->getMessage())
             ]);
         }
 

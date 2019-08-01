@@ -5,7 +5,7 @@ namespace DHLParcel\Shipping\Observer\Checkout;
 use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Checkout\Model\Session\Proxy as CheckoutSession;
+use Magento\Checkout\Model\Session as CheckoutSession;
 
 class DeliveryTimes implements ObserverInterface
 {

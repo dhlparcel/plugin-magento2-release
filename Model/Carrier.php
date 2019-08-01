@@ -3,7 +3,7 @@
 namespace DHLParcel\Shipping\Model;
 
 use DHLParcel\Shipping\Logger\DebugLogger;
-use Magento\Checkout\Model\Session\Proxy as CheckoutSession;
+use Magento\Checkout\Model\Session as CheckoutSession;
 use DHLParcel\Shipping\Model\Service\Capability as CapabilityService;
 use DHLParcel\Shipping\Model\PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
@@ -303,7 +303,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             PresetService::SHIPPING_METHOD_SATURDAY             => __('Saturday delivery'),
             PresetService::SHIPPING_METHOD_SERVICE_POINT        => __('ServicePoint'),
             PresetService::SHIPPING_METHOD_MORNING              => __('Morning delivery'),
-            PresetService::SHIPPING_METHOD_SAMEDAY              => __('DHL today'),
+            PresetService::SHIPPING_METHOD_SAMEDAY              => __('Same-day delivery'),
         ];
         if (is_string($key)) {
             return $methods[$key];

@@ -55,7 +55,7 @@ class Test extends \Magento\Backend\App\Action
 
         $response = [
             'status'  => $authentication ? 'success' : 'failed',
-            'message' => $authentication ? __('Authentication Successful.') : __('Authentication failed. Please try again or contact customer service for help'),
+            'message' => $authentication ? __('Authentication successful') : __('Authentication failed. Please try again or contact customer service for help'),
             'data'    => $authentication,
         ];
 

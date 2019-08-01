@@ -3,7 +3,7 @@
 namespace DHLParcel\Shipping\Controller\ServicePoint;
 
 use DHLParcel\Shipping\Controller\AbstractResponse;
-use Magento\Checkout\Model\Session\Proxy as CheckoutSession;
+use Magento\Checkout\Model\Session as CheckoutSession;
 
 class Sync extends AbstractResponse
 {

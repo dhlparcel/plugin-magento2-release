@@ -67,14 +67,14 @@ class PrintAction extends \Magento\Backend\App\Action
             $this->notificationService->error(__('Shipment not found'));
             return $this->redirectToOrder();
         } catch (InputException $e) {
-            $this->notificationService->error(__('No shipment id provided in request'));
+            $this->notificationService->error(__('No shipment ID provided in request'));
             return $this->redirectToOrder();
         }
 
         try {
             $labelIds = $this->labelService->getShipmentLabelIds($shipment);
-            $this->printingService->createPrintJob($labelIds);
-            $this->notificationService->success(__('succesfully printed %1 label(s)', count($labelIds)));
+            $this->printingService->sendPrintJob($labelIds);
+            $this->notificationService->success(__('successfully printed %1 label(s)', count($labelIds)));
         } catch (LocalizedException $e) {
             $this->notificationService->error(__($e->getMessage()));
         }

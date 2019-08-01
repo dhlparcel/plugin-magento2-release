@@ -64,7 +64,7 @@ class Download extends \Magento\Backend\App\Action
             $this->notificationService->error(__('Shipment not found'));
             return $this->redirectToOrder();
         } catch (InputException $e) {
-            $this->notificationService->error(__('No shipment id provided in request'));
+            $this->notificationService->error(__('No shipment ID provided in request'));
             return $this->redirectToOrder();
         }
 
@@ -90,7 +90,7 @@ class Download extends \Magento\Backend\App\Action
             return $this->redirectToOrder();
         }
         if ($failedLabels > 0) {
-            $this->notificationService->error(__('%1 label(s) weren\'t printed due to errors', $failedLabels));
+            $this->notificationService->error(__("%1 label(s) were not printed due to errors", $failedLabels));
         }
 
         return $this->labelService->pdfResponse($this->getResponse(), $PDFs);

@@ -58,12 +58,12 @@ class UpgradeData implements UpgradeDataInterface
             $this->addProductBlacklistAttributes();
         }
 
-        if (version_compare($context->getVersion(), "1.0.4", "<")) {
-            $this->updateProductBlacklistAttributeLabels();
+        if (version_compare($context->getVersion(), "1.0.5", "<")) {
+            $this->updateProductBlacklistServicePointAttributeSourceModel();
         }
 
-        if (version_compare($context->getVersion(), "1.0.5", "<")) {
-            $this->updateProductBlacklistServicepointAttributeSourceModel();
+        if (version_compare($context->getVersion(), "1.0.6", "<")) {
+            $this->updateProductBlacklistAttributeLabels();
         }
 
         $setup->endSetup();
@@ -113,7 +113,7 @@ class UpgradeData implements UpgradeDataInterface
                 'type'                    => 'int',
                 'backend'                 => '',
                 'frontend'                => '',
-                'label'                   => 'DHL Parcel blacklist servicepoint delivery in checkout',
+                'label'                   => 'Disable in checkout: delivery methods with ServicePoint service option',
                 'input'                   => 'select',
                 'class'                   => '',
                 'source'                  => \Magento\Eav\Model\Entity\Attribute\Source\Boolean::class,
@@ -138,7 +138,7 @@ class UpgradeData implements UpgradeDataInterface
                 'type'                    => 'varchar',
                 'backend'                 => \Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend::class,
                 'frontend'                => '',
-                'label'                   => 'DHL Parcel blacklist service options in checkout',
+                'label'                   => 'Disable in checkout: delivery methods with these service options',
                 'input'                   => 'multiselect',
                 'class'                   => '',
                 'source'                  => \DHLParcel\Shipping\Model\Entity\Attribute\Source\BlackList::class,
@@ -159,30 +159,30 @@ class UpgradeData implements UpgradeDataInterface
         $this->addAttributesToAttributeSets([Carrier::BLACKLIST_SERVICEPOINT, Carrier::BLACKLIST_GENERAL]);
     }
 
-    private function updateProductBlacklistAttributeLabels()
-    {
-        $this->eavSetup->updateAttribute(
-            \Magento\Catalog\Model\Product::ENTITY,
-            Carrier::BLACKLIST_SERVICEPOINT,
-            'label',
-            'Do not show delivery methods with ServicePoint service option in the checkout'
-        );
-
-        $this->eavSetup->updateAttribute(
-            \Magento\Catalog\Model\Product::ENTITY,
-            Carrier::BLACKLIST_SERVICEPOINT,
-            'label',
-            'Do not show delivery methods with the following service options in the checkout'
-        );
-    }
-
-    private function updateProductBlacklistServicepointAttributeSourceModel()
+    private function updateProductBlacklistServicePointAttributeSourceModel()
     {
         $this->eavSetup->updateAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
             Carrier::BLACKLIST_SERVICEPOINT,
             'source_model',
             \DHLParcel\Shipping\Model\Entity\Attribute\Source\NoYes::class
+        );
+    }
+
+    private function updateProductBlacklistAttributeLabels()
+    {
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_SERVICEPOINT,
+            'frontend_label',
+            'Disable in checkout: delivery methods with ServicePoint service option'
+        );
+
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_GENERAL,
+            'frontend_label',
+            'Disable in checkout: delivery methods with these service options'
         );
     }
 }

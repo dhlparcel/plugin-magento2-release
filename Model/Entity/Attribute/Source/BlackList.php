@@ -9,7 +9,7 @@ class BlackList extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSourc
         if ($this->_options === null) {
             $this->_options = [
                 ['label' => __('Evening delivery'), 'value' => 'EVE'],
-                ['label' => __('Same day delivery'), 'value' => 'SDD'],
+                ['label' => __('Same-day delivery'), 'value' => 'SDD'],
             ];
         }
         return $this->_options;

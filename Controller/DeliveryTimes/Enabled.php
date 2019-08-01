@@ -3,7 +3,7 @@
 namespace DHLParcel\Shipping\Controller\DeliveryTimes;
 
 use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
-use Magento\Checkout\Model\Session\Proxy as CheckoutSession;
+use Magento\Checkout\Model\Session as CheckoutSession;
 
 class Enabled extends \DHLParcel\Shipping\Controller\AbstractResponse
 {

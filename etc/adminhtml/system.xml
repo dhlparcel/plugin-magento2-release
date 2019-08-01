@@ -7,7 +7,7 @@
                 <label>DHL Parcel</label>
                 <field id="active" translate="label" type="select" sortOrder="002" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enabled</label>
-                    <tooltip>Enable DHLParcel shipping</tooltip>
+                    <tooltip>Enable DHL Parcel Shipping</tooltip>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="title" translate="label" type="text" sortOrder="003" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -28,10 +28,10 @@
                     </field>
                     <field id="test_authentication" translate="label comment" type="button" sortOrder="300" showInDefault="1" showInWebsite="0" showInStore="0">
                         <frontend_model>DHLParcel\Shipping\Block\Adminhtml\Authentication\Test</frontend_model>
-                        <comment>Make sure to test your filled credentials. We'll search for your account ID and Organization ID</comment>
+                        <comment>Make sure to test your filled credentials. We will search for your account ID and Organization ID</comment>
                     </field>
                     <field id="account_id" type="text" translate="label" sortOrder="400" showInDefault="1" showInWebsite="0" showInStore="0">
-                        <label>MDP Account ID</label>
+                        <label>My DHL Parcel Account ID</label>
                         <comment>Please enter your MDP account ID</comment>
                     </field>
                 </group>
@@ -42,6 +42,11 @@
                         <label>Use DHL Parcel label for manual shipments</label>
                         <comment>"Create DHL Parcel Shipping Label" is turned on by default when creating a shipment</comment>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="labels_per_page" translate="label" type="select" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Multiple labels per page</label>
+                        <comment>Combine multiple labels per page when downloading pdf</comment>
+                        <source_model>DHLParcel\Shipping\Model\Config\Source\LabelsOnPage</source_model>
                     </field>
                     <field id="default_to_business" translate="label" type="select" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Send to business</label>
@@ -97,19 +102,23 @@
                         <label>Auto-enable: Return label</label>
                         <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
                     </field>
-                    <field id="default_hide_shipper" translate="label" type="select" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="default_age_check" translate="label" type="select" sortOrder="610" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Auto-enable: Age check 18+</label>
+                        <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
+                    </field>
+                    <field id="default_hide_shipper" translate="label" type="select" sortOrder="800" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Auto-enable: Hide shipper</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
                     <group id="alternative_tracking" translate="label" type="label" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Alternative tracking url</label>
+                        <label>Alternative tracking URL</label>
                         <field id="enabled" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enabled</label>
                             <comment>Enable Alternative tracking url</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="url" translate="label" type="text"  showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Alternative tracking url</label>
+                            <label>Alternative tracking URL</label>
                             <comment><![CDATA[use following codes for tracking code and postalcode insertion: {{trackerCode}} {{postalCode}}]]></comment>
                         </field>
                     </group>
@@ -360,7 +369,7 @@
                         </field>
                     </group>
                     <group id="sameday" translate="label" type="text" sortOrder="520" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>DHL today</label>
+                        <label>Same-day delivery</label>
                         <field id="enabled" translate="label" type="select" sortOrder="101" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enabled</label>
                             <comment>This only applies to B2C customers and 'Send to business by default' must be set to No</comment>
@@ -445,9 +454,9 @@
                             </depends>
                         </field>
                         <field id="google_maps_api_key" translate="label" type="text" sortOrder="800" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <tooltip>This is required to use the Servicepoint selector</tooltip>
-                            <comment><![CDATA[Please get your Google Maps API key at <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">developers.google.com</a>.]]></comment>
-                            <label>Google Maps API Key</label>
+                            <tooltip>This is required to use the ServicePoint selector</tooltip>
+                            <comment><![CDATA[Please configure your credentials for Google Maps. No Google Maps Javascript API credentials yet? Follow the instructions <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">here</a> on how to get the API key.]]></comment>
+                            <label>Google Maps Javascript API Key</label>
                         </field>
                     </group>
                 </group>
@@ -726,12 +735,12 @@
                         </depends>
                     </field>
                     <field id="alternative_api_enable" translate="label" type="select" sortOrder="300"  showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Enable alternative api</label>
+                        <label>Enable alternative API</label>
                         <comment>Enables API URL override</comment>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
                     <field id="alternative_api_url" translate="label" type="text" sortOrder="400"  showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Alternative api url</label>
+                        <label>Alternative API URL</label>
                         <depends>
                             <field id="alternative_api_enable">1</field>
                         </depends>

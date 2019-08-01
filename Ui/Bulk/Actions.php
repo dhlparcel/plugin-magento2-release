@@ -7,28 +7,16 @@ use Magento\Framework\UrlInterface;
 
 class Actions implements \Zend\Stdlib\JsonSerializable
 {
-    /**
-     * @var array
-     */
-    protected $options;
-    /**
-     * @var array
-     */
+
     protected $data;
-    /**
-     * @var UrlInterface
-     */
+    /* @var UrlInterface */
     protected $urlBuilder;
     protected $urlPath;
-    protected $paramName;
-    /**
-     * @var array
-     */
     protected $additionalData = [];
-    /**
-     * @var Data
-     */
+    /* @var Data */
     protected $helper;
+
+    protected $skipActions = [];
 
     public function __construct(
         UrlInterface $urlBuilder,
@@ -50,8 +38,9 @@ class Actions implements \Zend\Stdlib\JsonSerializable
     {
         $options = [];
 
+        $skipCreate = in_array('create', $this->skipActions);
         $enabled = $this->helper->getConfigData('usability/bulk/create');
-        if ($enabled) {
+        if ($enabled && !$skipCreate) {
             $options[] = $this->createOption(
                 'create',
                 __('Create labels'),
@@ -60,7 +49,7 @@ class Actions implements \Zend\Stdlib\JsonSerializable
         }
 
         $enabled = $this->helper->getConfigData('usability/bulk/create_mailbox');
-        if ($enabled) {
+        if ($enabled && !$skipCreate) {
             $options[] = $this->createOption(
                 'create_mailbox',
                 __('Create mailbox labels'),
@@ -91,7 +80,7 @@ class Actions implements \Zend\Stdlib\JsonSerializable
             $options = [];
             $options[] = $this->createOption(
                 'disabled',
-                __('No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk Operations can be found in the tab Usability.'),
+                __('No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.'),
                 $this->urlBuilder->getUrl('admin/system_config/edit/section/carriers/#carriers_dhlparcel')
             );
         }
@@ -107,6 +96,9 @@ class Actions implements \Zend\Stdlib\JsonSerializable
                 case 'urlPath':
                     $this->urlPath = $value;
                     break;
+                case 'skipCreate':
+                    $this->skipActions[] = 'create';
+                    break;
                 default:
                     $this->additionalData[$key] = $value;
                     break;
@@ -114,10 +106,10 @@ class Actions implements \Zend\Stdlib\JsonSerializable
         }
     }
 
-    protected function createOption($action, $label, $url = null)
+    protected function createOption($id, $label, $url = null)
     {
         $option = [
-            'type'  => 'dhlparcel_bulk_' . $action,
+            'type'  => 'dhlparcel_bulk_' . $id,
             'label' => $label,
         ];
 

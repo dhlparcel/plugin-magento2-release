@@ -51,10 +51,13 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     private $rateQueryFactory;
 
+    private $request;
+
     /**
-     * DHLRate constructor.
+     * RateManager constructor.
      * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
      * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Framework\App\RequestInterface $request
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param Filesystem $filesystem
@@ -65,6 +68,7 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
         \Psr\Log\LoggerInterface $logger,
+        \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         Filesystem $filesystem,
@@ -79,6 +83,7 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $this->filesystem = $filesystem;
         $this->import = $import;
         $this->rateQueryFactory = $rateQueryFactory;
+        $this->request = $request;
     }
 
     /**
@@ -162,7 +167,6 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
     /**
      * @param \Magento\Framework\DataObject $object
-     * @param $method
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -170,13 +174,15 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     {
         $method = $object->getData('group_id');
         $basePath = str_replace($object->getData('field'), 'rate_condition', $object->getData('path'));
+        $files = $this->request->getFiles()->get('groups');
+
         /**
          * @var \Magento\Framework\App\Config\Value $object
          */
-        if (empty($_FILES['groups']['tmp_name']['dhlparcel']['groups']['shipping_methods']['groups'][$method]['fields']['import']['value'])) {
+        if (empty($files['dhlparcel']['groups']['shipping_methods']['groups'][$method]['fields']['import']['value']['tmp_name'])) {
             return $this;
         }
-        $filePath = $_FILES['groups']['tmp_name']['dhlparcel']['groups']['shipping_methods']['groups'][$method]['fields']['import']['value'];
+        $filePath = $files['dhlparcel']['groups']['shipping_methods']['groups'][$method]['fields']['import']['value']['tmp_name'];
 
         $websiteId = $this->storeManager->getWebsite($object->getScopeId())->getId();
         $conditionName = $this->getConditionName($object, $method, $basePath);

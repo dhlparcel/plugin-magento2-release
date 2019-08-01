@@ -2,7 +2,7 @@
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <columns name="sales_order_columns">
         <actionsColumn name="dhlparcel_shipping_labels" class="DHLParcel\Shipping\Ui\Column\Labels">
-        <argument name="data" xsi:type="array">
+            <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                     <item name="visible" xsi:type="boolean">true</item>
@@ -22,6 +22,17 @@
                 </item>
             </argument>
         </actionsColumn>
+        <column name="dhlparcel_shipping_servicepoint_id" class="DHLParcel\Shipping\Ui\Column\ServicePointId">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
+                    <item name="visible" xsi:type="boolean">true</item>
+                    <item name="label" xsi:type="string" translate="true">ServicePoint ID</item>
+                    <item name="sortOrder" xsi:type="number">100</item>
+                    <item name="sortable" xsi:type="boolean">true</item>
+                </item>
+            </argument>
+        </column>
     </columns>
     <listingToolbar name="listing_top">
         <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
@@ -39,8 +50,8 @@
                     <argument name="data" xsi:type="array">
                         <item name="urlPath" xsi:type="string">dhlparcel_shipping/bulk/</item>
                         <item name="confirm" xsi:type="array">
-                            <item name="title" xsi:type="string" translate="true">Are you sure</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure you want these actions to be taken</item>
+                            <item name="title" xsi:type="string" translate="true">Are you sure?</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want these actions to be taken?</item>
                         </item>
                     </argument>
                 </argument>

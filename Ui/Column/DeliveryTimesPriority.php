@@ -69,7 +69,7 @@ class DeliveryTimesPriority extends \Magento\Ui\Component\Listing\Columns\Column
 
         return $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_LAYOUT)
             ->getLayout()
-            ->createBlock('Magento\Framework\View\Element\Template', 'deliverytimes.column.' . mt_rand())
+            ->createBlock('Magento\Framework\View\Element\Template', 'deliverytimes.column.' . mt_rand()) // phpcs:ignore
             ->setData($view)
             ->setTemplate('DHLParcel_Shipping::deliverytimes.column.phtml')
             ->setArea(\Magento\Framework\App\Area::AREA_ADMINHTML)

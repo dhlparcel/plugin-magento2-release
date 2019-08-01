@@ -13,7 +13,7 @@ class ReferenceOptions implements \Magento\Framework\Option\ArrayInterface
     {
         return [
             self::OPTION_ORDER_NUMBER => __('Order number'),
-            self::OPTION_ORDER_ID     => __('Order id'),
+            self::OPTION_ORDER_ID     => __('Order ID'),
             self::OPTION_CUSTOM_TEXT  => __('Custom text'),
         ];
     }

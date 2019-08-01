@@ -8,6 +8,7 @@
         <arguments>
             <argument name="columns" xsi:type="array">
                 <item name="dhlparcel_shipping_deliverytimes_priority" xsi:type="string">sales_order.dhlparcel_shipping_deliverytimes_priority</item>
+                <item name="dhlparcel_shipping_servicepoint_id" xsi:type="string">sales_order.dhlparcel_shipping_servicepoint_id</item>
             </argument>
         </arguments>
     </virtualType>
@@ -35,12 +36,15 @@
     <type name="DHLParcel\Shipping\Logger\DebugLogger">
         <arguments>
             <argument name="name" xsi:type="string">DHLParcel_Shipping</argument>
-            <argument name="handlers"  xsi:type="array">
+            <argument name="handlers" xsi:type="array">
                 <item name="error" xsi:type="object">DHLParcel\Shipping\Logger\ErrorHandler</item>
                 <item name="info" xsi:type="object">DHLParcel\Shipping\Logger\InfoHandler</item>
                 <item name="notice" xsi:type="object">DHLParcel\Shipping\Logger\NoticeHandler</item>
                 <item name="warning" xsi:type="object">DHLParcel\Shipping\Logger\WarningHandler</item>
             </argument>
         </arguments>
+    </type>
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="dhlparcel_shipping_add_order_extension_attribute" type="DHLParcel\Shipping\Plugin\OrderRepositoryPlugin"/>
     </type>
 </config>

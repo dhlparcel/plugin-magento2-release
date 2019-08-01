@@ -24,6 +24,7 @@ class UUID
 
     protected function generateUUID()
     {
+        // phpcs:disable
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff),
@@ -35,5 +36,6 @@ class UUID
             mt_rand(0, 0xffD3),
             mt_rand(0, 0xff4B)
         );
+        // phpcs:enable
     }
 }
