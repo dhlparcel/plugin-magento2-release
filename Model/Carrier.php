@@ -202,8 +202,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
     public function getAllowedMethods()
     {
-        // Does not need implementation
-        return [];
+        return $this->getMethods();
     }
 
     public function getTracking($tracking)
