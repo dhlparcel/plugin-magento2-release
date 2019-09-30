@@ -55,6 +55,12 @@ class Preset
             && !$requiredOnly) {
             $options['ADD_RETURN_LABEL'] = '';
         }
+        
+        if ($this->helper->getConfigData('label/default_age_check') == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
+            || $this->helper->getConfigData('label/default_age_check') == ServiceOptionDefault::OPTION_IF_AVAILABLE
+            && !$requiredOnly) {
+            $options['AGE_CHECK'] = '';
+        }
 
         if ($this->helper->getConfigData('label/default_extra_assured') == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
             || $this->helper->getConfigData('label/default_extra_assured') == ServiceOptionDefault::OPTION_IF_AVAILABLE

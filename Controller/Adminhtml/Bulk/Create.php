@@ -47,14 +47,17 @@ class Create extends \Magento\Backend\App\Action
 
         $success = [];
         $errors = [];
-        foreach ($this->_request->getParam('selected') as $orderId) {
-            /** @var Order $order */
-            $order = $this->orderRepository->get($orderId);
-            try {
-                $this->orderService->createShipment($order);
-                $success[] = '#' . $order->getRealOrderId();
-            } catch (LocalizedException $e) {
-                $errors['#' . $order->getRealOrderId()] = $e;
+        $orderIds = $this->_request->getParam('selected');
+        if (is_array($orderIds)) {
+            foreach ($orderIds as $orderId) {
+                /** @var Order $order */
+                $order = $this->orderRepository->get($orderId);
+                try {
+                    $this->orderService->createShipment($order);
+                    $success[] = '#' . $order->getRealOrderId();
+                } catch (LocalizedException $e) {
+                    $errors['#' . $order->getRealOrderId()] = $e;
+                }
             }
         }
 

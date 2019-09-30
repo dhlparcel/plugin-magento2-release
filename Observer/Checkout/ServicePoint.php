@@ -8,7 +8,6 @@ use Magento\Checkout\Model\Session as CheckoutSession;
 
 class ServicePoint implements ObserverInterface
 {
-
     protected $checkoutSession;
 
     public function __construct(
@@ -19,14 +18,14 @@ class ServicePoint implements ObserverInterface
 
     public function execute(EventObserver $observer)
     {
-        // Save session ServicePoint to order
-        $servicePointId = $this->checkoutSession->getDHLParcelShippingServicePointId();
-
-        if ($servicePointId) {
-            $order = $observer->getOrder();
-            $order->setData('dhlparcel_shipping_servicepoint_id', $servicePointId);
+        $order = $observer->getOrder();
+        if ($order->getShippingMethod() === 'dhlparcel_servicepoint') {
+            // Save session ServicePoint to order
+            $servicePointId = $this->checkoutSession->getDHLParcelShippingServicePointId();
+            if ($servicePointId) {
+                $order->setData('dhlparcel_shipping_servicepoint_id', $servicePointId);
+            }
         }
-
         return $this;
     }
 }

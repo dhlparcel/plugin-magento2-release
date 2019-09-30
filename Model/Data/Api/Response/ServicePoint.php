@@ -13,5 +13,6 @@ class ServicePoint extends AbstractData
     public $geoLocation;
     public $distance;
     public $openingTimes;
+    public $shopType;
     public $country;
 }

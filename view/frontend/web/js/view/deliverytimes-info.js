@@ -28,6 +28,9 @@ define([
             var country_memory = null;
 
             quote.shippingAddress.subscribe(function () {
+                if (typeof quote.shippingAddress() === 'undefined' || quote.shippingAddress() === null) {
+                    return;
+                }
 
                 if (postcode_memory === quote.shippingAddress().postcode) {
                     if (country_memory === quote.shippingAddress().countryId) {
@@ -96,6 +99,10 @@ define([
 
                 if (method.carrier_code !== 'dhlparcel') {
                     return false;
+                }
+
+                if (typeof quote.shippingAddress() === 'undefined' || quote.shippingAddress() === null) {
+                    return;
                 }
 
                 if (quote.shippingAddress().countryId !== 'NL') {

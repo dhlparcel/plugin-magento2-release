@@ -31,7 +31,7 @@ define([
                     return null;
                 }
 
-                return quote.shippingMethod().method_title;
+                return method.method_title;
 
             }, this);
 

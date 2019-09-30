@@ -22,11 +22,11 @@
                 </item>
             </argument>
         </actionsColumn>
-        <column name="dhlparcel_shipping_servicepoint_id" class="DHLParcel\Shipping\Ui\Column\ServicePointId">
+        <column name="dhlparcel_shipping_servicepoint_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
-                    <item name="visible" xsi:type="boolean">true</item>
+                    <item name="visible" xsi:type="boolean">false</item>
                     <item name="label" xsi:type="string" translate="true">ServicePoint ID</item>
                     <item name="sortOrder" xsi:type="number">100</item>
                     <item name="sortable" xsi:type="boolean">true</item>

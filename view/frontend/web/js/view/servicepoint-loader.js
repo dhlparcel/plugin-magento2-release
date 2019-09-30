@@ -5,7 +5,7 @@ define([
     'Magento_Ui/js/modal/modal',
     'mage/url',
     'Magento_Checkout/js/model/shipping-rate-processor/new-address',
-    'Magento_Checkout/js/model/shipping-rate-processor/customer-address',
+    'Magento_Checkout/js/model/shipping-rate-processor/customer-address'
 ], function($, quote, rateRegistry, modal, urlBuilder, defaultProcessor, customerAddressProcessor) {
     return function(config, element) {
         var dhlparcel_shipping_servicepoint_confirm_button_loaded = false;
@@ -51,8 +51,25 @@ define([
                 // Create selection function
                 window.dhlparcel_shipping_select_servicepoint = function(event)
                 {
-                    $(document.body).trigger("dhlparcel_shipping:add_servicepoint_component_confirm_button");
-                    $(document.body).trigger("dhlparcel_shipping:servicepoint_selection", [event.id, event.address.countryCode, event.name]);
+                    event.additional_servicepoint_id = null;
+                    if (typeof event.shopType !== 'undefined' && event.shopType === 'packStation' && event.address.countryCode === 'DE') {
+                        var dhlparcel_additional_servicepoint_id = prompt("Add your 'postnumber' for delivery at a DHL Packstation:");
+
+                        if (dhlparcel_additional_servicepoint_id != null && dhlparcel_additional_servicepoint_id != '') {
+                            $(document.body).trigger("dhlparcel_shipping:add_servicepoint_component_confirm_button");
+
+                            event.name = event.keyword + ' ' + event.id;
+                            var servicepoint_id = event.id + '|' + dhlparcel_additional_servicepoint_id;
+
+                            $(document.body).trigger("dhlparcel_shipping:servicepoint_selection", [servicepoint_id, event.address.countryCode, event.name]);
+                        } else {
+                            $(document.body).trigger("dhlparcel_shipping:servicepoint_selection", [null, null, null]);
+                            $('#dhlparcel-shipping-modal-content').modal('closeModal');
+                        }
+                    } else {
+                        $(document.body).trigger("dhlparcel_shipping:add_servicepoint_component_confirm_button");
+                        $(document.body).trigger("dhlparcel_shipping:servicepoint_selection", [event.id, event.address.countryCode, event.name]);
+                    }
                 };
 
                 // Disable getScript from adding a custom timestamp
@@ -100,11 +117,15 @@ define([
             if (typeof  window.dhlparcel_shipping_reset_servicepoint === "function") {
                 var countryId = quote.shippingAddress().countryId;
                 var postcode = quote.shippingAddress().postcode;
+                var configElement = $('#dhl-servicepoint-locator-component');
+                var limit = $(configElement).attr('data-limit');
+                var apiKey = $(configElement).attr('data-maps-key');
 
                 var options = {
-                    limit: 7,
+                    limit: limit,
                     countryCode: countryId,
-                    query: postcode
+                    query: postcode,
+                    apiKey: apiKey
                 };
 
                 // Use the generated function provided by the component to load the ServicePoints
@@ -134,11 +155,18 @@ define([
             var data = {
                 'servicepoint_id': servicepoint_id,
                 'servicepoint_country': servicepoint_country,
-                'servicepoint_name': servicepoint_name,
-                'servicepoint_postcode': quote.shippingAddress().postcode
+                'servicepoint_name': servicepoint_name
             };
 
+            if (typeof quote.shippingAddress() !== 'undefined' && quote.shippingAddress() !== null) {
+                data.servicepoint_postcode = quote.shippingAddress().postcode;
+            }
+
+
             $.post(urlBuilder.build('dhlparcel_shipping/servicepoint/sync'), data, function (response) {
+                if (typeof quote.shippingAddress() === 'undefined' || quote.shippingAddress() === null) {
+                    return;
+                }
                 /* Update methods */
                 var processors = [];
                 rateRegistry.set(quote.shippingAddress().getCacheKey(), null);
@@ -185,6 +213,10 @@ define([
         // Save shipping method to global
         quote.shippingMethod.subscribe(function(method) {
             if (method === null) {
+                return;
+            }
+
+            if (typeof quote.shippingAddress() === 'undefined' || quote.shippingAddress() === null) {
                 return;
             }
 

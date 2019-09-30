@@ -5,6 +5,7 @@ namespace DHLParcel\Shipping\Model;
 use DHLParcel\Shipping\Logger\DebugLogger;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use DHLParcel\Shipping\Model\Service\Capability as CapabilityService;
+use DHLParcel\Shipping\Model\Service\CartService;
 use DHLParcel\Shipping\Model\PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
 use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
@@ -22,6 +23,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     const BLACKLIST_SERVICEPOINT = 'dhlparcel_blacklist_sp';
     protected $_code = 'dhlparcel';
     protected $capabilityService;
+    protected $cartService;
     protected $checkoutSession;
     protected $debugLogger;
     protected $defaultConditionName;
@@ -51,6 +53,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
         CheckoutSession $checkoutSession,
         CapabilityService $capabilityService,
+        CartService $cartService,
         DebugLogger $debugLogger,
         PieceFactory $pieceFactory,
         PieceResource $pieceResource,
@@ -81,6 +84,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
         $this->checkoutSession = $checkoutSession;
         $this->capabilityService = $capabilityService;
+        $this->cartService = $cartService;
         $this->defaultConditionName = RateConditions::PACKAGE_VALUE;
         $this->debugLogger = $debugLogger;
         $this->pieceFactory = $pieceFactory;
@@ -184,6 +188,10 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             $method->setPrice($this->getConfigData('shipping_methods/' . $methodKey . '/price'));
         }
 
+        if ($request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
+            $method->setPrice('0.00');
+        }
+
         $title = $this->getConfigData('title');
         $method->setCarrier($this->getCarrierCode());
         $method->setCarrierTitle(__($title));
@@ -202,8 +210,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
     public function getAllowedMethods()
     {
-        // Does not need implementation
-        return [];
+        return $this->getMethods();
     }
 
     public function getTracking($tracking)
@@ -251,9 +258,8 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             if (!$servicePointId) {
                 $toCountry = $request->getDestCountryId();
                 $toPostalCode = $request->getDestPostcode();
-                $servicePoints = $this->servicePointService->search($toPostalCode, $toCountry, 1);
-                if (!empty($servicePoints)) {
-                    $servicePoint = reset($servicePoints);
+                $servicePoint = $this->servicePointService->getClosest($toPostalCode, $toCountry);
+                if ($servicePoint) {
                     $servicePointId = $servicePoint->id;
                     $servicePointCountry = $servicePoint->country;
                     $servicePointName = $servicePoint->name;
