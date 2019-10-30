@@ -13,6 +13,9 @@
                 <field id="title" translate="label" type="text" sortOrder="003" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
                 </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="004" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sort Order</label>
+                </field>
                 <field id="version" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\VersionField" sortOrder="004" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Extension version</label>
                 </field>
