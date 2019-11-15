@@ -32,14 +32,16 @@ class Data extends AbstractHelper
     }
 
     /**
-     * @param string $configPath
+     * @param $configPath
+     * @param null $storeId
      * @return mixed
      */
-    public function getConfigData($configPath)
+    public function getConfigData($configPath, $storeId = null)
     {
         return $this->scopeConfig->getValue(
             'carriers/dhlparcel/' . $configPath,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 }

@@ -25,7 +25,8 @@ class Preset
     }
 
     /**
-     * @param \Magento\Sales\Api\Data\OrderInterface|\Magento\Sales\Model\Order $order
+     * @param \Magento\Sales\Model\Order $order
+     * @param bool $requiredOnly
      * @return array
      */
     public function getDefaultOptions($order, $requiredOnly = false)
@@ -46,24 +47,24 @@ class Preset
             $options['REFERENCE2'] = $reference2;
         }
 
-        if ($this->helper->getConfigData('label/default_hide_shipper')) {
+        if ($this->helper->getConfigData('label/default_hide_shipper', $order->getStoreId())) {
             $options['SSN'] = '';
         }
 
-        if ($this->helper->getConfigData('label/default_return_label') == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
-            || $this->helper->getConfigData('label/default_return_label') == ServiceOptionDefault::OPTION_IF_AVAILABLE
+        if ($this->helper->getConfigData('label/default_return_label', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
+            || $this->helper->getConfigData('label/default_return_label', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
             $options['ADD_RETURN_LABEL'] = '';
         }
         
-        if ($this->helper->getConfigData('label/default_age_check') == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
-            || $this->helper->getConfigData('label/default_age_check') == ServiceOptionDefault::OPTION_IF_AVAILABLE
+        if ($this->helper->getConfigData('label/default_age_check', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
+            || $this->helper->getConfigData('label/default_age_check', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
             $options['AGE_CHECK'] = '';
         }
 
-        if ($this->helper->getConfigData('label/default_extra_assured') == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
-            || $this->helper->getConfigData('label/default_extra_assured') == ServiceOptionDefault::OPTION_IF_AVAILABLE
+        if ($this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
+            || $this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
             $options['EA'] = '';
         }
@@ -103,28 +104,32 @@ class Preset
         return $options;
     }
 
-    public function defaultToBusiness()
+    /**
+     * @param null $storeId
+     * @return bool
+     */
+    public function defaultToBusiness($storeId = null)
     {
-        return boolval($this->helper->getConfigData('label/default_to_business'));
+        return boolval($this->helper->getConfigData('label/default_to_business', $storeId));
     }
 
-    public function filterSkippableDefaults($presetOptions)
+    public function filterSkippableDefaults($presetOptions, $storeId)
     {
         $options = [];
         if (array_key_exists('EA', $presetOptions)) {
-            if ($this->helper->getConfigData('label/default_extra_assured') == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
+            if ($this->helper->getConfigData('label/default_extra_assured', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
                 $options[] = 'EA';
             }
         }
 
         if (array_key_exists('ADD_RETURN_LABEL', $presetOptions)) {
-            if ($this->helper->getConfigData('label/default_return_label') == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
+            if ($this->helper->getConfigData('label/default_return_label', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
                 $options[] = 'ADD_RETURN_LABEL';
             }
         }
 
         if (array_key_exists('AGE_CHECK', $presetOptions)) {
-            if ($this->helper->getConfigData('label/default_age_check') == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
+            if ($this->helper->getConfigData('label/default_age_check', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
                 $options[] = 'AGE_CHECK';
             }
         }
@@ -174,13 +179,13 @@ class Preset
     protected function getReference($order, $type = 'reference')
     {
         if ($type === 'reference') {
-            $enabled = $this->helper->getConfigData('label/default_reference_enabled');
-            $referenceOption = $this->helper->getConfigData('label/default_reference_source');
-            $customText = $this->helper->getConfigData('label/default_reference_text');
+            $enabled = $this->helper->getConfigData('label/default_reference_enabled', $order->getStoreId());
+            $referenceOption = $this->helper->getConfigData('label/default_reference_source', $order->getStoreId());
+            $customText = $this->helper->getConfigData('label/default_reference_text', $order->getStoreId());
         } else {
-            $enabled = $this->helper->getConfigData('label/default_reference2_enabled');
-            $referenceOption = $this->helper->getConfigData('label/default_reference2_source');
-            $customText = $this->helper->getConfigData('label/default_reference2_text');
+            $enabled = $this->helper->getConfigData('label/default_reference2_enabled', $order->getStoreId());
+            $referenceOption = $this->helper->getConfigData('label/default_reference2_source', $order->getStoreId());
+            $customText = $this->helper->getConfigData('label/default_reference2_text', $order->getStoreId());
         }
 
         if (!$enabled) {

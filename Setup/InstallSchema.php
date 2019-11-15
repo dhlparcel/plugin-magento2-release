@@ -121,7 +121,7 @@ class InstallSchema implements InstallSchemaInterface
             null,
             [
                 'nullable' => false,
-                'default'  => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT,
+                'default'  => Table::TIMESTAMP_INIT,
             ],
             'Created At'
 
@@ -131,7 +131,7 @@ class InstallSchema implements InstallSchemaInterface
             null,
             [
                 'nullable' => false,
-                'default'  => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT_UPDATE,
+                'default'  => Table::TIMESTAMP_INIT_UPDATE,
             ],
             'Updated At'
 
@@ -153,7 +153,7 @@ class InstallSchema implements InstallSchemaInterface
 
         )->addColumn(
             'pk',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            Table::TYPE_INTEGER,
             null,
             [
                 'identity' => true,
@@ -165,7 +165,7 @@ class InstallSchema implements InstallSchemaInterface
 
         )->addColumn(
             'website_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            Table::TYPE_INTEGER,
             null,
             [
                 'nullable' => false,
@@ -175,7 +175,7 @@ class InstallSchema implements InstallSchemaInterface
 
         )->addColumn(
             'method_name',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            Table::TYPE_TEXT,
             40,
             [
                 'nullable' => false,
@@ -184,7 +184,7 @@ class InstallSchema implements InstallSchemaInterface
 
         )->addColumn(
             'dest_country_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            Table::TYPE_TEXT,
             4,
             [
                 'nullable' => false,
@@ -194,7 +194,7 @@ class InstallSchema implements InstallSchemaInterface
 
         )->addColumn(
             'dest_region_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            Table::TYPE_INTEGER,
             null,
             [
                 'nullable' => false,
@@ -204,7 +204,7 @@ class InstallSchema implements InstallSchemaInterface
 
         )->addColumn(
             'dest_zip',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            Table::TYPE_TEXT,
             10,
             [
                 'nullable' => false,
@@ -214,7 +214,7 @@ class InstallSchema implements InstallSchemaInterface
 
         )->addColumn(
             'condition_name',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            Table::TYPE_TEXT,
             20,
             [
                 'nullable' => false,
@@ -222,7 +222,7 @@ class InstallSchema implements InstallSchemaInterface
             'Rate Condition name'
         )->addColumn(
             'condition_value',
-            \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+            Table::TYPE_DECIMAL,
             '12,4',
             [
                 'nullable' => false,
@@ -231,7 +231,7 @@ class InstallSchema implements InstallSchemaInterface
             'Rate condition value'
         )->addColumn(
             'price',
-            \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+            Table::TYPE_DECIMAL,
             '12,4',
             [
                 'nullable' => false,
@@ -240,7 +240,7 @@ class InstallSchema implements InstallSchemaInterface
             'Price'
         )->addColumn(
             'cost',
-            \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+            Table::TYPE_DECIMAL,
             '12,4',
             [
                 'nullable' => false,
@@ -297,7 +297,8 @@ class InstallSchema implements InstallSchemaInterface
             $setup->getTable('quote'),
             'dhlparcel_shipping_servicepoint_country',
             [
-                'type'     => 'text',
+                'type'     => Table::TYPE_TEXT,
+                'length'   => 32,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping ServicePoint Country',
             ]
@@ -308,7 +309,8 @@ class InstallSchema implements InstallSchemaInterface
             $setup->getTable('sales_order'),
             'dhlparcel_shipping_servicepoint_id',
             [
-                'type'     => 'text',
+                'type'     => Table::TYPE_TEXT,
+                'length'   => 32,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping ServicePoint ID',
             ]

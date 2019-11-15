@@ -29,7 +29,7 @@ class Shipment
     }
 
     /**
-     * @param $orderId
+     * @param \Magento\Sales\Model\Order $order $order
      * @param array $options
      * @param array $pieces
      * @param bool $isBusiness
@@ -37,18 +37,20 @@ class Shipment
      * @throws \DHLParcel\Shipping\Model\Exception\LabelCreationException
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    public function create($orderId, $options = [], $pieces = [], $isBusiness = false)
+    public function create($order, $options = [], $pieces = [], $isBusiness = false)
     {
+        $orderId = $order->getId();
+        $storeId = $order->getStoreId();
         $returnEnabled = $this->checkOption($options, 'ADD_RETURN_LABEL');
         if ($returnEnabled) {
             $options = $this->removeOption($options, 'ADD_RETURN_LABEL');
         }
 
-        $shipmentRequest = $this->shipmentLogic->getRequestData($orderId, $options, $pieces, $isBusiness);
+        $shipmentRequest = $this->shipmentLogic->getRequestData($order, $options, $pieces, $isBusiness);
 
         $hideShipper = $this->checkOption($options, 'SSN');
         if ($hideShipper) {
-            $shipmentRequest = $this->shipmentLogic->hideShipper($shipmentRequest);
+            $shipmentRequest = $this->shipmentLogic->hideShipper($storeId, $shipmentRequest);
         }
 
         $pieceCount = $this->totalPieceQuantity($pieces);
@@ -65,11 +67,11 @@ class Shipment
 
         $tracks = $this->shipmentLogic->createTracks($shipmentResponse->pieces);
         if (empty($tracks)) {
-            throw new LabelCreationException(__('Failed to create label'));
+            throw new LabelCreationException(__('Failed to create label, issue occurred while creating tracks'));
         }
 
         if ($returnEnabled) {
-            $returnShipmentRequest = $this->shipmentLogic->getReturnRequestData($shipmentRequest);
+            $returnShipmentRequest = $this->shipmentLogic->getReturnRequestData($storeId, $shipmentRequest);
             $this->validateShipmentRequest($shipmentRequest);
             $returnShipmentResponse = $this->shipmentLogic->sendRequest($returnShipmentRequest);
             $returnTracks = $this->shipmentLogic->createTracks($returnShipmentResponse->pieces, true);
@@ -85,6 +87,8 @@ class Shipment
 
     /**
      * @param \DHLParcel\Shipping\Model\Data\Api\Request\Shipment $shipmentRequest
+     * @param bool $hideShipper
+     * @throws LabelCreationException
      */
     protected function validateShipmentRequest($shipmentRequest, $hideShipper = false)
     {

@@ -22,6 +22,9 @@
             <dhlparcel>
                 <active>1</active>
                 <title>DHL Parcel</title>
+                <sallowspecific>0</sallowspecific>
+                <showmethod>0</showmethod>
+                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
                 <label>
                     <create_label_by_default>1</create_label_by_default>
                     <default_to_business>0</default_to_business>
@@ -90,16 +93,15 @@
                         <notification_success>1</notification_success>
                         <notification_error>notification_single</notification_error>
                     </bulk_reports>
+                    <template_overwrites>
+                        <email_shipment_track>1</email_shipment_track>
+                    </template_overwrites>
                 </usability>
                 <debug>
                     <enabled>0</enabled>
                     <alternative_api_enable>0</alternative_api_enable>
                 </debug>
-
-                <sallowspecific>0</sallowspecific>
-                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
                 <model>DHLParcel\Shipping\Model\Carrier</model>
-                <showmethod>1</showmethod>
                 <max_package_weight>9999999</max_package_weight>
             </dhlparcel>
         </carriers>

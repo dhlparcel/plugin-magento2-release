@@ -67,28 +67,28 @@ class Shipment
     }
 
     /**
-     * @param $orderId
+     * @param \Magento\Sales\Model\Order $order $order
      * @param array $options
      * @param array $pieces
      * @param bool $isBusiness
      * @return ShipmentRequest
      */
-    public function getRequestData($orderId, $options, $pieces, $isBusiness)
+    public function getRequestData($order, $options, $pieces, $isBusiness)
     {
+        $storeId = $order->getStoreId();
         $randomUUID = (string)$this->uuidFactory->create();
-        $order = $this->orderRepository->get($orderId);
         /** @var \Magento\Sales\Api\Data\OrderAddressInterface $receiverAddress */
         $receiverAddress = $order->getShippingAddress();
         $receiver = $this->getReceiverAddress($receiverAddress, $isBusiness);
-        $shipper = $this->getShipperAddress();
-        $accountId = $this->helper->getConfigData('api/account_id');
+        $shipper = $this->getShipperAddress($storeId);
+        $accountId = $this->helper->getConfigData('api/account_id', $storeId);
         $options = $this->validateOptions($options);
         $pieces = $this->validatePieces($pieces);
 
         /** @var ShipmentRequest $shipmentRequest */
         $shipmentRequest = $this->shipmentRequestFactory->create();
         $shipmentRequest->shipmentId = $randomUUID;
-        $shipmentRequest->orderReference = (string)$orderId;
+        $shipmentRequest->orderReference = (string)$order->getId();
         $shipmentRequest->receiver = $receiver;
         $shipmentRequest->shipper = $shipper;
         $shipmentRequest->accountId = $accountId;
@@ -101,14 +101,15 @@ class Shipment
 
     /**
      * @param ShipmentRequest $shipmentRequest
+     * @param $storeId
      * @return ShipmentRequest
      */
-    public function getReturnRequestData(ShipmentRequest $shipmentRequest)
+    public function getReturnRequestData($storeId, ShipmentRequest $shipmentRequest)
     {
 
         // Check for alternative return address with settings
-        if ($this->helper->getConfigData('shipper/alternative_return_address')) {
-            $receiver = $this->getShipperAddress('return');
+        if ($this->helper->getConfigData('shipper/alternative_return_address', $storeId)) {
+            $receiver = $this->getShipperAddress($storeId, 'return');
         } elseif (!empty($shipmentRequest->onBehalfOf)) {
             $receiver = $shipmentRequest->onBehalfOf;
         } else {
@@ -138,15 +139,20 @@ class Shipment
     }
 
     /**
-     * @param $shipmentRequest
+     * @param ShipmentRequest $shipmentRequest
      * @return ShipmentResponse|null
+     * @throws LabelCreationException
      */
     public function sendRequest(ShipmentRequest $shipmentRequest)
     {
-        $response = $this->connector->post('shipments', $shipmentRequest->toArray(), true);
+        $response = $this->connector->post('shipments', $shipmentRequest->toArray());
 
         if (!$response) {
-            return null;
+            if ($this->helper->getConfigData('debug/enabled')) {
+                throw new LabelCreationException(__('Failed to create label: %1', $this->connector->errorMessage));
+            } else {
+                throw new LabelCreationException(__('Failed to create label'));
+            }
         }
 
         /** @var ShipmentResponse $shipmentResponse */
@@ -199,9 +205,9 @@ class Shipment
         return $tracks;
     }
 
-    public function hideShipper($shipmentRequest)
+    public function hideShipper($storeId, $shipmentRequest)
     {
-        $hideShipperAddress = $this->getShipperAddress('hide_shipper');
+        $hideShipperAddress = $this->getShipperAddress($storeId, 'hide_shipper');
         $shipmentRequest->onBehalfOf = $hideShipperAddress;
 
         return $shipmentRequest;
@@ -228,10 +234,11 @@ class Shipment
     }
 
     /**
+     * @param $storeId
      * @param string $group
      * @return Addressee
      */
-    protected function getShipperAddress($group = '')
+    protected function getShipperAddress($storeId, $group = '')
     {
         if ($group) {
             $group .= '/';
@@ -240,21 +247,21 @@ class Shipment
         /** @var Addressee $addressee */
         $addressee = $this->addresseeFactory->create(['automap' => [
             'name'        => [
-                'firstName'   => $this->helper->getConfigData('shipper/' . $group . 'first_name'),
-                'lastName'    => $this->helper->getConfigData('shipper/' . $group . 'last_name'),
-                'companyName' => $this->helper->getConfigData('shipper/' . $group . 'company_name'),
+                'firstName'   => $this->helper->getConfigData('shipper/' . $group . 'first_name', $storeId),
+                'lastName'    => $this->helper->getConfigData('shipper/' . $group . 'last_name', $storeId),
+                'companyName' => $this->helper->getConfigData('shipper/' . $group . 'company_name', $storeId),
             ],
             'address'     => [
-                'countryCode' => $this->helper->getConfigData('shipper/country_code'),
-                'postalCode'  => strtoupper($this->helper->getConfigData('shipper/' . $group . 'postal_code')),
-                'city'        => $this->helper->getConfigData('shipper/' . $group . 'city'),
-                'street'      => $this->helper->getConfigData('shipper/' . $group . 'street'),
-                'number'      => $this->helper->getConfigData('shipper/' . $group . 'house_number'),
+                'countryCode' => $this->helper->getConfigData('shipper/country_code', $storeId),
+                'postalCode'  => strtoupper($this->helper->getConfigData('shipper/' . $group . 'postal_code', $storeId)),
+                'city'        => $this->helper->getConfigData('shipper/' . $group . 'city', $storeId),
+                'street'      => $this->helper->getConfigData('shipper/' . $group . 'street', $storeId),
+                'number'      => $this->helper->getConfigData('shipper/' . $group . 'house_number', $storeId),
                 'isBusiness'  => true,
-                'addition'    => $this->helper->getConfigData('shipper/' . $group . 'house_number_addition'),
+                'addition'    => $this->helper->getConfigData('shipper/' . $group . 'house_number_addition', $storeId),
             ],
-            'email'       => $this->helper->getConfigData('shipper/' . $group . 'email'),
-            'phoneNumber' => $this->helper->getConfigData('shipper/' . $group . 'phone'),
+            'email'       => $this->helper->getConfigData('shipper/' . $group . 'email', $storeId),
+            'phoneNumber' => $this->helper->getConfigData('shipper/' . $group . 'phone', $storeId),
         ]]);
 
         return $addressee;
@@ -299,25 +306,30 @@ class Shipment
     protected function updateAddressStreet(Address $address, array $street)
     {
         $fullStreet = implode(' ', $street);
-        $regex = '/((?<pre_number>[\d-]*\d)[.-]?(?<pre_addition>\S+)?\s)?(?<street>[^\d\n]+)\s?((?<number>[\d-]*\d)[ .-]?(?<addition>\S+)?)?/i';
+        $regex = '/^\s*(((?<pre_number>[\d-]*\d)[.-]?(?<pre_addition>\S+)?\s)?(?<street>[^\d\n]+)\s?((?<number>[\d-]*\d)[ .-]?(?<addition>\S+)?)?|(?<fallback>.+))\s*$/i';
         $matchFound = preg_match($regex, $fullStreet, $matches);
 
         if ($matchFound) {
-            $address->street = $matches['street'];
+            if (isset($matches['fallback']) && is_string($matches['fallback']) && strlen($matches['fallback']) > 0) {
+                // when no proper match is found entire street combination is thrown into street
+                $address->street = $matches['fallback'];
+            } else {
+                $address->street = $matches['street'];
 
-            if (isset($matches['pre_number']) && is_string($matches['pre_number']) && strlen($matches['pre_number']) > 0) {
-                // House number before street name
-                $address->number = $matches['pre_number'];
+                if (isset($matches['pre_number']) && is_string($matches['pre_number']) && strlen($matches['pre_number']) > 0) {
+                    // House number before street name
+                    $address->number = $matches['pre_number'];
 
-                if (isset($matches['pre_addition']) && is_string($matches['pre_addition']) && strlen($matches['pre_addition']) > 0) {
-                    $address->addition = $matches['pre_addition'];
-                }
-            } elseif (isset($matches['number']) && is_string($matches['number']) && strlen($matches['number']) > 0) {
-                // House number after street name
-                $address->number = $matches['number'];
+                    if (isset($matches['pre_addition']) && is_string($matches['pre_addition']) && strlen($matches['pre_addition']) > 0) {
+                        $address->addition = $matches['pre_addition'];
+                    }
+                } elseif (isset($matches['number']) && is_string($matches['number']) && strlen($matches['number']) > 0) {
+                    // House number after street name
+                    $address->number = $matches['number'];
 
-                if (isset($matches['addition']) && is_string($matches['addition']) && strlen($matches['addition']) > 0) {
-                    $address->addition = $matches['addition'];
+                    if (isset($matches['addition']) && is_string($matches['addition']) && strlen($matches['addition']) > 0) {
+                        $address->addition = $matches['addition'];
+                    }
                 }
             }
         }

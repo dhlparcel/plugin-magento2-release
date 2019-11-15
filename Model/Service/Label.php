@@ -64,7 +64,7 @@ class Label
      */
     public function getLabelPdf($labelId)
     {
-        $cacheKey = $this->apiCache->createKey('label', ['labelId' => $labelId]);
+        $cacheKey = $this->apiCache->createKey(0, 'label', ['labelId' => $labelId]);
         $raw = $this->apiCache->load($cacheKey);
 
         if ($raw === false) {

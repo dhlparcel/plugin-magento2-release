@@ -22,9 +22,10 @@ class Capabilities extends \Magento\Backend\App\Action
         $toCountry = $this->getRequest()->getParam('country');
         $toPostalCode = $this->getRequest()->getParam('postalcode');
         $toBusiness = $this->getRequest()->getParam('audience') == 'business';
+        $storeId = $this->getRequest()->getParam('store_id');
 
-        $options = $this->capabilityService->getOptions($toCountry, $toPostalCode, $toBusiness);
-        $sizes = $this->capabilityService->getSizes($toCountry, $toPostalCode, $toBusiness);
+        $options = $this->capabilityService->getOptions($storeId, $toCountry, $toPostalCode, $toBusiness);
+        $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness);
 
         $resultJson = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
         if (empty($options) || empty($sizes)) {

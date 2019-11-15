@@ -37,18 +37,21 @@ class AdminLogin implements \Magento\Framework\Event\ObserverInterface
             return;
         }
 
-        if ($this->apiCache->load('authentication') !== false) {
+        $cacheKey = $this->apiCache->createKey(0, 'authentication');
+
+        if ($this->apiCache->load($cacheKey) !== false) {
             // valid authentication cached
             return;
         }
 
+        // the configs here dont use
         $response = $this->connector->testAuthenticate($this->helper->getConfigData('api/user'), $this->helper->getConfigData('api/key'));
         if ($response === false) {
             // invalid authentication message
             $this->notificationService->error(__('DHL Parcel extension has been turned on but user ID and API key combination is invalid'));
         } else {
             // cache valid authentication to reduce unnecessary load
-            $this->apiCache->save('valid', 'authentication', [], 86400);
+            $this->apiCache->save('valid', $cacheKey, [], 900);
         }
     }
 }

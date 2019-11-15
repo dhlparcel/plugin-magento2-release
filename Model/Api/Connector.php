@@ -161,15 +161,15 @@ class Connector
         if (!empty($this->accessToken) && $refresh === false) {
             return;
         }
-
-        $accessToken = $this->apiCache->load('accessToken');
+        $cacheKey = $this->apiCache->createKey(0, 'accessToken');
+        $accessToken = $this->apiCache->load($cacheKey);
         if ($accessToken === false || $refresh === true) {
             $response = $this->post(self::AUTH_API, [
                 'userId' => $this->helper->getConfigData('api/user'),
                 'key'    => $this->helper->getConfigData('api/key'),
             ]);
             if (!empty($response['accessToken'])) {
-                $this->apiCache->save($response['accessToken'], 'accessToken', [], 720);
+                $this->apiCache->save($response['accessToken'], $cacheKey, [], 720);
                 $this->accessToken = $response['accessToken'];
             }
             if (empty($response['accessToken']) && $refresh === true) {
@@ -181,14 +181,14 @@ class Connector
     }
 
     /**
-     * @param $user_id
+     * @param $userId
      * @param $key
      * @return array|bool
      */
-    public function testAuthenticate($user_id, $key)
+    public function testAuthenticate($userId, $key)
     {
         $response = $this->post(self::AUTH_API, [
-            'userId' => $user_id,
+            'userId' => $userId,
             'key'    => $key,
         ]);
 
@@ -196,48 +196,8 @@ class Connector
             return false;
         }
 
-        if (isset($response['accounts'])) {
-            $accounts = $response['accounts'];
-        } else {
-            $accounts = $this->parseToken($response['accessToken'], 'accounts');
-        }
-
         return [
-            'accounts' => $accounts,
+            'accounts' => $response['accountNumbers'],
         ];
-    }
-
-    /**
-     * @param $token
-     * @param $key
-     * @return bool
-     * @deprecated
-     */
-    protected function parseToken($token, $key)
-    {
-        // Retrieve middle part
-        $tokenParts = explode('.', $token);
-        if (count($tokenParts) < 2) {
-            return false;
-        }
-
-        // Base64 decode
-        $jsonData = base64_decode($tokenParts[1]);
-        if (!$jsonData) {
-            return false;
-        }
-
-        // Json decode
-        $data = json_decode($jsonData, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return false;
-        }
-
-        // Find key
-        if (!isset($data[$key])) {
-            return false;
-        }
-
-        return $data[$key];
     }
 }

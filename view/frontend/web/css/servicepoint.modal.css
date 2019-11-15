@@ -24,6 +24,13 @@
         width: 65vw;
         margin: 5vh auto 0 auto;
     }
+    /** Amasty checkout compatibility **/
+    .checkout-index-index .modals-wrapper .modal-popup.dhlparcel-shipping-modal:not(.agreements-modal):not(.popup-authentication) .modal-inner-wrap {
+        width: 65%;
+        width: 65vw;
+        max-width: none;
+        margin: 5vh auto 0 auto;
+    }
 }
 
 .modal-popup.dhlparcel-shipping-modal .modal-inner-wrap,

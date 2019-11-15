@@ -38,10 +38,10 @@ class Capability
         $this->capabilityFactory = $capabilityFactory;
     }
 
-    public function getOptions($toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [])
+    public function getOptions($storeId, $toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [])
     {
-        $capabilityCheck = $this->createCapabilityCheck($toCountry, $toPostalCode, $toBusiness, $requestOptions);
-        $capabilities = $this->sendRequest($capabilityCheck);
+        $capabilityCheck = $this->createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions);
+        $capabilities = $this->sendRequest($storeId, $capabilityCheck);
 
         $options = [];
         foreach ($capabilities as $capability) {
@@ -90,10 +90,10 @@ class Capability
         return $options;
     }
 
-    public function getSizes($toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [])
+    public function getSizes($storeId, $toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [])
     {
-        $capabilityCheck = $this->createCapabilityCheck($toCountry, $toPostalCode, $toBusiness, $requestOptions);
-        $capabilities = $this->sendRequest($capabilityCheck);
+        $capabilityCheck = $this->createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions);
+        $capabilities = $this->sendRequest($storeId, $capabilityCheck);
 
         $products = [];
         foreach ($capabilities as $capability) {
@@ -123,17 +123,18 @@ class Capability
     }
 
     /**
+     * @param int $storeId
      * @param $toCountry
      * @param $toPostalCode
      * @param $toBusiness
-     * @param $options
+     * @param $requestOptions
      * @return \DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheck
      */
-    protected function createCapabilityCheck($toCountry, $toPostalCode, $toBusiness, $requestOptions)
+    protected function createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions)
     {
-        $fromCountry = $this->helper->getConfigData('shipper/country_code');
-        $fromPostalCode = $this->helper->getConfigData('shipper/postal_code');
-        $accountNumber = $this->helper->getConfigData('api/account_id');
+        $fromCountry = $this->helper->getConfigData('shipper/country_code', $storeId);
+        $fromPostalCode = $this->helper->getConfigData('shipper/postal_code', $storeId);
+        $accountNumber = $this->helper->getConfigData('api/account_id', $storeId);
 
         /** @var \DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheck $capabilityCheck */
         $capabilityCheck = $this->capabilityCheckFactory->create();
@@ -155,12 +156,13 @@ class Capability
     }
 
     /**
+     * @param int $storeId
      * @param \DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheck $capabilityCheck
      * @return \DHLParcel\Shipping\Model\Data\Api\Response\Capability[]
      */
-    protected function sendRequest($capabilityCheck)
+    protected function sendRequest($storeId, $capabilityCheck)
     {
-        $cacheKey = $this->apiCache->createKey('capabilities', $capabilityCheck->toArray(true));
+        $cacheKey = $this->apiCache->createKey($storeId, 'capabilities', $capabilityCheck->toArray(true));
         $json = $this->apiCache->load($cacheKey);
 
         if ($json === false) {

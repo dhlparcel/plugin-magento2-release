@@ -17,14 +17,22 @@ require([
     'jquery/validate'
 ], function(jQuery){
     jQuery('#dhlparcel_authentication_test').click(function () {
+        let data = {};
+        if(jQuery('#carriers_dhlparcel_api_user').length === 1 && jQuery('#carriers_dhlparcel_api_key').length === 1){
+            data = {
+                'userId' : jQuery('#carriers_dhlparcel_api_user').val(),
+                'apiKey' : jQuery('#carriers_dhlparcel_api_key').val()
+            };
+        } else {
+            data = {
+                'nokey': 1
+            }
+        }
         jQuery.ajax({
             url: "<?php echo $block->getAjaxUrl(); ?>",
             type: 'post',
             dataType: 'json',
-            data: {
-                'userId' : jQuery('#carriers_dhlparcel_api_user').val(),
-                'apiKey' : jQuery('#carriers_dhlparcel_api_key').val()
-            },
+            data: data,
             showLoader: true,
         }).done(function(returnData){
             // Replace OrganizationID
@@ -62,6 +70,27 @@ require([
 
     });
 
+    if (jQuery('#carriers_dhlparcel_api_account_id_inherit').length === 1 && jQuery('#carriers_dhlparcel_api_account_id_inherit').length === 1) {
+        if (jQuery('#carriers_dhlparcel_api_account_id_inherit').prop('checked') === false) {
+            jQuery('#carriers_dhlparcel_api_test_authentication_inherit').prop('checked', false)
+        } else if (jQuery('#carriers_dhlparcel_api_test_authentication_inherit').prop('checked') === true) {
+            jQuery('#dhlparcel_authentication_test').addClass('disabled');
+        }
+        jQuery('#carriers_dhlparcel_api_account_id_inherit, #carriers_dhlparcel_api_test_authentication_inherit').change(function () {
+            let checked = jQuery(this).prop('checked');
+            jQuery('#carriers_dhlparcel_api_account_id_inherit, #carriers_dhlparcel_api_test_authentication_inherit').prop('checked',checked);
+            if(checked){
+                jQuery('#dhlparcel_authentication_test').addClass('disabled');
+                jQuery('#carriers_dhlparcel_api_account_id').prop('disabled',true);
+            }else{
+                jQuery('#dhlparcel_authentication_test').removeClass('disabled');
+                jQuery('#carriers_dhlparcel_api_account_id').prop('disabled',false);
+
+
+            }
+        });
+
+    }
 });
 </script>
 

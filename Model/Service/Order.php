@@ -14,29 +14,26 @@ class Order
     protected $orderRepository;
     protected $convertOrder;
     protected $shipmentNotifier;
-    protected $orderResource;
-    protected $shipmentResource;
+    protected $shipmentRepository;
 
     /**
      * Order constructor.
      * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      * @param \Magento\Sales\Model\Convert\Order $convertOrder
      * @param \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier
-     * @param \Magento\Sales\Model\ResourceModel\Order $orderResource
-     * @param \Magento\Sales\Model\ResourceModel\Order\Shipment $shipmentResource
+     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderResource
+     * @param \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository
      */
     public function __construct(
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\Sales\Model\Convert\Order $convertOrder,
         \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
-        \Magento\Sales\Model\ResourceModel\Order $orderResource,
-        \Magento\Sales\Model\ResourceModel\Order\Shipment $shipmentResource
+        \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository
     ) {
         $this->orderRepository = $orderRepository;
         $this->convertOrder = $convertOrder;
         $this->shipmentNotifier = $shipmentNotifier;
-        $this->orderResource = $orderResource;
-        $this->shipmentResource = $shipmentResource;
+        $this->shipmentRepository = $shipmentRepository;
     }
 
     /**
@@ -71,8 +68,8 @@ class Order
         $order->setIsInProcess(true);
         try {
             // Save created Order Shipment
-            $this->shipmentResource->save($shipment);
-            $this->orderResource->save($order);
+            $this->shipmentRepository->save($shipment);
+            $this->orderRepository->save($order);
 
             // Send Shipment Email
             $this->shipmentNotifier->notify($shipment);

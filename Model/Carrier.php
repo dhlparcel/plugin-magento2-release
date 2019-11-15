@@ -33,6 +33,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     protected $presetService;
     protected $rateManager;
     protected $servicePointService;
+    protected $storeManager;
     protected $trackingUrl = 'https://www.dhlparcel.nl/nl/volg-uw-zending?tc={{trackerCode}}&pc={{postalCode}}';
 
     public function __construct(
@@ -51,6 +52,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         \Magento\Directory\Model\CurrencyFactory $currencyFactory,
         \Magento\Directory\Helper\Data $directoryData,
         \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         CheckoutSession $checkoutSession,
         CapabilityService $capabilityService,
         CartService $cartService,
@@ -93,6 +95,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         $this->presetService = $presetService;
         $this->rateManager = $rateManager;
         $this->servicePointService = $servicePointService;
+        $this->storeManager = $storeManager;
 
         if ($this->getConfigData('label/alternative_tracking/enabled')) {
             $this->trackingUrl = $this->getConfigData('label/alternative_tracking/url');
@@ -158,11 +161,11 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
         $toCountry = $request->getDestCountryId();
         $toPostalCode = $request->getDestPostcode();
-        $toBusiness = $this->presetService->defaultToBusiness();
+        $toBusiness = $this->presetService->defaultToBusiness($this->storeManager->getStore()->getId());
         $requestOptions = array_keys($presetOptions);
 
       
-        $sizes = $this->capabilityService->getSizes($toCountry, $toPostalCode, $toBusiness, $requestOptions);
+        $sizes = $this->capabilityService->getSizes($this->storeManager->getStore()->getId(), $toCountry, $toPostalCode, $toBusiness, $requestOptions);
         if (empty($sizes)) {
             $this->debugLogger->info("CARRIER method $methodKey not available due to capabilities", ['options' => $requestOptions, 'response' => $sizes]);
             return null;
@@ -280,7 +283,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         return $title;
     }
 
-    protected function getTrackingUrl($trackerCode)
+    public function getTrackingUrl($trackerCode)
     {
         $piece = $this->pieceFactory->create();
         /** @var Piece $piece */

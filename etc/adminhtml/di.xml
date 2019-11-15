@@ -3,7 +3,6 @@
     <type name="Magento\Shipping\Block\Adminhtml\View">
         <plugin name="DHLParcel_Shipping::printButton" type="DHLParcel\Shipping\Plugin\Adminhtml\Shipment\PrintButton"/>
     </type>
-
     <type name="Magento\Sales\Block\Adminhtml\Order\View">
         <plugin name="DHLParcel_Shipping::printButton" type="DHLParcel\Shipping\Plugin\Adminhtml\Order\PrintButton"/>
     </type>

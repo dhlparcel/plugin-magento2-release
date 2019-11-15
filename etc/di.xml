@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Magento\Sales\Model\Order\Shipment">
-        <plugin name="DHLParcel_Shipping::emailShipmentTrack" type="DHLParcel\Shipping\Plugin\Email\Shipment\Track"/>
-    </type>
-
     <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid" type="Magento\Sales\Model\ResourceModel\Grid">
         <arguments>
             <argument name="columns" xsi:type="array">
@@ -12,7 +8,22 @@
             </argument>
         </arguments>
     </virtualType>
+    <virtualType name="DHLParcel\Shipping\Ui\Bulk\ActionsShipments" type="DHLParcel\Shipping\Ui\Bulk\Actions">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="urlPath" xsi:type="string">dhlparcel_shipping/bulk/</item>
+                <item name="skipCreate" xsi:type="boolean">true</item>
+                <item name="confirm" xsi:type="array">
+                    <item name="title" xsi:type="string" translate="true">Are you sure</item>
+                    <item name="message" xsi:type="string" translate="true">Are you sure you want these actions to be taken</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
 
+    <type name="Magento\Sales\Model\Order\Shipment">
+        <plugin name="DHLParcel_Shipping::emailShipmentTrack" type="DHLParcel\Shipping\Plugin\Email\Shipment\Track"/>
+    </type>
     <type name="DHLParcel\Shipping\Logger\ErrorHandler">
         <arguments>
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
@@ -33,6 +44,17 @@
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
+    <type name="DHLParcel\Shipping\Ui\Bulk\Actions">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="urlPath" xsi:type="string">dhlparcel_shipping/bulk/</item>
+                <item name="confirm" xsi:type="array">
+                    <item name="title" xsi:type="string" translate="true">Are you sure</item>
+                    <item name="message" xsi:type="string" translate="true">Are you sure you want these actions to be taken</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
     <type name="DHLParcel\Shipping\Logger\DebugLogger">
         <arguments>
             <argument name="name" xsi:type="string">DHLParcel_Shipping</argument>
@@ -46,5 +68,8 @@
     </type>
     <type name="Magento\Sales\Api\OrderRepositoryInterface">
         <plugin name="dhlparcel_shipping_add_order_extension_attribute" type="DHLParcel\Shipping\Plugin\OrderRepositoryPlugin"/>
+    </type>
+    <type name="Magento\Framework\View\Element\Template">
+        <plugin name="dhlparcel_change_track_template" type="DHLParcel\Shipping\Plugin\ChangeTrackTemplate"/>
     </type>
 </config>

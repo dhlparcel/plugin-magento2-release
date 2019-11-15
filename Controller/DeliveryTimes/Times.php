@@ -3,21 +3,17 @@
 namespace DHLParcel\Shipping\Controller\DeliveryTimes;
 
 use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
-use Magento\Checkout\Model\Session as CheckoutSession;
 
 class Times extends \DHLParcel\Shipping\Controller\AbstractResponse
 {
     protected $deliveryTimesService;
-    protected $checkoutSession;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        DeliveryTimesService $deliveryTimesService,
-        CheckoutSession $checkoutSession
+        DeliveryTimesService $deliveryTimesService
     ) {
         parent::__construct($context);
         $this->deliveryTimesService = $deliveryTimesService;
-        $this->checkoutSession = $checkoutSession;
     }
 
     public function execute()

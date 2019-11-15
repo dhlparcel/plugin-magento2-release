@@ -21,12 +21,14 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
     protected $capabilityService;
     protected $labelService;
     protected $optionFactory;
+    protected $orderRepository;
     protected $pieceFactory;
     protected $presetService;
     protected $request;
     protected $shipmentService;
 
     public function __construct(
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         CapabilityService $capabilityService,
         LabelService $labelService,
         OptionFactory $optionFactory,
@@ -38,6 +40,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $this->capabilityService = $capabilityService;
         $this->labelService = $labelService;
         $this->optionFactory = $optionFactory;
+        $this->orderRepository = $orderRepository;
         $this->pieceFactory = $pieceFactory;
         $this->presetService = $presetService;
         $this->request = $request;
@@ -84,12 +87,15 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
      * @param \Magento\Sales\Model\Order $order $order
      * @return array
      * @throws FaultyServiceOptionException
+     * @throws LabelCreationException
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
     protected function bulkShipment($order)
     {
         $toCountry = $order->getShippingAddress()->getCountryId();
+        $storeId = $order->getStoreId();
         $toPostalCode = str_replace(' ', '', $order->getShippingAddress()->getPostcode());
-        $toBusiness = $this->presetService->defaultToBusiness();
+        $toBusiness = $this->presetService->defaultToBusiness($storeId);
         $defaultOptions = $this->presetService->getDefaultOptions($order);
 
         if ($this->request->getParam('method_override') == 'mailbox' && array_key_exists('DOOR', $defaultOptions)) {
@@ -97,12 +103,12 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             $defaultOptions['BP'] = '';
         }
 
-        $sizes = $this->capabilityService->getSizes($toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
+        $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
 
         if (empty($sizes) || !is_array($sizes)) {
-            $skippableOptions = $this->presetService->filterSkippableDefaults($defaultOptions);
+            $skippableOptions = $this->presetService->filterSkippableDefaults($defaultOptions, $storeId);
             $requiredOptions = $this->presetService->getDefaultOptions($order, true);
-            $options = $this->capabilityService->getOptions($toCountry, $toPostalCode, $toBusiness, array_keys($requiredOptions));
+            $options = $this->capabilityService->getOptions($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($requiredOptions));
 
             $allowedOptions = [];
             foreach ($skippableOptions as $skippableOption) {
@@ -112,7 +118,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             }
 
             $defaultOptions = array_merge($requiredOptions, $allowedOptions);
-            $sizes = $this->capabilityService->getSizes($toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
+            $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
 
             if (empty($sizes) || !is_array($sizes)) {
                 $translations = $this->presetService->getTranslations();
@@ -142,7 +148,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             $options[] = $this->createOption($optionKey, $optionValue);
         }
 
-        $tracks = $this->shipmentService->create($order->getId(), $options, $pieces, $toBusiness);
+        $tracks = $this->shipmentService->create($order, $options, $pieces, $toBusiness);
         return $tracks;
     }
 
@@ -190,7 +196,9 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             }
         }
 
-        $tracks = $this->shipmentService->create($orderId, $options, $pieces, $business);
+        $order = $this->orderRepository->get($orderId);
+
+        $tracks = $this->shipmentService->create($order, $options, $pieces, $business);
         return $tracks;
     }
 

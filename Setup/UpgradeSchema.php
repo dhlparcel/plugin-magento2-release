@@ -2,6 +2,7 @@
 
 namespace DHLParcel\Shipping\Setup;
 
+use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
@@ -30,7 +31,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('sales_order'),
             'dhlparcel_shipping_deliverytimes_selection',
             [
-                'type'     => 'text',
+                'type'     => Table::TYPE_TEXT,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Delivery Times Selection',
             ]
@@ -40,7 +41,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('sales_order'),
             'dhlparcel_shipping_deliverytimes_priority',
             [
-                'type'     => 'bigint',
+                'type'     => Table::TYPE_BIGINT,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Delivery Times Priority',
             ]
@@ -51,7 +52,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('quote'),
             'dhlparcel_shipping_deliverytimes_selection',
             [
-                'type'     => 'text',
+                'type'     => Table::TYPE_TEXT,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Delivery Times Selection',
             ]
@@ -61,7 +62,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('quote'),
             'dhlparcel_shipping_deliverytimes_priority',
             [
-                'type'     => 'bigint',
+                'type'     => Table::TYPE_BIGINT,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Delivery Times Priority',
             ]
@@ -71,7 +72,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('sales_order_grid'),
             'dhlparcel_shipping_deliverytimes_priority',
             [
-                'type'     => 'bigint',
+                'type'     => Table::TYPE_BIGINT,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Delivery Times Priority',
             ]
@@ -89,7 +90,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('sales_order_grid'),
             'dhlparcel_shipping_servicepoint_id',
             [
-                'type'     => 'text',
+                'type'     => Table::TYPE_TEXT,
+                'length'   => 32,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping ServicePoint ID',
             ]

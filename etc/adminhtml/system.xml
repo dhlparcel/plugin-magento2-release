@@ -5,18 +5,38 @@
             <!-- DHL PARCEL -->
             <group id="dhlparcel" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>DHL Parcel</label>
-                <field id="active" translate="label" type="select" sortOrder="002" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enabled</label>
                     <tooltip>Enable DHL Parcel Shipping</tooltip>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="003" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="title" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
                 </field>
                 <field id="version" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\VersionField" sortOrder="004" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Extension version</label>
                 </field>
-                <group id="api" translate="label" type="label" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="sallowspecific" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Ship to Applicable Countries</label>
+                    <frontend_class>shipping-applicable-country</frontend_class>
+                    <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Ship to Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="showmethod" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Show Method if Not Applicable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <frontend_class>shipping-skip-hide</frontend_class>
+                    <comment>When no valid method is available the error message below is shown</comment>
+                </field>
+                <field id="specificerrmsg" translate="label" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Displayed Error Message</label>
+                </field>
+
+                <group id="api" translate="label" type="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Account Settings</label>
                     <field id="user" type="text" translate="label" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>API UserId</label>
@@ -26,11 +46,11 @@
                         <label>API Key</label>
                         <comment>Please enter the API key</comment>
                     </field>
-                    <field id="test_authentication" translate="label comment" type="button" sortOrder="300" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <field id="test_authentication" translate="label comment" type="button" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
                         <frontend_model>DHLParcel\Shipping\Block\Adminhtml\Authentication\Test</frontend_model>
                         <comment>Make sure to test your filled credentials. We will search for your account ID and Organization ID</comment>
                     </field>
-                    <field id="account_id" type="text" translate="label" sortOrder="400" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <field id="account_id" type="text" translate="label" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>My DHL Parcel Account ID</label>
                         <comment>Please enter your MDP account ID</comment>
                     </field>
@@ -43,7 +63,7 @@
                         <comment>"Create DHL Parcel Shipping Label" is turned on by default when creating a shipment</comment>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
-                    <field id="labels_per_page" translate="label" type="select" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="labels_per_page" translate="label" type="select" sortOrder="200" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Multiple labels per page</label>
                         <comment>Combine multiple labels per page when downloading pdf</comment>
                         <source_model>DHLParcel\Shipping\Model\Config\Source\LabelsOnPage</source_model>
@@ -709,6 +729,11 @@
                             <comment>This only applies to printers that have been registered through the print service program</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <field id="bulk_check" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\DirectPrintWarning" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <depends>
+                                <field id="enable">1</field>
+                            </depends>
+                        </field>
                         <field id="printer" translate="label" sortOrder="200" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Zebra printer</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\Printer</source_model>
@@ -716,6 +741,14 @@
                         <field id="hide_download" translate="label" sortOrder="300" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Hide download button</label>
                             <comment>only applies to the download label button in order and shipment view pages</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                    </group>
+                    <group id="template_overwrites" translate="label" type="label" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Template Overwrites</label>
+                        <field id="email_shipment_track" translate="label" sortOrder="100" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Overwrite email/shipment/track.phtml</label>
+                            <comment><![CDATA[This allows clickable links in Track&Trace e-mail for Magento 2.0 - 2.2]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
@@ -734,12 +767,12 @@
                             <field id="enabled">1</field>
                         </depends>
                     </field>
-                    <field id="alternative_api_enable" translate="label" type="select" sortOrder="300"  showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="alternative_api_enable" translate="label" type="select" sortOrder="300"  showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Enable alternative API</label>
                         <comment>Enables API URL override</comment>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
-                    <field id="alternative_api_url" translate="label" type="text" sortOrder="400"  showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="alternative_api_url" translate="label" type="text" sortOrder="400"  showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Alternative API URL</label>
                         <depends>
                             <field id="alternative_api_enable">1</field>

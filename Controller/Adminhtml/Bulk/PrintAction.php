@@ -202,12 +202,17 @@ class PrintAction extends \Magento\Backend\App\Action
         return $labelCount;
     }
 
+    /**
+     * @param \Magento\Sales\Model\Order\Shipment $shipment
+     * @param null $exceptionStorage
+     * @return int
+     */
     protected function printLabels($shipment, &$exceptionStorage = null)
     {
         $labelIds = [];
         try {
             $labelIds = $this->labelService->getShipmentLabelIds($shipment);
-            $this->printingService->sendPrintJob($labelIds);
+            $this->printingService->sendPrintJob($shipment->getStoreId(), $labelIds);
         } catch (\Exception $e) {
             if (is_array($exceptionStorage)) {
                 $exceptionStorage[] = $e;

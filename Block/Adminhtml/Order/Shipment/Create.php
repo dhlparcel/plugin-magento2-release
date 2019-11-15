@@ -48,7 +48,7 @@ class Create extends \Magento\Backend\Block\Template
 
     public function canCreateLabel()
     {
-        return boolval($this->helper->getConfigData('active'));
+        return boolval($this->helper->getConfigData('active', $this->getOrder()->getStoreId()));
     }
 
     public function createLabelByDefault()
@@ -57,22 +57,7 @@ class Create extends \Magento\Backend\Block\Template
         if ($default) {
             return true;
         }
-        return $this->helper->getConfigData('label/create_label_by_default');
-    }
-
-    /**
-     * @return \Magento\Sales\Api\Data\OrderInterface|\Magento\Sales\Model\Order
-     */
-    public function getOrder()
-    {
-        if (!$this->order) {
-            try {
-                $this->order = $this->orderRepository->get($this->getRequest()->getParam('order_id'));
-            } catch (\Exception $e) {
-                //this should technically never happen, magento will error out on its own before reaching this point
-            }
-        }
-        return $this->order;
+        return $this->helper->getConfigData('label/create_label_by_default', $this->getOrder()->getStoreId());
     }
 
     public function getOption($key, $bool = true)
@@ -97,11 +82,11 @@ class Create extends \Magento\Backend\Block\Template
         return [
             'private'  => [
                 'label'   => __('consumer'),
-                'default' => boolval($this->presetService->defaultToBusiness() === false)
+                'default' => boolval($this->presetService->defaultToBusiness($this->getOrder()->getStoreId()) === false)
             ],
             'business' => [
                 'label'   => __('business'),
-                'default' => boolval($this->presetService->defaultToBusiness() === true)
+                'default' => boolval($this->presetService->defaultToBusiness($this->getOrder()->getStoreId()) === true)
             ]
         ];
     }
@@ -114,7 +99,8 @@ class Create extends \Magento\Backend\Block\Template
         $address = $this->getOrder()->getShippingAddress();
         $params = [
             'country'    => $address->getCountryId(),
-            'postalcode' => $address->getPostcode()
+            'postalcode' => $address->getPostcode(),
+            'store_id'   => $this->getOrder()->getStoreId()
         ];
         return $this->backendUrl->getUrl("dhlparcel_shipping/shipment/capabilities", $params) . 'audience/';
     }
@@ -238,5 +224,20 @@ class Create extends \Magento\Backend\Block\Template
                 'description' => __("The recipient's age is checked (18+)")
             ],
         ];
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\OrderInterface|\Magento\Sales\Model\Order
+     */
+    protected function getOrder()
+    {
+        if (!$this->order) {
+            try {
+                $this->order = $this->orderRepository->get($this->getRequest()->getParam('order_id'));
+            } catch (\Exception $e) {
+                //this should technically never happen, magento will error out on its own before reaching this point
+            }
+        }
+        return $this->order;
     }
 }

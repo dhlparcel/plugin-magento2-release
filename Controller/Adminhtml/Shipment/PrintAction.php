@@ -73,7 +73,7 @@ class PrintAction extends \Magento\Backend\App\Action
 
         try {
             $labelIds = $this->labelService->getShipmentLabelIds($shipment);
-            $this->printingService->sendPrintJob($labelIds);
+            $this->printingService->sendPrintJob($shipment->getStoreId(), $labelIds);
             $this->notificationService->success(__('successfully printed %1 label(s)', count($labelIds)));
         } catch (LocalizedException $e) {
             $this->notificationService->error(__($e->getMessage()));
