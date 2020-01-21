@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 namespace DHLParcel\Shipping\Model\ResourceModel\Carrier;
 
@@ -15,42 +19,34 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * @var int
      */
     protected $_importedRows = 0;
-
     /**
      * @var array|string[]
      */
     protected $conditionFullNames = [];
-
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $coreConfig;
-
     /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
-
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
-
     /**
      * @var Filesystem
      */
     protected $filesystem;
-
     /**
      * @var Import
      */
     private $import;
-
     /**
      * @var RateQueryFactory
      */
     private $rateQueryFactory;
-
     private $request;
 
     /**
@@ -106,12 +102,33 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     {
         $connection = $this->getConnection();
 
+        $websiteId = 0;
+        $storeId = 0;
+
+        $select = $connection->select()->from($this->getMainTable());
+        /** @var RateQuery $preQuery */
+        $preQuery = $this->rateQueryFactory->create(['request' => $request]);
+        $preQuery->preparePreSelect($select);
+        $bindings = $preQuery->getPreBindings($method, 0, (int)$request->getStoreId());
+        if ($connection->fetchRow($select, $bindings)) {
+            $storeId = (int)$request->getStoreId();
+        } else {
+            $select = $connection->select()->from($this->getMainTable());
+            /** @var RateQuery $preQuery */
+            $preQuery = $this->rateQueryFactory->create(['request' => $request]);
+            $preQuery->preparePreSelect($select);
+            $bindings = $preQuery->getPreBindings($method, (int)$request->getWebsiteId(), 0);
+            if ($connection->fetchRow($select, $bindings)) {
+                $websiteId = (int)$request->getWebsiteId();
+            }
+        }
+
         $select = $connection->select()->from($this->getMainTable());
         /** @var RateQuery $rateQuery */
         $rateQuery = $this->rateQueryFactory->create(['request' => $request]);
-
         $rateQuery->prepareSelect($select);
-        $bindings = $rateQuery->getBindings($method);
+
+        $bindings = $rateQuery->getBindings($method, $websiteId, $storeId);
 
         $result = $connection->fetchRow($select, $bindings);
         // Normalize destination zip code
@@ -184,7 +201,16 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
         $filePath = $files['dhlparcel']['groups']['shipping_methods']['groups'][$method]['fields']['import']['value']['tmp_name'];
 
-        $websiteId = $this->storeManager->getWebsite($object->getScopeId())->getId();
+        $storeId = 0;
+        $websiteId = 0;
+        switch ($object->getScope()) {
+            case 'websites':
+                $websiteId = $this->storeManager->getWebsite($object->getScopeId())->getId();
+                break;
+            case 'stores':
+                $storeId = $this->storeManager->getStore($object->getScopeId())->getId();
+                break;
+        }
         $conditionName = $this->getConditionName($object, $method, $basePath);
 
         $file = $this->getCsvFile($filePath);
@@ -192,6 +218,7 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             // delete old data by website and condition name
             $condition = [
                 'website_id = ?'     => $websiteId,
+                'store_id = ?'       => $storeId,
                 'condition_name = ?' => $conditionName,
                 'method_name = ?'    => $method
             ];
@@ -199,7 +226,7 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
             $columns = $this->import->getColumns();
             $conditionFullName = $this->getConditionFullName($conditionName);
-            foreach ($this->import->getData($file, $websiteId, $conditionName, $conditionFullName, $method) as $bunch) {
+            foreach ($this->import->getData($file, $websiteId, $storeId, $conditionName, $conditionFullName, $method) as $bunch) {
                 $this->importData($columns, $bunch);
             }
         } catch (\Exception $e) {

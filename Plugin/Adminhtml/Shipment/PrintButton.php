@@ -2,7 +2,7 @@
 
 namespace DHLParcel\Shipping\Plugin\Adminhtml\Shipment;
 
-class PrintButton extends \DHLParcel\Shipping\Plugin\Adminhtml\AbstractPrintButton
+class PrintButton extends \DHLParcel\Shipping\Plugin\Adminhtml\AbstractShipmentsButton
 {
     public function beforeSetLayout(\Magento\Shipping\Block\Adminhtml\View $subject)
     {

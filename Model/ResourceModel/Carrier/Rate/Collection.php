@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 namespace DHLParcel\Shipping\Model\ResourceModel\Carrier\Rate;
 
@@ -10,7 +14,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      * @var string
      */
     protected $countryTable;
-
     /**
      * Directory/country_region table name
      *
@@ -60,6 +63,15 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     public function setWebsiteFilter($websiteId)
     {
         return $this->addFieldToFilter('website_id', $websiteId);
+    }
+
+    /**
+     * @param $storeId
+     * @return Collection
+     */
+    public function setStoreFilter($storeId)
+    {
+        return $this->addFieldToFilter('store_id', $storeId);
     }
 
     /**

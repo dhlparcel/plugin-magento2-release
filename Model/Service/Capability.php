@@ -138,9 +138,9 @@ class Capability
 
         /** @var \DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheck $capabilityCheck */
         $capabilityCheck = $this->capabilityCheckFactory->create();
-        $capabilityCheck->fromCountry = $fromCountry;
+        $capabilityCheck->fromCountry = trim($fromCountry);
         $capabilityCheck->fromPostalCode = strtoupper($fromPostalCode);
-        $capabilityCheck->toCountry = $toCountry ?: $fromCountry;
+        $capabilityCheck->toCountry = trim($toCountry) ?: trim($fromCountry);
         $capabilityCheck->toBusiness = $toBusiness ? 'true' : 'false';
         $capabilityCheck->accountNumber = $accountNumber;
 

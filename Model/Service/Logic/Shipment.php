@@ -159,6 +159,8 @@ class Shipment
         $shipmentResponse = $this->shipmentResponseFactory->create(['automap' => $response]);
         // Enrich pieces with postalCode
         $shipmentResponse = $this->tagPostalCode($shipmentResponse, $shipmentRequest->receiver->address->postalCode);
+        $shipmentResponse = $this->tagShipmentRequest($shipmentResponse, $shipmentRequest);
+
         return $shipmentResponse;
     }
 
@@ -176,17 +178,18 @@ class Shipment
         }
 
         $tracks = [];
-        foreach ($pieceResponses as $pieceResponse) {
+        foreach ($pieceResponses as $labelId => $pieceResponse) {
             /** @var Piece $piece */
             $piece = $this->pieceFactory->create();
             $piece->addData([
-                'label_id'     => $pieceResponse->labelId,
-                'tracker_code' => $pieceResponse->trackerCode,
-                'postal_code'  => $pieceResponse->postalCode,
-                'parcel_type'  => $pieceResponse->parcelType,
-                'piece_number' => $pieceResponse->pieceNumber,
-                'label_type'   => $pieceResponse->labelType,
-                'is_return'    => $isReturn,
+                'label_id'          => $pieceResponse->labelId,
+                'tracker_code'      => $pieceResponse->trackerCode,
+                'postal_code'       => $pieceResponse->postalCode,
+                'parcel_type'       => $pieceResponse->parcelType,
+                'piece_number'      => $pieceResponse->pieceNumber,
+                'label_type'        => $pieceResponse->labelType,
+                'is_return'         => $isReturn,
+                'shipment_request'  => $pieceResponse->shipmentRequest
             ]);
 
             $this->pieceResource->save($piece);
@@ -218,6 +221,23 @@ class Shipment
         $shipmentRequest->options[] = ['key' => 'REFERENCE', 'input' => $reference];
 
         return $shipmentRequest;
+    }
+
+    protected function tagShipmentRequest(ShipmentResponse $shipmentResponse, $shipmentRequest)
+    {
+        if ($this->helper->getConfigData('debug/enabled')
+            && $this->helper->getConfigData('debug/save_label_requests')
+        ) {
+            if (!empty($shipmentResponse) && !empty($shipmentResponse->pieces)) {
+                $updatedPieces = [];
+                foreach ($shipmentResponse->pieces as $piece) {
+                    $piece->shipmentRequest = json_encode($shipmentRequest->toArray());
+                    $updatedPieces[] = $piece;
+                }
+                $shipmentResponse->pieces = $updatedPieces;
+            }
+        }
+        return $shipmentResponse;
     }
 
     protected function tagPostalCode(ShipmentResponse $shipmentResponse, $postalCode)
@@ -303,38 +323,61 @@ class Shipment
         return $addressee;
     }
 
+    /**
+     * @param Address $address
+     * @param array $street
+     * @return Address
+     */
     protected function updateAddressStreet(Address $address, array $street)
     {
         $fullStreet = implode(' ', $street);
-        $regex = '/^\s*(((?<pre_number>[\d-]*\d)[.-]?(?<pre_addition>\S+)?\s)?(?<street>[^\d\n]+)\s?((?<number>[\d-]*\d)[ .-]?(?<addition>\S+)?)?|(?<fallback>.+))\s*$/i';
-        $matchFound = preg_match($regex, $fullStreet, $matches);
 
-        if ($matchFound) {
-            if (isset($matches['fallback']) && is_string($matches['fallback']) && strlen($matches['fallback']) > 0) {
-                // when no proper match is found entire street combination is thrown into street
-                $address->street = $matches['fallback'];
-            } else {
-                $address->street = $matches['street'];
-
-                if (isset($matches['pre_number']) && is_string($matches['pre_number']) && strlen($matches['pre_number']) > 0) {
-                    // House number before street name
-                    $address->number = $matches['pre_number'];
-
-                    if (isset($matches['pre_addition']) && is_string($matches['pre_addition']) && strlen($matches['pre_addition']) > 0) {
-                        $address->addition = $matches['pre_addition'];
-                    }
-                } elseif (isset($matches['number']) && is_string($matches['number']) && strlen($matches['number']) > 0) {
-                    // House number after street name
-                    $address->number = $matches['number'];
-
-                    if (isset($matches['addition']) && is_string($matches['addition']) && strlen($matches['addition']) > 0) {
-                        $address->addition = $matches['addition'];
-                    }
-                }
-            }
-        }
+        $data = $this->parseStreetData($fullStreet);
+        $address->street = $data['street'];
+        $address->number = $data['number'];
+        $address->addition = $data['addition'];
 
         return $address;
+    }
+
+    /**
+     * @param $raw
+     * @return array [
+     *      'street'   => (string) Parsed street $raw
+     *      'number'   => (string) Parsed number from $raw
+     *      'addition' => (string) Parsed additional street data from $raw
+     * ]
+     */
+    protected function parseStreetData($raw)
+    {
+        $skipAdditionCheck = false;
+        preg_match('/([^\d]*)\s*(.*)/i', trim($raw), $streetParts);
+        $data = [
+            'street' => isset($streetParts[1]) ? trim($streetParts[1]) : '',
+            'number' => isset($streetParts[2]) ? trim($streetParts[2]) : '',
+            'addition' => '',
+        ];
+
+        // Check if $street is empty
+        if (strlen($data['street']) === 0) {
+            // Try a reverse parse
+            preg_match('/([\d]+[\w.-]*)\s*(.*)/i', trim($raw), $streetParts);
+            $data['street'] = isset($streetParts[2]) ? trim($streetParts[2]) : '';
+            $data['number'] = isset($streetParts[1]) ? trim($streetParts[1]) : '';
+            $skipAdditionCheck = true;
+        }
+
+        // Check if $number has numbers
+        if (preg_match("/\d/", $data['number']) !== 1) {
+            $data['street'] = trim($raw);
+            $data['number'] = '';
+        } elseif (!$skipAdditionCheck) {
+            preg_match('/([\d]+)[ .-]*(.*)/i', $data['number'], $numberParts);
+            $data['number'] = isset($numberParts[1]) ? trim($numberParts[1]) : '';
+            $data['addition'] = isset($numberParts[2]) ? trim($numberParts[2]) : '';
+        }
+
+        return $data;
     }
 
     /**

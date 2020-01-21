@@ -4,7 +4,6 @@ namespace DHLParcel\Shipping\Block\Adminhtml\VariableRate;
 
 class ExportField extends \Magento\Framework\Data\Form\Element\AbstractElement
 {
-
     /**
      * @var \Magento\Backend\Model\UrlInterface
      */
@@ -36,6 +35,7 @@ class ExportField extends \Magento\Framework\Data\Form\Element\AbstractElement
             \Magento\Backend\Block\Widget\Button::class
         );
         $websiteId = $buttonBlock->getRequest()->getParam('website');
+        $storeId = $buttonBlock->getRequest()->getParam('store');
         $params = ['website' => $websiteId];
 
         $url = $this->backendUrl->getUrl("dhlparcel_shipping/system/exportrates", $params);
@@ -46,7 +46,8 @@ class ExportField extends \Magento\Framework\Data\Form\Element\AbstractElement
                 $url .
                 "conditionName/' + $('" . $this->getConditionTarget($this->getId()) . "').value + '/" .
                 "shippingMethod/" . $this->getMethod() . "/" .
-                "website/" . (int)$websiteId . "' )",
+                "website/" . (int)$websiteId . "/" .
+                "store/" . (int)$storeId . "' )",
             'class'   => ''
         ];
         if ($this->getData('inherit') && $websiteId) {
@@ -66,10 +67,12 @@ class ExportField extends \Magento\Framework\Data\Form\Element\AbstractElement
         } else {
             return false;
         }
-    }/**
- * @param string $id
- * @return bool|string
- */
+    }
+
+    /**
+     * @param string $id
+     * @return bool|string
+     */
     protected function getConditionTarget($id)
     {
         if (preg_match('/^(?<base>\w+_)export/i', $id, $match)) {

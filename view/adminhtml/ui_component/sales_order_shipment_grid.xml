@@ -22,15 +22,22 @@
     <listingToolbar name="listing_top">
         <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
             <action name="dhlparcel_label_actions">
-                <settings>
-                    <type>dhlparcel_shipping</type>
-                    <label translate="true">DHL Parcel</label>
-                    <actions class="DHLParcel\Shipping\Ui\Bulk\ActionsShipments"/>
-                    <confirm>
-                        <message translate="true">Are you sure</message>
-                        <title translate="true">Are you sure you want these actions to be taken</title>
-                    </confirm>
-                </settings>
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">dhlparcel_shipping</item>
+                        <item name="label" xsi:type="string" translate="true">DHL Parcel</item>
+                    </item>
+                </argument>
+                <argument name="actions" xsi:type="configurableObject">
+                    <argument name="class" xsi:type="string">DHLParcel\Shipping\Ui\Bulk\ActionsShipments</argument>
+                    <argument name="data" xsi:type="array">
+                        <item name="urlPath" xsi:type="string">dhlparcel_shipping/bulk/</item>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Change Status</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure?</item>
+                        </item>
+                    </argument>
+                </argument>
             </action>
         </massaction>
     </listingToolbar>

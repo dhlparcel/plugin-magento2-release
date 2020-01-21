@@ -91,10 +91,12 @@ class Connector
         $this->errorId = null;
         $this->errorCode = null;
         $this->errorMessage = null;
-        $options = [RequestOptions::HEADERS => [
-            'Accept'       => 'application/json',
-            'Content-Type' => 'application/json'
-        ]];
+        $options = [
+            RequestOptions::HEADERS => [
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json'
+            ]
+        ];
 
         if ($endpoint != self::AUTH_API) {
             if (empty($this->accessToken)) {
@@ -110,6 +112,7 @@ class Connector
                 $options[RequestOptions::QUERY] = $params;
             }
         }
+
         try {
             $this->debugLogger->info('CONNECTOR API request', ['method' => $method, 'url' => $this->url, $endpoint, $options]);
             /** @var Response $response */
@@ -135,18 +138,23 @@ class Connector
             $this->errorCode = $e->getCode();
             $this->errorMessage = $e->getResponse()->getBody()->getContents();
             $this->debugLogger->info('CONNECTOR API request failed, server exception', ['code' => $this->errorCode, 'message' => $this->errorMessage]);
-            if ($this->helper->getConfigData('debug/enabled')) {
-                throw $e;
-            }
+
+            return false;
+        } catch (\Exception $e) {
+            $this->isError = true;
+            $this->errorCode = $e->getCode();
+            $this->errorMessage = __('Connection to API failed.');
+            $this->debugLogger->info('CONNECTOR API Connection to API failed.', ['code' => $this->errorCode, 'message' => $this->errorMessage]);
 
             return false;
         }
 
-        if (!is_bool($response) && $response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
+        if (isset($response) && !is_bool($response) && $response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             $this->debugLogger->info('CONNECTOR API request successful');
             $this->isError = false;
             return $response;
         }
+
         $this->debugLogger->info('CONNECTOR API request failed');
         return false;
     }

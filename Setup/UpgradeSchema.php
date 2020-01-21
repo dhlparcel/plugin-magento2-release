@@ -22,6 +22,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
         if (version_compare($context->getVersion(), "1.0.6", "<")) {
             $this->addServicePointToSalesOrderGrid($setup);
         }
+        if (version_compare($context->getVersion(), "1.0.9", "<")) {
+            $this->installSaveShipmentRequests($setup);
+            $this->updateVariableRateTable($setup);
+        }
         $installer->endSetup();
     }
 
@@ -31,7 +35,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('sales_order'),
             'dhlparcel_shipping_deliverytimes_selection',
             [
-                'type'     => Table::TYPE_TEXT,
+                'type'     => Table::TYPE_BLOB,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Delivery Times Selection',
             ]
@@ -95,6 +99,77 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping ServicePoint ID',
             ]
+        );
+    }
+
+    public function installSaveShipmentRequests(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('dhlparcel_shipping_pieces'),
+            'shipment_request',
+            [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                'nullable' => true,
+                'comment'  => 'Shipment Request'
+            ]
+        );
+    }
+
+    protected function updateVariableRateTable(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('dhlparcel_shipping_rates'),
+            'store_id',
+            [
+                'type'     => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                'nullable' => false,
+                'default'  => '0',
+                'comment'  => 'Store id'
+            ]
+        );
+        $setup->getConnection()->dropIndex(
+            $setup->getTable('dhlparcel_shipping_rates'),
+            $setup->getIdxName(
+                'shipping_tablerate',
+                [
+                    'website_id',
+                    'method_name',
+                    'dest_country_id',
+                    'dest_region_id',
+                    'dest_zip',
+                    'condition_name',
+                    'condition_value',
+                ],
+                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+            )
+        );
+        $setup->getConnection()->addIndex(
+            $setup->getTable('dhlparcel_shipping_rates'),
+            $setup->getIdxName(
+                'dhlparcel_shipping_rates',
+                [
+                    'website_id',
+                    'store_id',
+                    'method_name',
+                    'dest_country_id',
+                    'dest_region_id',
+                    'dest_zip',
+                    'condition_name',
+                    'condition_value',
+                ],
+                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+            ),
+            [
+                'website_id',
+                'store_id',
+                'method_name',
+                'dest_country_id',
+                'dest_region_id',
+                'dest_zip',
+                'condition_name',
+                'condition_value',
+            ],
+            \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
         );
     }
 }

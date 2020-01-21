@@ -41,6 +41,11 @@ define([
                 postcode_memory = quote.shippingAddress().postcode;
                 country_memory = quote.shippingAddress().countryId;
 
+                // Don't do an API call without a postcode
+                if (quote.shippingAddress().postcode === null || quote.shippingAddress().postcode === '') {
+                    return;
+                }
+
                 var data = {
                     'postcode': quote.shippingAddress().postcode,
                     'country': quote.shippingAddress().countryId
@@ -74,7 +79,6 @@ define([
                         // Skip extra validation if there are missing times, to prevent blocking orders
                         window.dhlparcel_shipping_deliverytimes_validated = true;
                     }
-
                 }, 'json');
             });
 

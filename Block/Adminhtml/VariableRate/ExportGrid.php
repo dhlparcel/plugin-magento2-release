@@ -10,17 +10,18 @@ class ExportGrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @var int
      */
     protected $websiteId;
-
+    /**
+     * @var int
+     */
+    protected $storeId;
     /**
      * @var string
      */
     protected $conditionName;
-
     /**
      * @var string
      */
     protected $methodName;
-
     /**
      * @var \DHLParcel\Shipping\Model\ResourceModel\Carrier\Rate\CollectionFactory
      */
@@ -79,6 +80,29 @@ class ExportGrid extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
+     * @return int
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getStoreId()
+    {
+        if ($this->storeId === null) {
+            $this->storeId = $this->_storeManager->getStore()->getId();
+        }
+        return $this->storeId;
+    }
+
+    /**
+     * @param $storeId
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function setStoreId($storeId)
+    {
+        $this->storeId = $this->_storeManager->getStore($storeId)->getId();
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getConditionName()
@@ -125,6 +149,7 @@ class ExportGrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $collection
             ->setConditionFilter($this->getConditionName())
             ->setWebsiteFilter($this->getWebsiteId())
+            ->setStoreFilter($this->getStoreId())
             ->setMethodFilter($this->getMethodName());
         $this->setCollection($collection);
 

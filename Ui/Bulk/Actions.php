@@ -5,7 +5,7 @@ namespace DHLParcel\Shipping\Ui\Bulk;
 use DHLParcel\Shipping\Helper\Data;
 use Magento\Framework\UrlInterface;
 
-class Actions implements \Zend\Stdlib\JsonSerializable
+class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \Zend\Stdlib\JsonSerializable
 {
 
     protected $data;

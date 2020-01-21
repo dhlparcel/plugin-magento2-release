@@ -203,7 +203,10 @@ class DeliveryTimes
 
             if ($cutoffGeneral !== null) {
                 if ($this->validateWithShippingDays($cutoffGeneral, $timestamp, $shippingDays)) {
-                    if ($deliveryTime->source->startTime == '1800') { // This is an intentional ambiguous check, due to no strict regulations on the type of input from the Time Window API
+                    // This is an intentional ambiguous check, due to the lack of strict regulations on the type of input from the Time Window API so far
+                    // Check if end time is AFTER 18:00 (int check), or is exactly 00:00
+                    if (intval($deliveryTime->source->startTime) > 1400
+                        && (intval($deliveryTime->source->endTime) > 1800 || $deliveryTime->source->endTime === '0000')) {
                         // Evening
                         if ($dayTime !== true) {
                             $filteredTimes[] = $deliveryTime;

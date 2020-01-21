@@ -100,6 +100,7 @@
                 <debug>
                     <enabled>0</enabled>
                     <alternative_api_enable>0</alternative_api_enable>
+                    <save_label_requests>0</save_label_requests>
                 </debug>
                 <model>DHLParcel\Shipping\Model\Carrier</model>
                 <max_package_weight>9999999</max_package_weight>

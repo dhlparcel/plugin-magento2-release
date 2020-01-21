@@ -4,7 +4,7 @@ namespace DHLParcel\Shipping\Plugin\Adminhtml;
 
 use DHLParcel\Shipping\Helper\Data;
 
-abstract class AbstractPrintButton
+abstract class AbstractShipmentsButton
 {
     protected $helper;
 
@@ -37,6 +37,21 @@ abstract class AbstractPrintButton
                 [
                     'label'   => __('Print DHL Labels'),
                     'class'   => 'dhlparcel_shipping_print',
+                    'onclick' => "setLocation('$url')"
+                ],
+                102
+            );
+        }
+
+        $enableSaveRequest = $this->helper->getConfigData('debug/save_label_requests');
+        $enableDebug = $this->helper->getConfigData('debug/enabled');
+        if ($enableSaveRequest && $enableDebug) {
+            $url = $subject->getUrl('dhlparcel_shipping/shipment/labelrequest', ['shipment_id' => $shipmentId]);
+            $subject->addButton(
+                'dhlparcel_shipping_request',
+                [
+                    'label'   => __('DHL Label Request'),
+                    'class'   => 'dhlparcel_shipping_request',
                     'onclick' => "setLocation('$url')"
                 ],
                 102

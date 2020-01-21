@@ -80,6 +80,8 @@ class Order
                 throw new LabelCreationException(__($e->getMessage()), $e);
             } elseif ($e instanceof NoTrackException) {
                 throw new NoTrackException(__($e->getMessage()), $e);
+            } elseif ($e instanceof LocalizedException) {
+                throw $e;
             } else {
                 throw new LocalizedException(__($e->getMessage()), $e);
             }

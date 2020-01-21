@@ -39,7 +39,7 @@ class ChangeTrackTemplate
         if ($result == "Magento_Sales::email/shipment/track.phtml"
             && boolval($this->helper->getConfigData('usability/template_overwrites/email_shipment_track'))
         ) {
-            if (version_compare($this->productMetadata->getVersion(), '2.3.0', '<')) {
+            if (version_compare($this->productMetadata->getVersion(), '2.3.3', '<')) {
                 $result = "DHLParcel_Shipping::email/shipment/track.phtml";
                 $template->setDHLCarrier($this->DHLCarrier);
             }

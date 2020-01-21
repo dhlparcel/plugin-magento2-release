@@ -15,4 +15,7 @@ class Piece extends AbstractData
 
     // Custom internal field
     public $postalCode;
+
+    // Custom internal field
+    public $shipmentRequest;
 }

@@ -11,7 +11,6 @@ class ExportRates extends \Magento\Config\Controller\Adminhtml\System\AbstractCo
      * @var \Magento\Framework\App\Response\Http\FileFactory
      */
     protected $fileFactory;
-
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
@@ -47,8 +46,9 @@ class ExportRates extends \Magento\Config\Controller\Adminhtml\System\AbstractCo
         $gridBlock = $this->_view->getLayout()->createBlock(
             \DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportGrid::class
         );
+        $storeId = $this->getRequest()->getParam('store');
         $website = $this->storeManager->getWebsite($this->getRequest()->getParam('website'));
-
+        $store = $this->storeManager->getStore($storeId);
 
         if ($this->getRequest()->getParam('shippingMethod')) {
             $shippingMethod = $this->getRequest()->getParam('shippingMethod');
@@ -61,13 +61,18 @@ class ExportRates extends \Magento\Config\Controller\Adminhtml\System\AbstractCo
         if ($this->getRequest()->getParam('conditionName')) {
             $conditionName = $this->getRequest()->getParam('conditionName');
         } else {
-            $conditionName = $website->getConfig('carriers/' . $shippingMethod . '/condition_name');
+            if ($storeId) {
+                $conditionName = $store->getConfig('carriers/' . $shippingMethod . '/condition_name');
+            } else {
+                $conditionName = $website->getConfig('carriers/' . $shippingMethod . '/condition_name');
+            }
         }
 
         $fileName = 'dhl_' . $shippingMethod . '_rates_' . date('Y-m-d_H-i-s') . '.csv';
 
         $gridBlock
             ->setWebsiteId($website->getId())
+            ->setStoreId($storeId)
             ->setConditionName($conditionName)
             ->setMethodName($shippingMethod);
         $content = $gridBlock->getCsvFile();

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 namespace DHLParcel\Shipping\Model\ResourceModel\Carrier\Rate;
 
@@ -69,6 +73,7 @@ class Import
     /**
      * @param ReadInterface $file
      * @param $websiteId
+     * @param $storeId
      * @param $conditionShortName
      * @param $conditionFullName
      * @param $shippingMethod
@@ -77,7 +82,7 @@ class Import
      * @throws CSV\ColumnNotFoundException
      * @throws LocalizedException
      */
-    public function getData(ReadInterface $file, $websiteId, $conditionShortName, $conditionFullName, $shippingMethod, $bunchSize = 5000)
+    public function getData(ReadInterface $file, $websiteId, $storeId, $conditionShortName, $conditionFullName, $shippingMethod, $bunchSize = 5000)
     {
         $this->errors = [];
         $this->delimiter = ',';
@@ -99,6 +104,7 @@ class Import
                     $csvLine,
                     $rowNumber,
                     $websiteId,
+                    $storeId,
                     $shippingMethod,
                     $conditionShortName,
                     $conditionFullName,

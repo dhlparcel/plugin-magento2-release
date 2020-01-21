@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 namespace DHLParcel\Shipping\Model\ResourceModel\Carrier\Rate\CSV;
 
@@ -27,6 +31,7 @@ class RowParser
     {
         return [
             'website_id',
+            'store_id',
             'method_name',
             'dest_country_id',
             'dest_region_id',
@@ -41,6 +46,7 @@ class RowParser
      * @param array $rowData
      * @param $rowNumber
      * @param $websiteId
+     * @param $storeId
      * @param $shippingMethod
      * @param $conditionShortName
      * @param $conditionFullName
@@ -53,6 +59,7 @@ class RowParser
         array $rowData,
         $rowNumber,
         $websiteId,
+        $storeId,
         $shippingMethod,
         $conditionShortName,
         $conditionFullName,
@@ -71,6 +78,7 @@ class RowParser
 
         return [
             'website_id'      => $websiteId,
+            'store_id'        => $storeId,
             'method_name'     => $shippingMethod,
             'dest_country_id' => $countryId,
             'dest_region_id'  => $regionId,

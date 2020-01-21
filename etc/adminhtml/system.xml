@@ -10,12 +10,15 @@
                     <tooltip>Enable DHL Parcel Shipping</tooltip>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Title</label>
-                </field>
                 <field id="version" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\VersionField" sortOrder="004" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Extension version</label>
                 </field>
+                <field id="title" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                </field>
+                 <field id="sort_order" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                     <label>Sort Order</label>
+                 </field>
                 <field id="sallowspecific" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                     <label>Ship to Applicable Countries</label>
                     <frontend_class>shipping-applicable-country</frontend_class>
@@ -165,20 +168,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -205,20 +208,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -245,20 +248,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -285,20 +288,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -326,20 +329,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -367,20 +370,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -413,20 +416,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -453,20 +456,20 @@
                                 <field id="rate_method">0</field>
                             </depends>
                         </field>
-                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="rate_condition" translate="label" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Condition</label>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\RateConditions</source_model>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="export" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ExportField" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Export</label>
                             <depends>
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
-                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="import" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\VariableRate\ImportField" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Import</label>
                             <backend_model>DHLParcel\Shipping\Model\Config\Backend\ImportRate</backend_model>
                             <depends>
@@ -531,47 +534,48 @@
 
                 <group id="shipper" translate="label" type="label" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Shipping Address</label>
-                    <field id="company_name" type="text" translate="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="company_name" type="text" translate="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Company name</label>
                         <comment>Please enter the shipper company name</comment>
                     </field>
-                    <field id="first_name" type="text" translate="label" sortOrder="302" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="first_name" type="text" translate="label" sortOrder="302" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>First name</label>
                         <comment>Please enter the shipper first name</comment>
                     </field>
-                    <field id="last_name" type="text" translate="label" sortOrder="303" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="last_name" type="text" translate="label" sortOrder="303" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Last name</label>
                         <comment>Please enter the shipper last name</comment>
                     </field>
-                    <field id="street" type="text" translate="label" sortOrder="304" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="street" type="text" translate="label" sortOrder="304" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Street name</label>
                         <comment>Please enter the shipper street name</comment>
                     </field>
-                    <field id="house_number" type="text" translate="label" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="house_number" type="text" translate="label" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Housenumber</label>
                         <comment>Please enter the shipper housenumber</comment>
                     </field>
-                    <field id="house_number_addition" type="text" translate="label" sortOrder="306" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="house_number_addition" type="text" translate="label" sortOrder="306" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Housenumber addition</label>
                         <comment>Please enter the shipper housenumber addition</comment>
                     </field>
-                    <field id="postal_code" type="text" translate="label" sortOrder="307" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="postal_code" type="text" translate="label" sortOrder="307" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Postal Code</label>
                         <comment>Please enter the shipper postal code</comment>
                     </field>
-                    <field id="city" type="text" translate="label" sortOrder="308" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="city" type="text" translate="label" sortOrder="308" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>City</label>
                         <comment>Please enter the shipper city</comment>
                     </field>
-                    <field id="country_code" type="text" translate="label" sortOrder="309" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Country Code</label>
-                        <comment>Please enter the shipper countrycode (ISO-366-1)</comment>
+                    <field id="country_code" translate="label" type="select" sortOrder="309" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Country</label>
+                        <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                        <can_be_empty>0</can_be_empty>
                     </field>
-                    <field id="email" type="text" translate="label" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="email" type="text" translate="label" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>E-mailadress</label>
                         <comment>Please enter the shipper emailaddress</comment>
                     </field>
-                    <field id="phone" type="text" translate="label" sortOrder="311" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="phone" type="text" translate="label" sortOrder="311" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Phonenumber</label>
                         <comment>Please enter the shipper phone</comment>
                     </field>
@@ -587,43 +591,43 @@
                         <depends>
                             <field id="alternative_return_address">1</field>
                         </depends>
-                        <field id="company_name" type="text" translate="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="company_name" type="text" translate="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Company name</label>
                             <comment>Please enter the shipper company name</comment>
                         </field>
-                        <field id="first_name" type="text" translate="label" sortOrder="302" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="first_name" type="text" translate="label" sortOrder="302" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>First name</label>
                             <comment>Please enter the shipper first name</comment>
                         </field>
-                        <field id="last_name" type="text" translate="label" sortOrder="303" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="last_name" type="text" translate="label" sortOrder="303" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Last name</label>
                             <comment>Please enter the shipper last name</comment>
                         </field>
-                        <field id="street" type="text" translate="label" sortOrder="304" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="street" type="text" translate="label" sortOrder="304" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Street name</label>
                             <comment>Please enter the shipper street name</comment>
                         </field>
-                        <field id="house_number" type="text" translate="label" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="house_number" type="text" translate="label" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Housenumber</label>
                             <comment>Please enter the shipper housenumber</comment>
                         </field>
-                        <field id="house_number_addition" type="text" translate="label" sortOrder="306" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="house_number_addition" type="text" translate="label" sortOrder="306" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Housenumber addition</label>
                             <comment>Please enter the shipper housenumber addition</comment>
                         </field>
-                        <field id="postal_code" type="text" translate="label" sortOrder="307" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="postal_code" type="text" translate="label" sortOrder="307" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Postal Code</label>
                             <comment>Please enter the shipper postal code</comment>
                         </field>
-                        <field id="city" type="text" translate="label" sortOrder="308" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="city" type="text" translate="label" sortOrder="308" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>City</label>
                             <comment>Please enter the shipper city</comment>
                         </field>
-                        <field id="email" type="text" translate="label" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="email" type="text" translate="label" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>E-mailadress</label>
                             <comment>Please enter the shipper emailaddress</comment>
                         </field>
-                        <field id="phone" type="text" translate="label" sortOrder="311" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="phone" type="text" translate="label" sortOrder="311" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Phonenumber</label>
                             <comment>Please enter the shipper phone</comment>
                         </field>
@@ -631,43 +635,43 @@
                     <group id="hide_shipper" translate="label" type="label" sortOrder="800" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Alternative Shipping Address for Hide Shipper Service</label>
                         <attribute type="expanded">1</attribute>
-                        <field id="company_name" type="text" translate="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="company_name" type="text" translate="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Company name</label>
                             <comment>Please enter the shipper company name</comment>
                         </field>
-                        <field id="first_name" type="text" translate="label" sortOrder="302" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="first_name" type="text" translate="label" sortOrder="302" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>First name</label>
                             <comment>Please enter the shipper first name</comment>
                         </field>
-                        <field id="last_name" type="text" translate="label" sortOrder="303" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="last_name" type="text" translate="label" sortOrder="303" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Last name</label>
                             <comment>Please enter the shipper last name</comment>
                         </field>
-                        <field id="street" type="text" translate="label" sortOrder="304" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="street" type="text" translate="label" sortOrder="304" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Street name</label>
                             <comment>Please enter the shipper street name</comment>
                         </field>
-                        <field id="house_number" type="text" translate="label" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="house_number" type="text" translate="label" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Housenumber</label>
                             <comment>Please enter the shipper housenumber</comment>
                         </field>
-                        <field id="house_number_addition" type="text" translate="label" sortOrder="306" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="house_number_addition" type="text" translate="label" sortOrder="306" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Housenumber addition</label>
                             <comment>Please enter the shipper housenumber addition</comment>
                         </field>
-                        <field id="postal_code" type="text" translate="label" sortOrder="307" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="postal_code" type="text" translate="label" sortOrder="307" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Postal Code</label>
                             <comment>Please enter the shipper postal code</comment>
                         </field>
-                        <field id="city" type="text" translate="label" sortOrder="308" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="city" type="text" translate="label" sortOrder="308" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>City</label>
                             <comment>Please enter the shipper city</comment>
                         </field>
-                        <field id="email" type="text" translate="label" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="email" type="text" translate="label" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>E-mailadress</label>
                             <comment>Please enter the shipper emailaddress</comment>
                         </field>
-                        <field id="phone" type="text" translate="label" sortOrder="311" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="phone" type="text" translate="label" sortOrder="311" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Phonenumber</label>
                             <comment>Please enter the shipper phone</comment>
                         </field>
@@ -748,7 +752,7 @@
                         <label>Template Overwrites</label>
                         <field id="email_shipment_track" translate="label" sortOrder="100" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Overwrite email/shipment/track.phtml</label>
-                            <comment><![CDATA[This allows clickable links in Track&Trace e-mail for Magento 2.0 - 2.2]]></comment>
+                            <comment><![CDATA[This allows clickable links in Track&Trace e-mail for Magento versions lower than 2.3.3]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
@@ -763,6 +767,13 @@
                     <field id="log_buttons" translate="label" type="button" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Debug log</label>
                         <frontend_model>DHLParcel\Shipping\Block\Adminhtml\System\LogButtonsField</frontend_model>
+                        <depends>
+                            <field id="enabled">1</field>
+                        </depends>
+                    </field>
+                    <field id="save_label_requests" translate="label" type="select" sortOrder="201" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Save label requests</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <depends>
                             <field id="enabled">1</field>
                         </depends>
