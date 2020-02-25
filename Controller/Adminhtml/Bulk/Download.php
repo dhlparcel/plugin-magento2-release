@@ -47,7 +47,11 @@ class Download extends \Magento\Backend\App\Action
         $success = [];
         $errors = [];
 
-        if ($this->_request->getParam('namespace') === 'sales_order_grid') {
+        if ($this->_request->getParam('create_and_download')) {
+            $redirectPath = 'sales/order/';
+            $orderIds = json_decode(base64_decode($this->_request->getParam('create_and_download')));
+            $labels = $this->processOrderIds($orderIds, $success, $errors);
+        } elseif ($this->_request->getParam('namespace') === 'sales_order_grid') {
             $redirectPath = 'sales/order/';
             $orderIds = $this->_request->getParam('selected');
             $labels = $this->processOrderIds($orderIds, $success, $errors);

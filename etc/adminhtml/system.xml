@@ -81,6 +81,10 @@
                         <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
                         <comment>Option for consumer shipments: claim the value of your shipment in case of damage or loss (up to € 500.00).</comment>
                     </field>
+                    <field id="default_extra_assured_min" translate="label" type="text" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Extra assured minimum order amount</label>
+                        <comment>Minimum order subtotal required for extra assured, leave empty if not applicable</comment>
+                    </field>
                     <field id="default_reference_enabled" translate="label" type="select" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Auto-enable: Reference</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -727,7 +731,7 @@
                         </field>
                     </group>
                     <group id="printing_service" translate="label" type="label" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Print service settings</label>
+                        <label>Printing Service</label>
                         <field id="enable" translate="label" sortOrder="100" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enable print service usage</label>
                             <comment>This only applies to printers that have been registered through the print service program</comment>
@@ -749,10 +753,20 @@
                         </field>
                     </group>
                     <group id="template_overwrites" translate="label" type="label" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Template Overwrites</label>
+                        <label>Email Templates</label>
                         <field id="email_shipment_track" translate="label" sortOrder="100" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Overwrite email/shipment/track.phtml</label>
-                            <comment><![CDATA[This allows clickable links in Track&Trace e-mail for Magento versions lower than 2.3.3]]></comment>
+                            <label>Shipment: Overwrite 'email/shipment/track.phtml'</label>
+                            <comment><![CDATA[This allows clickable links in Track & Trace e-mails for Magento versions lower than 2.3.3]]></comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="email_order_servicepoint" translate="label" sortOrder="210" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Order: ServicePoint address</label>
+                            <comment><![CDATA[Expand ServicePoint shipping information in the order confirmation email with the full address]]></comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="email_invoice_servicepoint" translate="label" sortOrder="220" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Invoice: ServicePoint address</label>
+                            <comment><![CDATA[Expand ServicePoint shipping information in the invoice confirmation email with the full address]]></comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>

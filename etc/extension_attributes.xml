@@ -3,5 +3,6 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
     <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
         <attribute code="dhlparcel_shipping_servicepoint_id" type="string"/>
+        <attribute code="dhlparcel_shipping_checkout_options" type="string"/>
     </extension_attributes>
 </config>

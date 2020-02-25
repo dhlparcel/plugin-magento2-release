@@ -31,7 +31,7 @@ class Preset
      */
     public function getDefaultOptions($order, $requiredOnly = false)
     {
-        $options = $this->getOptions(str_replace('dhlparcel_', '', $order->getShippingMethod()));
+        $options = $this->getOptions($this->getMethodKey($order));
 
         if (isset($options['PS'])) {
             $options['PS'] = $order->getData('dhlparcel_shipping_servicepoint_id');
@@ -56,7 +56,7 @@ class Preset
             && !$requiredOnly) {
             $options['ADD_RETURN_LABEL'] = '';
         }
-        
+
         if ($this->helper->getConfigData('label/default_age_check', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
             || $this->helper->getConfigData('label/default_age_check', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
@@ -66,10 +66,22 @@ class Preset
         if ($this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
             || $this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
-            $options['EA'] = '';
+            $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_extra_assured_min'));
+            if (!is_numeric($minimumOrderAmount) || $minimumOrderAmount === '' || $order->getSubtotal() >= $minimumOrderAmount) {
+                $options['EA'] = '';
+            }
         }
 
         return $options;
+    }
+
+    /**
+     * @param \Magento\Sales\Model\Order $order
+     * @return string|string[]
+     */
+    public function getMethodKey($order)
+    {
+        return str_replace('dhlparcel_', '', $order->getShippingMethod());
     }
 
     public function getOptions($shippingMethodKey)
@@ -153,7 +165,6 @@ class Preset
             'INS'              => __('Shipment insurance'),
             'S'                => __('Saturday delivery (9 AM to 3 PM)'),
             'EXP'              => __('Expresser'),
-            'COD_CASH'         => __('Cash on delivery'),
             'BOUW'             => __('Delivery on construction site'),
             'EXW'              => __('Ex Works'),
             'SSN'              => __('Hide Shipper'),

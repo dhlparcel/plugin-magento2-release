@@ -2,14 +2,14 @@
     "name": "dhlparcel/magento2-plugin",
     "description": "DHL Parcel plugin for Magento 2",
     "type": "magento2-module",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "license": [
         "OSL-3.0"
     ],
     "require": {
         "guzzlehttp/guzzle": "~6.0",
         "ext-json": "*",
-        "setasign/fpdi-tcpdf": "^2.0"
+        "setasign/fpdi-fpdf": "^2.0"
     },
     "autoload": {
         "files": [

@@ -15,8 +15,9 @@ abstract class AbstractShipmentsButton
 
     protected function addButtons(\Magento\Backend\Block\Widget\ContainerInterface $subject, $shipmentId)
     {
+        $printServiceEnabled = $this->helper->getConfigData('usability/printing_service/enable');
         $hideDownload = $this->helper->getConfigData('usability/printing_service/hide_download');
-        if (!$hideDownload) {
+        if (!$hideDownload || !$printServiceEnabled) {
             $url = $subject->getUrl('dhlparcel_shipping/shipment/download', ['shipment_id' => $shipmentId]);
             $subject->addButton(
                 'dhlparcel_shipping_download',

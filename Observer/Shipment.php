@@ -172,6 +172,9 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         switch ($shipmentFormData['method']) {
             case 'PS':
+                if (!isset($shipmentFormData['method_options']['servicepoint_id']) || empty($shipmentFormData['method_options']['servicepoint_id'])) {
+                    throw new LocalizedException(__('No ServicePoint selected'));
+                }
                 $options[] = $this->createOption(
                     $shipmentFormData['method'],
                     $shipmentFormData['method_options']['servicepoint_id']

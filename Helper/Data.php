@@ -19,6 +19,7 @@
 namespace DHLParcel\Shipping\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Store\Model\ScopeInterface;
 
 class Data extends AbstractHelper
 {
@@ -34,13 +35,14 @@ class Data extends AbstractHelper
     /**
      * @param $configPath
      * @param null $storeId
+     * @param null $scope
      * @return mixed
      */
-    public function getConfigData($configPath, $storeId = null)
+    public function getConfigData($configPath, $storeId = null, $scope = null)
     {
         return $this->scopeConfig->getValue(
             'carriers/dhlparcel/' . $configPath,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $scope ?: ScopeInterface::SCOPE_STORE,
             $storeId
         );
     }

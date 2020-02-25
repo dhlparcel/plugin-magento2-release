@@ -24,4 +24,10 @@
     <event name="backend_auth_user_login_success">
         <observer name="dhlparcel_shipping_login_success_observer" instance="DHLParcel\Shipping\Observer\AdminLogin" />
     </event>
+    <event name="email_order_set_template_vars_before">
+        <observer name="dhlparcel_shipping_email_servicepoint" instance="DHLParcel\Shipping\Observer\EmailServicePoint" />
+    </event>
+    <event name="email_invoice_set_template_vars_before">
+        <observer name="dhlparcel_shipping_email_servicepoint" instance="DHLParcel\Shipping\Observer\EmailServicePoint" />
+    </event>
 </config>

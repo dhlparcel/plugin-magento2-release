@@ -2,8 +2,8 @@
 
 namespace DHLParcel\Shipping\Model\Service\Logic;
 
-use setasign\Fpdi\Tcpdf\Fpdi;
-use setasign\Fpdi\Tcpdf\FpdiFactory;
+use setasign\Fpdi\Fpdi;
+use setasign\Fpdi\FpdiFactory;
 use setasign\Fpdi\PdfParser\StreamReader;
 
 class PDFMerger

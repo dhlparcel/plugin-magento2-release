@@ -46,6 +46,7 @@ class Create extends \Magento\Backend\App\Action
         }
 
         $success = [];
+        $successOrderIds = [];
         $errors = [];
         $orderIds = $this->_request->getParam('selected');
         if (is_array($orderIds)) {
@@ -55,6 +56,7 @@ class Create extends \Magento\Backend\App\Action
                 try {
                     $this->orderService->createShipment($order);
                     $success[] = '#' . $order->getRealOrderId();
+                    $successOrderIds[] = $orderId;
                 } catch (LocalizedException $e) {
                     $errors['#' . $order->getRealOrderId()] = $e;
                 }
@@ -67,7 +69,12 @@ class Create extends \Magento\Backend\App\Action
         // Show success summary
         if ($this->helper->getConfigData('usability/bulk_reports/notification_success')) {
             if ($successCount) {
-                $this->notificationService->success(__('Successfully created shipments and labels for following orders: %1', implode(', ', $success)));
+                $this->notificationService->complexSuccess(
+                    '<p>' .
+                    __('Successfully created shipments and labels for following orders: %1', implode(', ', $success)) .
+                    '</p>' .
+                    $this->getButtonTemplates($successOrderIds)
+                );
             }
         }
 
@@ -142,5 +149,57 @@ class Create extends \Magento\Backend\App\Action
         }
 
         return $this->resultRedirectFactory->create()->setPath(self::REDIRECT_PATH);
+    }
+
+    protected function getButtonTemplates(array $orderIds)
+    {
+        $downloadButton = $this->getDownloadButton($orderIds);
+        $downloadTemplate = $downloadButton ? '<p>' .
+            '<a class="action-primary" href="' . $downloadButton['action'] . '" target="' . $downloadButton['target'] . '">' .
+            $downloadButton['label'] .
+            '</a> ' .
+            __('For these orders.') .
+            '</p>' : '';
+
+        $printButton = $this->getPrintButton($orderIds);
+        $printTemplate = $printButton ? '<p>' .
+            '<a class="action-primary" href="' . $printButton['action'] . '" target="' . $printButton['target'] . '">' .
+            $printButton['label'] .
+            '</a> ' .
+            __('For these orders.') .
+            '</p>' : '';
+
+        return $downloadTemplate . $printTemplate;
+    }
+
+    protected function getDownloadButton(array $orderIds)
+    {
+        $printServiceEnabled = $this->helper->getConfigData('usability/printing_service/enable');
+        $hideDownload = $this->helper->getConfigData('usability/printing_service/hide_download');
+        if (empty($orderIds) || ($printServiceEnabled && $hideDownload)) {
+            return null;
+        }
+
+        $url = $this->getUrl('dhlparcel_shipping/bulk/download/', ['create_and_download' => base64_encode(json_encode($orderIds))]);
+        return [
+            'label'  => __('Download DHL Labels'),
+            'action' => $url,
+            'target' => '_blank',
+        ];
+    }
+
+    protected function getPrintButton(array $orderIds)
+    {
+        $printServiceEnabled = $this->helper->getConfigData('usability/printing_service/enable');
+        if (empty($orderIds) || !$printServiceEnabled) {
+            return null;
+        }
+
+        $url = $this->getUrl('dhlparcel_shipping/bulk/print/', ['create_and_print' => base64_encode(json_encode($orderIds))]);
+        return [
+            'label'  => __('Print DHL Labels'),
+            'action' => $url,
+            'target' => '_self',
+        ];
     }
 }

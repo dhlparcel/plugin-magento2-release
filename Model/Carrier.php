@@ -164,7 +164,6 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         $toBusiness = $this->presetService->defaultToBusiness($this->storeManager->getStore()->getId());
         $requestOptions = array_keys($presetOptions);
 
-      
         $sizes = $this->capabilityService->getSizes($this->storeManager->getStore()->getId(), $toCountry, $toPostalCode, $toBusiness, $requestOptions);
         if (empty($sizes)) {
             $this->debugLogger->info("CARRIER method $methodKey not available due to capabilities", ['options' => $requestOptions, 'response' => $sizes]);

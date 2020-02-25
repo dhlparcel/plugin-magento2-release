@@ -197,12 +197,6 @@ class Create extends \Magento\Backend\Block\Template
                 'label'       => $this->presetService->getTranslation('EXP'),
                 'description' => __('We deliver your shipment before 11 AM.')
             ],
-            'COD_CASH'         => [
-                'label'       => $this->presetService->getTranslation('COD_CASH'),
-                'description' => __('We deliver your shipment only when the recipient pays the amount specified by you upon receipt.'),
-                'input'       => self::INPUT_TYPE_CURRENCY,
-                'max'         => 25000
-            ],
             'BOUW'             => [
                 'label'       => $this->presetService->getTranslation('BOUW'),
                 'description' => __('We deliver your shipment on a site under construction.')
