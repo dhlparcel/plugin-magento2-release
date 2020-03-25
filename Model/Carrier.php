@@ -111,6 +111,9 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     public function collectRates(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
         $this->debugLogger->info('CARRIER ### initiating collect rates', $request->toArray());
+        if ($request->getStoreId() != null) {
+            $this->setStore($request->getStoreId());
+        }
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->_rateFactory->create();
         $blackList = $this->createBlackList($request->getAllItems());
