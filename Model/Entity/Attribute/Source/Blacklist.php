@@ -2,7 +2,7 @@
 
 namespace DHLParcel\Shipping\Model\Entity\Attribute\Source;
 
-class BlackList extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
+class Blacklist extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 {
     public function getAllOptions()
     {

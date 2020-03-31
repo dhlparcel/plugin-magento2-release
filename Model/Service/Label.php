@@ -48,7 +48,7 @@ class Label
     public function getShipmentLabelIds($shipment)
     {
         if (!is_callable([$shipment, 'getTracks'])) {
-            throw new NoTrackException(__("Unable to use tracks and thus does not have labels for shipment %1", $shipment->getId()));
+            throw new NoTrackException(__("Unable to use track and trace and therefore no labels available for shipment %1", $shipment->getId()));
         }
         $labelIds = $this->labelLogic->getShipmentLabelIds($shipment);
         if (empty($labelIds)) {

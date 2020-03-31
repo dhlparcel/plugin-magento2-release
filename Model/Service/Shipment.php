@@ -11,21 +11,19 @@ class Shipment
 {
 
     protected $connector;
-    protected $uuidFactory;
-    protected $shipmentRequestFactory;
-    protected $shipmentResponseFactory;
-    protected $addresseeFactory;
     protected $optionFactory;
-    protected $pieceFactory;
     protected $orderRepository;
     protected $scopeConfig;
     /** @var ShipmentLogic \DHLParcel\Shipping\Model\Service\Logic\Shipment */
     protected $shipmentLogic;
+    protected $shipmentRepository;
 
     public function __construct(
+        \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository,
         ShipmentLogic $shipmentLogic
     ) {
         $this->shipmentLogic = $shipmentLogic;
+        $this->shipmentRepository = $shipmentRepository;
     }
 
     /**
@@ -67,7 +65,7 @@ class Shipment
 
         $tracks = $this->shipmentLogic->createTracks($shipmentResponse->pieces);
         if (empty($tracks)) {
-            throw new LabelCreationException(__('Failed to create label, issue occurred while creating tracks'));
+            throw new LabelCreationException(__('Failed to create label, issue occurred while creating track and trace link'));
         }
 
         if ($returnEnabled) {
@@ -169,5 +167,10 @@ class Shipment
         }
 
         return $options;
+    }
+
+    public function getShipmentById($shipmentId)
+    {
+        return $this->shipmentRepository->get($shipmentId);
     }
 }

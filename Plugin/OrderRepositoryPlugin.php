@@ -2,17 +2,18 @@
 
 namespace DHLParcel\Shipping\Plugin;
 
-use DHLParcel\Shipping\Model\Service\Preset as PresetService;
-
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderExtensionInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use DHLParcel\Shipping\Model\Service\DeliveryServices as DeliveryServicesService;
+use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 
 class OrderRepositoryPlugin
 {
     protected $presetService;
+    protected $deliveryServicesService;
     protected $extensionFactory;
 
     /**
@@ -22,9 +23,11 @@ class OrderRepositoryPlugin
      */
     public function __construct(
         PresetService $presetService,
+        DeliveryServicesService $deliveryServicesService,
         OrderExtensionFactory $extensionFactory
     ) {
         $this->presetService = $presetService;
+        $this->deliveryServicesService = $deliveryServicesService;
         $this->extensionFactory = $extensionFactory;
     }
 
@@ -62,10 +65,13 @@ class OrderRepositoryPlugin
 
         $servicePointId = $order->getData('dhlparcel_shipping_servicepoint_id');
         $extensionAttributes->setData('dhlparcel_shipping_servicepoint_id', $servicePointId);
-        
+
         $shippingMethodKey = $this->presetService->getMethodKey($order);
-        $options = implode(',', array_keys($this->presetService->getOptions($shippingMethodKey)));
-        $extensionAttributes->setData('dhlparcel_shipping_checkout_options', $options);
+        $options = array_keys($this->presetService->getOptions($shippingMethodKey));
+        $options += $this->deliveryServicesService->getSelection($order, true);
+
+        $optionsString = implode(',', $options);
+        $extensionAttributes->setData('dhlparcel_shipping_checkout_options', $optionsString);
 
         $order->setExtensionAttributes($extensionAttributes);
     }

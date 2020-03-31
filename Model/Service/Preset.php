@@ -5,6 +5,7 @@ namespace DHLParcel\Shipping\Model\Service;
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Config\Source\ReferenceOptions;
 use DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault;
+use DHLParcel\Shipping\Model\Service\DeliveryServices as DeliveryServicesService;
 
 class Preset
 {
@@ -16,12 +17,16 @@ class Preset
     const SHIPPING_METHOD_SATURDAY = 'saturday';
     const SHIPPING_METHOD_MORNING = 'morning';
     const SHIPPING_METHOD_SAMEDAY = 'sameday';
+
     protected $helper;
+    protected $deliveryServicesService;
 
     public function __construct(
-        Data $helper
+        Data $helper,
+        DeliveryServicesService $deliveryServicesService
     ) {
         $this->helper = $helper;
+        $this->deliveryServicesService = $deliveryServicesService;
     }
 
     /**
@@ -32,6 +37,7 @@ class Preset
     public function getDefaultOptions($order, $requiredOnly = false)
     {
         $options = $this->getOptions($this->getMethodKey($order));
+        $options += $this->deliveryServicesService->getSelection($order, true);
 
         if (isset($options['PS'])) {
             $options['PS'] = $order->getData('dhlparcel_shipping_servicepoint_id');
@@ -67,7 +73,7 @@ class Preset
             || $this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
             $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_extra_assured_min'));
-            if (!is_numeric($minimumOrderAmount) || $minimumOrderAmount === '' || $order->getSubtotal() >= $minimumOrderAmount) {
+            if (!is_numeric($minimumOrderAmount) || $order->getSubtotal() >= floatval($minimumOrderAmount)) {
                 $options['EA'] = '';
             }
         }
@@ -86,34 +92,45 @@ class Preset
 
     public function getOptions($shippingMethodKey)
     {
-        switch ($shippingMethodKey) {
-            case self::SHIPPING_METHOD_SAMEDAY:
-                $options = ['DOOR' => '', 'SDD' => ''];
-                break;
-            case self::SHIPPING_METHOD_MORNING:
-                $options = ['DOOR' => '', 'EXP' => ''];
-                break;
-            case self::SHIPPING_METHOD_EVENING:
-                $options = ['DOOR' => '', 'EVE' => ''];
-                break;
-            case self::SHIPPING_METHOD_NO_NEIGHBOUR:
-                $options = ['DOOR' => '', 'NBB' => ''];
-                break;
-            case self::SHIPPING_METHOD_NO_NEIGHBOUR_EVENING:
-                $options = ['DOOR' => '', 'EVE' => '', 'NBB' => ''];
-                break;
-            case self::SHIPPING_METHOD_SATURDAY:
-                $options = ['DOOR' => '', 'S' => ''];
-                break;
-            case self::SHIPPING_METHOD_SERVICE_POINT:
-                $options = ['PS' => ''];
-                break;
-            case self::SHIPPING_METHOD_DOOR:
-            default:
-                $options = ['DOOR' => ''];
-                break;
+        $collection = $this->getOptionsCollection();
+
+        if (!array_key_exists($shippingMethodKey, $collection)) {
+            $shippingMethodKey = self::SHIPPING_METHOD_DOOR;
         }
-        return $options;
+
+        return $collection[$shippingMethodKey];
+    }
+
+    public function searchMethodKey($options)
+    {
+        if (!is_array($options)) {
+            return null;
+        }
+
+        $collection = $this->getOptionsCollection();
+        $optionKeys = array_flip($options);
+
+        foreach ($collection as $key => $presetOptions) {
+            if (empty(array_diff_key($presetOptions, $optionKeys)) &&
+                empty(array_diff_key($optionKeys, $presetOptions))) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    protected function getOptionsCollection()
+    {
+        return [
+            self::SHIPPING_METHOD_SAMEDAY              => ['DOOR' => '', 'SDD' => ''],
+            self::SHIPPING_METHOD_MORNING              => ['DOOR' => '', 'EXP' => ''],
+            self::SHIPPING_METHOD_EVENING              => ['DOOR' => '', 'EVE' => ''],
+            self::SHIPPING_METHOD_NO_NEIGHBOUR         => ['DOOR' => '', 'NBB' => ''],
+            self::SHIPPING_METHOD_NO_NEIGHBOUR_EVENING => ['DOOR' => '', 'EVE' => '', 'NBB' => ''],
+            self::SHIPPING_METHOD_SATURDAY             => ['DOOR' => '', 'S' => ''],
+            self::SHIPPING_METHOD_SERVICE_POINT        => ['PS' => ''],
+            self::SHIPPING_METHOD_DOOR                 => ['DOOR' => '']
+        ];
     }
 
     /**
@@ -160,7 +177,7 @@ class Preset
             'ADD_RETURN_LABEL' => __('Return label'),
             'EA'               => __('Extra Assured'),
             'HANDT'            => __('Signature on delivery'),
-            'EVE'              => __('Evening delivery (6 AM to 9 PM)'),
+            'EVE'              => __('Evening delivery (6 AM to 9.30 PM)'),
             'NBB'              => __('No delivery to neighbour'),
             'INS'              => __('Shipment insurance'),
             'S'                => __('Saturday delivery (9 AM to 3 PM)'),
@@ -168,7 +185,7 @@ class Preset
             'BOUW'             => __('Delivery on construction site'),
             'EXW'              => __('Ex Works'),
             'SSN'              => __('Hide Shipper'),
-            'SDD'              => __('DHL Same-day delivery (6 p.m. to 9 p.m.)'),
+            'SDD'              => __('DHL Same-day delivery (6 p.m. to 9.30 p.m.)'),
             'AGE_CHECK'        => __('Age check (18+)'),
         ];
     }

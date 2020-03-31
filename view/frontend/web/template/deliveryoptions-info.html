@@ -1,0 +1,41 @@
+<div id="dhlparcel-shipping-deliveryoptions-info" data-bind="if: showDeliveryTimes() && timesEnabled() || showDeliveryServices()">
+    <div class="step-title" data-bind="i18n: 'DHL Delivery Options'"></div>
+
+    <div id="dhlparcel-shipping-deliverytimes-info" data-bind="if: showDeliveryTimes() && timesEnabled()">
+        <div data-bind="if: showDayTimes()">
+            <p>
+                <span data-bind="i18n: 'Preferred moment of delivery'"></span>
+                <select data-bind="options: dayTimes,
+                                   optionsText: 'displayLabel',
+                                   value: selectedTime,
+                                   optionsCaption: 'Choose...'"></select>
+            </p>
+        </div>
+        <div data-bind="if: showNightTimes()">
+            <p>
+                <span data-bind="i18n: 'Preferred moment of delivery'"></span>
+                <select data-bind="options: nightTimes,
+                                   optionsText: 'displayLabel',
+                                   value: selectedTime,
+                                   optionsCaption: 'Choose...'"></select>
+            </p>
+        </div>
+        <div id="dhlparcel-shipping-deliverytimes-info-error" data-bind="i18n: 'Please choose the moment of delivery'" style="display: none;"></div>
+    </div>
+
+    <div id="dhlparcel-shipping-deliveryservices-info"  data-bind="if: showDeliveryServices()">
+        <p>
+            <span data-bind="i18n: 'Extra services'"></span>
+        </p>
+        <div id="dhlparcel-shipping-delivery-service-options" data-bind="foreach: serviceData">
+            <div class="dhlparcel-shipping-delivery-service-option" data-bind="css: { 'dhlparcel-shipping-delivery-service-option-disable': enable() == false }">
+                <input type="checkbox" data-bind="checked: $parent.selectedServices, enable: enable, value: value"/>
+                <div class="dhlparcel-shipping-delivery-service-option-price" data-bind="text: price"></div>
+                <div class="dhlparcel-shipping-delivery-service-option-icon"><img alt="icon" data-bind="attr:{src: image}"/></div>
+                <div class="dhlparcel-shipping-delivery-service-option-title" data-bind="text: title"></div>
+                <span class="dhlparcel-shipping-delivery-service-option-description" data-bind="text: description"></span>
+            </div>
+        </div>
+        <div id="dhlparcel-shipping-deliveryservices-info-error" data-bind="i18n: 'Please wait...'" style="display: none;"></div>
+    </div>
+</div>

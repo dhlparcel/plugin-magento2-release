@@ -19,7 +19,4 @@
     <event name="sales_order_shipment_save_after">
         <observer name="dhlparcel_shipping_shipment" instance="DHLParcel\Shipping\Observer\Shipment"/>
     </event>
-    <event name="admin_system_config_changed_section_carriers">
-        <observer name="dhlparcel_shipping_config_save" instance="DHLParcel\Shipping\Observer\ConfigSave"/>
-    </event>
 </config>

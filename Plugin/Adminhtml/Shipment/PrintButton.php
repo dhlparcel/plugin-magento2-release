@@ -11,12 +11,11 @@ class PrintButton extends \DHLParcel\Shipping\Plugin\Adminhtml\AbstractShipments
             return;
         }
 
-        $tracks = $shipment->getTracks();
+        $tracks = $shipment->getAllTracks();
         if (empty($tracks)) {
             // Don't show button if no DHL labels are found
             return;
         }
-
         $labelsFound = false;
         foreach ($tracks as $track) {
             if ($track->getCarrierCode() == 'dhlparcel') {

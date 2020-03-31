@@ -72,4 +72,5 @@
     <type name="Magento\Framework\View\Element\Template">
         <plugin name="dhlparcel_change_track_template" type="DHLParcel\Shipping\Plugin\ChangeTrackTemplate"/>
     </type>
+
 </config>

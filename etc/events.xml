@@ -19,6 +19,7 @@
     <event name="sales_model_service_quote_submit_before">
         <observer name="dhlparcel_shipping_checkout_servicepoint" instance="DHLParcel\Shipping\Observer\Checkout\ServicePoint"/>
         <observer name="dhlparcel_shipping_checkout_deliverytimes" instance="DHLParcel\Shipping\Observer\Checkout\DeliveryTimes"/>
+        <observer name="dhlparcel_shipping_checkout_deliveryservices" instance="DHLParcel\Shipping\Observer\Checkout\DeliveryServices"/>
         <observer name="dhlparcel_shipping_checkout_sameday" instance="DHLParcel\Shipping\Observer\Checkout\Sameday"/>
     </event>
     <event name="backend_auth_user_login_success">
@@ -29,5 +30,11 @@
     </event>
     <event name="email_invoice_set_template_vars_before">
         <observer name="dhlparcel_shipping_email_servicepoint" instance="DHLParcel\Shipping\Observer\EmailServicePoint" />
+    </event>
+    <event name="dhlparcel_create_shipment">
+        <observer name="dhlparcel_create_shipment" instance="DHLParcel\Shipping\Observer\Shipment"/>
+    </event>
+    <event name="sales_order_save_after">
+        <observer name="dhlparcel_sales_order_save_after" instance="DHLParcel\Shipping\Observer\OrderSaveAfter"/>
     </event>
 </config>

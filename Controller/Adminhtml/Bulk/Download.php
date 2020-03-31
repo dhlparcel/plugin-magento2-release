@@ -70,7 +70,7 @@ class Download extends \Magento\Backend\App\Action
 
         if ($labelCount === 0) {
             $this->notificationService->error(__('None of the selected order(s) have DHL Parcel labels'));
-            $this->resultRedirectFactory->create()->setPath($redirectPath);
+            return $this->resultRedirectFactory->create()->setPath($redirectPath);
         }
 
         // Show success summary

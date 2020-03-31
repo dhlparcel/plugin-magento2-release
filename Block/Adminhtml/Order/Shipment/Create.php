@@ -3,6 +3,7 @@
 namespace DHLParcel\Shipping\Block\Adminhtml\Order\Shipment;
 
 use DHLParcel\Shipping\Helper\Data;
+use DHLParcel\Shipping\Model\Data\Api\Response\ServicePoint;
 use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 use DHLParcel\Shipping\Model\Service\ServicePoint as ServicePointService;
 use Magento\Backend\Model\UrlInterface;
@@ -131,16 +132,50 @@ class Create extends \Magento\Backend\Block\Template
         $rawServicePoints = $this->servicePointService->search(
             $this->order->getShippingAddress()->getPostcode(),
             $this->getOrder()->getShippingAddress()->getCountryId(),
-            40
+            20
         );
+        $selectedServicePointId = $this->getOrder()->getData('dhlparcel_shipping_servicepoint_id') ?: null;
+        $customerSelection = !empty($selectedServicePointId);
+
+        $inArray = false;
+        foreach ($rawServicePoints as $rawServicePoint) {
+            if ($rawServicePoint->id === $selectedServicePointId) {
+                $inArray = true;
+            }
+        }
+
+        if (!$inArray) {
+            if ($customerSelection) {
+                $selectedServicePoint = $this->servicePointService->get($selectedServicePointId, $this->getOrder()->getShippingAddress()->getCountryId());
+
+                if ($selectedServicePoint) {
+                    array_unshift($rawServicePoints, $selectedServicePoint);
+                    $inArray = true;
+                }
+            }
+
+            if (!$inArray && count($rawServicePoints) > 0) {
+                $selectedServicePointId = $rawServicePoints[0]->id;
+                $customerSelection = false;
+            }
+        }
+
         $servicePointOptions = [];
         foreach ($rawServicePoints as $rawServicePoint) {
-            $servicePointOptions[$rawServicePoint->id] = $rawServicePoint->name . ' ' . $rawServicePoint->distance . 'm';
+            $name = $rawServicePoint->name . ' ';
+            $name .= $rawServicePoint->distance ? $rawServicePoint->distance . 'm ' : '';
+            if ($rawServicePoint->id === $selectedServicePointId) {
+                $name .= $customerSelection ? __('(selected by customer)') : __('(default closest selection)');
+                $servicePointOptions = [$rawServicePoint->id => $name] + $servicePointOptions;
+            } else {
+                $servicePointOptions[$rawServicePoint->id] = $name;
+            }
         }
+
         return [
             'PS' => [
                 'servicepoint_id' => [
-                    'data'    => $this->getOrder()->getData('dhlparcel_shipping_servicepoint_id'),
+                    'data'    => $selectedServicePointId,
                     'type'    => self::INPUT_TYPE_SELECT,
                     'options' => $servicePointOptions
                 ]

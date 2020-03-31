@@ -38,11 +38,12 @@ class Order
 
     /**
      * @param \Magento\Sales\Model\Order $order
-     * @throws NotShippableException
+     * @return \Magento\Sales\Model\Order\Shipment
      * @throws FaultyServiceOptionException
      * @throws LabelCreationException
-     * @throws NoTrackException
      * @throws LocalizedException
+     * @throws NoTrackException
+     * @throws NotShippableException
      */
     public function createShipment(\Magento\Sales\Model\Order $order)
     {
@@ -86,5 +87,16 @@ class Order
                 throw new LocalizedException(__($e->getMessage()), $e);
             }
         }
+
+        return $shipment;
+    }
+
+    /**
+     * @param $orderId
+     * @return \Magento\Sales\Api\Data\OrderInterface
+     */
+    public function getOrderById($orderId)
+    {
+        return $this->orderRepository->get($orderId);
     }
 }

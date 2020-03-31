@@ -26,6 +26,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->installSaveShipmentRequests($setup);
             $this->updateVariableRateTable($setup);
         }
+        if (version_compare($context->getVersion(), "1.0.11", "<")) {
+            $this->installDeliveryServices($setup);
+        }
         $installer->endSetup();
     }
 
@@ -35,7 +38,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $setup->getTable('sales_order'),
             'dhlparcel_shipping_deliverytimes_selection',
             [
-                'type'     => Table::TYPE_BLOB,
+                'type'     => Table::TYPE_TEXT,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Delivery Times Selection',
             ]
@@ -51,7 +54,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ]
         );
 
-        // Same fields for Quote & SsalesOrder
+        // Same fields for Quote & SalesOrder
         $setup->getConnection()->addColumn(
             $setup->getTable('quote'),
             'dhlparcel_shipping_deliverytimes_selection',
@@ -72,6 +75,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ]
         );
 
+        /** Update grid */
         $setup->getConnection()->addColumn(
             $setup->getTable('sales_order_grid'),
             'dhlparcel_shipping_deliverytimes_priority',
@@ -82,6 +86,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ]
         );
 
+        /** Remove unnecessary ServicePoint country */
         $setup->getConnection()->dropColumn(
             $setup->getTable('sales_order'),
             'dhlparcel_shipping_servicepoint_country'
@@ -170,6 +175,29 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'condition_value',
             ],
             \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+        );
+    }
+
+    protected function installDeliveryServices(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('sales_order'),
+            'dhlparcel_shipping_deliveryservices_selection',
+            [
+                'type'     => Table::TYPE_TEXT,
+                'nullable' => true,
+                'comment'  => 'DHL Parcel Shipping Delivery Services Selection',
+            ]
+        );
+
+        $setup->getConnection()->addColumn(
+            $setup->getTable('quote'),
+            'dhlparcel_shipping_deliveryservices_selection',
+            [
+                'type'     => Table::TYPE_TEXT,
+                'nullable' => true,
+                'comment'  => 'DHL Parcel Shipping Delivery Services Selection',
+            ]
         );
     }
 }

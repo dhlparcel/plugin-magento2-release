@@ -27,6 +27,10 @@ class DeliveryTimes
     protected $checkoutSession;
     /** @var \Magento\Config\Model\Config\Source\Locale\Weekdays */
     protected $weekdays;
+
+    /**
+     * @var TimezoneInterface
+     */
     protected $timezone;
 
     public function __construct(
@@ -174,11 +178,13 @@ class DeliveryTimes
         $filteredTimes = [];
 
         $cutoffGeneral = $this->getCutoffTimestamp();
-        $todayMidnightTimestamp = $this->timezone->scopeDate()->getTimestamp() + $dayInSeconds - 1;
+        $currentDateTime = $this->timezone->date();
+        $todayMidnightTimestamp = $currentDateTime->getTimestamp() + $dayInSeconds - 1;
 
         $displayDays = intval($this->helper->getConfigData('delivery_times/display_days'));
         $displayDays += 1; // When setting '1 display day' for example, to make tomorrow available, you actually add 2 days. One for today, one for tomorrow. Thus you always add this one additional day to the check.
-        $maxTimestamp = $this->timezone->scopeDate()->modify('+'.$displayDays.' day')->getTimestamp();
+        $maxShowDate = $this->timezone->date();
+        $maxTimestamp = $maxShowDate->modify('+' . $displayDays . ' day')->getTimestamp();
 
         $shippingDays = $this->getShippingDays();
 
@@ -191,7 +197,7 @@ class DeliveryTimes
 
         foreach ($deliveryTimes as $deliveryTime) {
             $datetime = date_create_from_format('d-m-Y Hi', $deliveryTime->source->deliveryDate . ' ' . $deliveryTime->source->startTime, $timezone);
-            $timestamp = $this->timezone->scopeDate(null, $datetime->format('Y-m-d H:i:s'), true)->getTimestamp();
+            $timestamp = $datetime->getTimestamp();
 
             if ($timestamp < $todayMidnightTimestamp) {
                 continue;
@@ -233,7 +239,8 @@ class DeliveryTimes
             $cutoffHour = 18; // Default to 18:00 if not using cutoff setting
         }
 
-        $currentHour = intval($this->timezone->scopeDate(null, null, true)->format('G'));
+        $currentDateTime = $this->timezone->date();
+        $currentHour = intval($currentDateTime->format('G'));
 
         $cutoff = boolval($currentHour >= $cutoffHour);
         if ($cutoff) {
@@ -261,7 +268,8 @@ class DeliveryTimes
 
     public function saveSamedaySelection($order)
     {
-        $date = $this->timezone->scopeDate(null, null, true)->format('d-m-Y');
+        $currentDateTime = $this->timezone->date();
+        $date = $currentDateTime->format('d-m-Y');
         $startTime = '1800';
         $endTime = '2100';
 
@@ -288,7 +296,7 @@ class DeliveryTimes
         $timezone = new \DateTimeZone($timezoneString);
 
         $datetime = date_create_from_format('d-m-Y Hi', $date . ' ' . $startTime, $timezone);
-        $timeSelection->timestamp = $this->timezone->scopeDate(null, $datetime->format('Y-m-d H:i:s'), true)->getTimestamp();
+        $timeSelection->timestamp = $datetime->getTimestamp();
 
         $order->setData('dhlparcel_shipping_deliverytimes_selection', $timeSelection->toJSON());
         $order->setData('dhlparcel_shipping_deliverytimes_priority', 9999999999 - intval($timeSelection->timestamp)); // Compatible up to year 2286
@@ -341,7 +349,8 @@ class DeliveryTimes
 
     public function getTimeLeft($timestamp)
     {
-        $currentTimestamp = $this->timezone->scopeDate(null, null, true)->getTimestamp();
+        $currentDateTime = $this->timezone->date();
+        $currentTimestamp = $currentDateTime->getTimestamp();
         if ($currentTimestamp > $timestamp) {
             return null;
         }
@@ -350,7 +359,6 @@ class DeliveryTimes
 
     public function getShippingAdvice($selectedTimestamp)
     {
-        $currentTimestamp = $this->timezone->scopeDate(null, null, true)->getTimestamp();
         $shippingPriority = $this->getShippingPriority($selectedTimestamp);
 
         switch ($shippingPriority) {
@@ -365,13 +373,19 @@ class DeliveryTimes
             case self::SHIPPING_PRIORITY_BACKLOG:
                 $dayInSeconds = 24 * 60 * 60;
 
-                $currentDayDateOnly = $this->timezone->scopeDate(null, $currentTimestamp)->format('d-m-Y');
-                $currentDayTimestamp = $this->timezone->scopeDate(null, $currentDayDateOnly)->getTimestamp();
+                // Get Timestamp op todat (without time)
+                $currentTime = $this->timezone->date();
+                $currentTime->setTime(0, 0, 0);
+                $currentDayTimestamp = $currentTime->getTimestamp();
 
+                // Get Tomorrow Timestamp
                 $tomorrowDayTimestamp = $currentDayTimestamp + $dayInSeconds;
 
-                $selectedDayDateOnly = $this->timezone->scopeDate(null, $selectedTimestamp)->format('d-m-Y');
-                $selectedDayTimestamp = $this->timezone->scopeDate(null, $selectedDayDateOnly)->getTimestamp();
+                // Get Timestamp of selected day (without time)
+                $selectedDayDateOnly = $this->timezone->date();
+                $selectedDayDateOnly->setTimestamp($selectedTimestamp);
+                $selectedDayDateOnly->setTime(0, 0, 0);
+                $selectedDayTimestamp = $selectedDayDateOnly->getTimestamp();
 
                 $daysDifferenceTimestamp = $selectedDayTimestamp - $tomorrowDayTimestamp;
                 $daysBetween = floor($daysDifferenceTimestamp / $dayInSeconds);
@@ -385,18 +399,22 @@ class DeliveryTimes
 
     protected function getShippingPriority($selectedTimestamp)
     {
-        $currentTimestamp = $this->timezone->scopeDate(null, null, true)->getTimestamp();
+        $currentDateTime = $this->timezone->date();
+        $currentTimestamp = $currentDateTime->getTimestamp();
         if ($currentTimestamp > $selectedTimestamp) {
             return self::SHIPPING_PRIORITY_ASAP;
         }
 
         $dayInSeconds = 24 * 60 * 60;
 
-        $currentDayTimestamp = $this->timezone->scopeDate()->getTimestamp();
+        $currentDateTime = $this->timezone->date();
+        $currentDayTimestamp = $currentDateTime->getTimestamp();
         $tomorrowDayTimestamp = $currentDayTimestamp + $dayInSeconds;
 
-        $selectedDayDateOnly = $this->timezone->scopeDate(null, $selectedTimestamp)->format('d-m-Y');
-        $selectedDayTimestamp = $this->timezone->scopeDate(null, $selectedDayDateOnly)->getTimestamp();
+        $selectedTimestampDateTime = $this->timezone->date();
+        $selectedTimestampDateTime->setTimestamp($selectedTimestamp);
+        $selectedTimestampDateTime->setTime(0, 0, 0);
+        $selectedDayTimestamp = $selectedTimestampDateTime->getTimestamp();
 
         if ($currentDayTimestamp >= $selectedDayTimestamp) {
             return self::SHIPPING_PRIORITY_ASAP;
@@ -419,13 +437,15 @@ class DeliveryTimes
 
     protected function getCutoffTimestamp()
     {
+        $currentDateTime = $this->timezone->date();
         $dayInSeconds = 24 * 60 * 60;
         $cutoffSetting = $this->helper->getConfigData('delivery_times/cutoff');
         $cutoffHour = intval($cutoffSetting);
-        $currentHour = intval($this->timezone->scopeDate(null, null, true)->format('G'));
+        $currentHour = intval($currentDateTime->format('G'));
 
         $cutoff = boolval($currentHour >= $cutoffHour);
-        $currentTimestamp = $this->timezone->scopeDate()->getTimestamp() - 1;
+
+        $currentTimestamp = $currentDateTime->getTimestamp() - 1;
 
         $transitDaysSetting = $this->helper->getConfigData('delivery_times/transit_days');
         $days = intval($transitDaysSetting);
@@ -465,12 +485,16 @@ class DeliveryTimes
         $dayInSeconds = 24 * 60 * 60;
         $dayBeforeTimeStamp = $timestamp - $dayInSeconds;
 
-        $dateBeforeCode = intval($this->timezone->scopeDate(null, $dayBeforeTimeStamp)->format('N'));
+        $dayBeforeDateTime = $this->timezone->date();
+        $dayBeforeDateTime->setTimestamp($dayBeforeTimeStamp);
+
+        $dateBeforeCode = intval($dayBeforeDateTime->format('N'));
         if (($shippingDays[$dateBeforeCode] !== true && $dateBeforeCode != 7) || ($dateBeforeCode == 7 && $shippingDays[6] !== true)) {
             return false;
         }
 
-        $timestampTodayCheck = $this->timezone->scopeDate()->getTimestamp() - 1;
+        $currentDateTime = $this->timezone->date();
+        $timestampTodayCheck = $currentDateTime->getTimestamp() - 1;
         $timestampDifference = $timestamp - $timestampTodayCheck;
         if ($timestampDifference < 0) {
             // Unknown validation, shipping day is lower than current timestamp
@@ -487,7 +511,8 @@ class DeliveryTimes
 
         $additionalDays = 0;
         for ($dayCheck = 0; $dayCheck < $daysBetween; $dayCheck++) {
-            $theDay = intval($this->timezone->scopeDate()->modify('+'.$dayCheck.' day')->format('N'));
+            $currentDateTime = $this->timezone->date();
+            $theDay = intval($currentDateTime->modify('+' . $dayCheck . ' day')->format('N'));
             if ($shippingDays[$theDay] !== true) {
                 $additionalDays++;
             }

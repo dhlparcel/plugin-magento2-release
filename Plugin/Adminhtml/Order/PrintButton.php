@@ -16,7 +16,7 @@ class PrintButton extends \DHLParcel\Shipping\Plugin\Adminhtml\AbstractShipments
 
         $labelsFound = false;
         foreach ($shipments as $shipment) {
-            $tracks = $shipment->getTracks();
+            $tracks = $shipment->getAllTracks();
             if (empty($tracks)) {
                 // Don't show button if no DHL labels are found
                 continue;

@@ -43,36 +43,44 @@
                 <shipping_methods>
                     <door>
                         <enabled>0</enabled>
-                        <title>Home delivery</title>
+                        <service_no_neighbour_enabled>0</service_no_neighbour_enabled>
+                        <service_no_neighbour>
+                            <cost>0.00</cost>
+                        </service_no_neighbour>
+                        <service_evening_enabled>0</service_evening_enabled>
+                        <service_evening>
+                            <cost>0.00</cost>
+                        </service_evening>
+                        <service_saturday_enabled>0</service_saturday_enabled>
+                        <service_saturday>
+                            <cost>0.00</cost>
+                        </service_saturday>
+                        <service_morning_enabled>0</service_morning_enabled>
+                        <service_morning>
+                            <cost>0.00</cost>
+                        </service_morning>
                     </door>
                     <no_neighbour>
                         <enabled>0</enabled>
-                        <title>No neighbour delivery</title>
                     </no_neighbour>
                     <evening>
                         <enabled>0</enabled>
-                        <title>Evening delivery</title>
                     </evening>
                     <no_neighbour_evening>
                         <enabled>0</enabled>
-                        <title>No neighbour and evening delivery</title>
                     </no_neighbour_evening>
                     <saturday>
                         <enabled>0</enabled>
-                        <title>Saturday delivery</title>
                     </saturday>
                     <morning>
                         <enabled>0</enabled>
-                        <title>Morning delivery</title>
                     </morning>
                     <sameday>
                         <enabled>0</enabled>
-                        <title>Same-day delivery</title>
                         <cutoff>8:00</cutoff>
                     </sameday>
                     <servicepoint>
                         <enabled>0</enabled>
-                        <title>ServicePoint</title>
                     </servicepoint>
                 </shipping_methods>
                 <delivery_times>
@@ -99,6 +107,10 @@
                         <email_order_servicepoint>1</email_order_servicepoint>
                         <email_invoice_servicepoint>1</email_invoice_servicepoint>
                     </template_overwrites>
+                    <auto_print>
+                        <enabled>0</enabled>
+                        <auto_print>0</auto_print>
+                    </auto_print>
                 </usability>
                 <debug>
                     <enabled>0</enabled>

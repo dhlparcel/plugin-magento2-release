@@ -22,13 +22,21 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
     protected $labelService;
     protected $optionFactory;
     protected $orderRepository;
+    protected $shipmentRepository;
     protected $pieceFactory;
     protected $presetService;
     protected $request;
     protected $shipmentService;
 
+    /**
+     * @var \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory
+     */
+    protected $trackCollectionFactory;
+
     public function __construct(
+        \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory $trackCollectionFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository,
         CapabilityService $capabilityService,
         LabelService $labelService,
         OptionFactory $optionFactory,
@@ -45,14 +53,18 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $this->presetService = $presetService;
         $this->request = $request;
         $this->shipmentService = $shipmentService;
+        $this->trackCollectionFactory = $trackCollectionFactory;
+        $this->shipmentRepository = $shipmentRepository;
     }
 
     /**
      * @param \Magento\Framework\Event\Observer $observer
+     * @return \Magento\Sales\Api\Data\ShipmentInterface|\Magento\Sales\Model\Order\Shipment|void
      * @throws FaultyServiceOptionException
      * @throws LabelCreationException
      * @throws LocalizedException
      * @throws NoTrackException
+     * @throws \DHLParcel\Shipping\Model\Exception\LabelNotFoundException
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -67,20 +79,26 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         if (!empty($this->request->getParam('shipment')['create_dhlparcel_shipping_label'])) {
             $tracks = $this->formSubmitShipment($shipment->getOrderId());
-        } elseif ($this->request->getModuleName() === 'dhlparcel_shipping' && $this->request->getActionName() === 'create') {
+        } elseif (($this->request->getModuleName() === 'dhlparcel_shipping' && $this->request->getActionName() === 'create')
+            || $observer->getEvent()->getName() == 'dhlparcel_create_shipment') {
             $tracks = $this->bulkShipment($shipment->getOrder());
         } else {
             return;
         }
 
+        $shipment->unsetData('tracks');
         foreach ($tracks as $track) {
+            /** @var $track \Magento\Sales\Model\Order\Shipment\Track */
             $shipment->addTrack($track);
         }
+        $this->shipmentRepository->save($shipment);
 
         // Fetching labels so they are cached
         foreach (array_keys($tracks) as $labelId) {
             $this->labelService->getLabelPdf($labelId);
         }
+
+        return $shipment;
     }
 
     /**
@@ -172,7 +190,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         switch ($shipmentFormData['method']) {
             case 'PS':
-                if (!isset($shipmentFormData['method_options']['servicepoint_id']) || empty($shipmentFormData['method_options']['servicepoint_id'])) {
+                if (empty($shipmentFormData['method_options']['servicepoint_id'])) {
                     throw new LocalizedException(__('No ServicePoint selected'));
                 }
                 $options[] = $this->createOption(

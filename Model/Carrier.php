@@ -9,6 +9,7 @@ use DHLParcel\Shipping\Model\Service\CartService;
 use DHLParcel\Shipping\Model\PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
 use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
+use DHLParcel\Shipping\Model\Service\DeliveryServices as DeliveryServicesService;
 use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 use DHLParcel\Shipping\Model\ResourceModel\Carrier\RateManager;
 use DHLParcel\Shipping\Model\Service\ServicePoint as ServicePointService;
@@ -30,6 +31,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     protected $pieceFactory;
     protected $pieceResource;
     protected $deliveryTimesService;
+    protected $deliveryServicesService;
     protected $presetService;
     protected $rateManager;
     protected $servicePointService;
@@ -60,6 +62,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         PieceFactory $pieceFactory,
         PieceResource $pieceResource,
         DeliveryTimesService $deliveryTimesService,
+        DeliveryServicesService $deliveryServicesService,
         PresetService $presetService,
         RateManager $rateManager,
         ServicePointService $servicePointService,
@@ -92,6 +95,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         $this->pieceFactory = $pieceFactory;
         $this->pieceResource = $pieceResource;
         $this->deliveryTimesService = $deliveryTimesService;
+        $this->deliveryServicesService = $deliveryServicesService;
         $this->presetService = $presetService;
         $this->rateManager = $rateManager;
         $this->servicePointService = $servicePointService;
@@ -113,10 +117,10 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         $this->debugLogger->info('CARRIER ### initiating collect rates', $request->toArray());
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->_rateFactory->create();
-        $blackList = $this->createBlackList($request->getAllItems());
+        $blacklist = $this->createBlacklist($request->getAllItems());
 
         foreach ($this->getMethods() as $key => $title) {
-            $method = $this->getShippingMethod($request, $key, $blackList);
+            $method = $this->getShippingMethod($request, $key, $blacklist);
             if ($method) {
                 $this->debugLogger->info("CARRIER successfully added method $key to RateRequest");
                 $result->append($method);
@@ -131,11 +135,11 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     /**
      * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
      * @param $methodKey
-     * @param $blackList
+     * @param $blacklist
      * @return \Magento\Quote\Model\Quote\Address\RateResult\Method|null
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function getShippingMethod(\Magento\Quote\Model\Quote\Address\RateRequest $request, $methodKey, $blackList)
+    protected function getShippingMethod(\Magento\Quote\Model\Quote\Address\RateRequest $request, $methodKey, $blacklist)
     {
         $this->debugLogger->info("CARRIER starting get shipping method $methodKey");
         if (!$this->getConfigData('shipping_methods/' . $methodKey . '/enabled')) {
@@ -153,8 +157,8 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
         $presetOptions = $this->presetService->getOptions($methodKey);
 
-        foreach ($blackList as $blackListedOption) {
-            if (array_key_exists($blackListedOption, $presetOptions)) {
+        foreach ($blacklist as $blacklistOption) {
+            if (array_key_exists($blacklistOption, $presetOptions)) {
                 return null;
             }
         }
@@ -168,6 +172,14 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         if (empty($sizes)) {
             $this->debugLogger->info("CARRIER method $methodKey not available due to capabilities", ['options' => $requestOptions, 'response' => $sizes]);
             return null;
+        }
+
+        // Calculate service costs
+        $serviceCost = 0;
+        if ($methodKey === 'door') {
+            $deliveryServices = $this->checkoutSession->getDHLParcelShippingDeliveryServices();
+            $deliveryServices = $this->deliveryServicesService->filterAllowedOnly($deliveryServices);
+            $serviceCost = $this->deliveryServicesService->serviceCost($request->getPackageValueWithDiscount(), $deliveryServices);
         }
 
         /* @var \Magento\Quote\Model\Quote\Address\RateResult\Method $method */
@@ -184,10 +196,10 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
                 return null;
             }
 
-            $method->setPrice($rate['price']);
+            $method->setPrice($rate['price'] + $serviceCost);
             $method->setCost($rate['cost']);
         } else {
-            $method->setPrice($this->getConfigData('shipping_methods/' . $methodKey . '/price'));
+            $method->setPrice($this->getConfigData('shipping_methods/' . $methodKey . '/price') + $serviceCost);
         }
 
         if ($request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
@@ -235,7 +247,34 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
     protected function getMethodTitle(\Magento\Quote\Model\Quote\Address\RateRequest $request, $key)
     {
+        // Default
         $title = $this->getConfigData('shipping_methods/' . $key . '/title');
+        if (empty($title)) {
+            $title = $this->getMethods($key);
+        }
+
+        // Update title if using services
+        if ($key == 'door') {
+            $deliveryServices = $this->checkoutSession->getDHLParcelShippingDeliveryServices();
+            $deliveryServices = $this->deliveryServicesService->filterAllowedOnly($deliveryServices);
+            if (isset($deliveryServices) && is_array($deliveryServices)) {
+                if (!in_array('DOOR', $deliveryServices)) {
+                    array_push($deliveryServices, 'DOOR');
+                }
+
+                $search = $this->presetService->searchMethodKey($deliveryServices);
+                if ($search) {
+                    $title = $this->getConfigData('shipping_methods/' . $search . '/title');
+                    if (empty($title)) {
+                        $title = $this->getMethods($search);
+                    }
+                } else {
+                    $titleCollection = $this->deliveryServicesService->getTitles($deliveryServices);
+                    array_unshift($titleCollection, $title);
+                    $title = implode(' + ', $titleCollection);
+                }
+            }
+        }
 
         if ($key == 'servicepoint') {
             $servicePointId = $this->checkoutSession->getDHLParcelShippingServicePointId();
@@ -299,12 +338,12 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
     /**
      * @param null|string $key
-     * @return array|string
+     * @return array|string|null
      */
     protected function getMethods($key = null)
     {
         $methods = [
-            PresetService::SHIPPING_METHOD_DOOR                 => __('Home delivery'),
+            PresetService::SHIPPING_METHOD_DOOR                 => __('Standard delivery'),
             PresetService::SHIPPING_METHOD_EVENING              => __('Evening delivery'),
             PresetService::SHIPPING_METHOD_NO_NEIGHBOUR         => __('No neighbour delivery'),
             PresetService::SHIPPING_METHOD_NO_NEIGHBOUR_EVENING => __('No neighbour and evening delivery'),
@@ -314,7 +353,10 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             PresetService::SHIPPING_METHOD_SAMEDAY              => __('Same-day delivery'),
         ];
         if (is_string($key)) {
-            return $methods[$key];
+            if (array_key_exists($key, $methods)) {
+                return $methods[$key];
+            }
+            return null;
         }
         return $methods;
     }
@@ -329,19 +371,20 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
      * @param \Magento\Quote\Model\Quote\Item[] $items
      * @return array
      */
-    protected function createBlackList($items)
+    protected function createBlacklist($items)
     {
-        $blackList = [];
-        /** @var \Magento\Quote\Model\Quote\Item $item */
+        $blacklist = [];
+
         foreach ($items as $item) {
+            /** @var \Magento\Quote\Model\Quote\Item $item **/
             $product = $item->getProduct();
             if ($product[self::BLACKLIST_SERVICEPOINT]) {
-                $blackList[] = 'PS';
+                $blacklist[] = 'PS';
             }
             foreach (explode(',', $product[self::BLACKLIST_GENERAL]) as $option) {
-                $blackList[] = $option;
+                $blacklist[] = $option;
             }
         }
-        return array_unique($blackList);
+        return array_unique($blacklist);
     }
 }

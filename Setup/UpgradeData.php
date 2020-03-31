@@ -66,6 +66,10 @@ class UpgradeData implements UpgradeDataInterface
             $this->updateProductBlacklistAttributeLabels();
         }
 
+        if (version_compare($context->getVersion(), "1.0.10", "<")) {
+            $this->updateBlacklistSourceClass();
+        }
+
         $setup->endSetup();
     }
 
@@ -183,6 +187,16 @@ class UpgradeData implements UpgradeDataInterface
             Carrier::BLACKLIST_GENERAL,
             'frontend_label',
             'Disable in checkout: delivery methods with these service options'
+        );
+    }
+
+    private function updateBlacklistSourceClass()
+    {
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_GENERAL,
+            'source_model',
+            \DHLParcel\Shipping\Model\Entity\Attribute\Source\Blacklist::class
         );
     }
 }
