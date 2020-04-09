@@ -18,4 +18,7 @@ class Piece extends AbstractData
 
     // Custom internal field
     public $shipmentRequest;
+
+    // Custom internal field
+    public $serviceOptions;
 }

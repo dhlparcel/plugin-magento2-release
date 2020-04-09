@@ -5,6 +5,7 @@ namespace DHLParcel\Shipping\Ui\Column;
 use DHLParcel\Shipping\Model\Piece as Piece;
 use DHLParcel\Shipping\Model\PieceFactory as PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
+use DHLParcel\Shipping\Model\Service\Preset as presetService;
 use \Magento\Framework\UrlInterface;
 use \Magento\Sales\Api\OrderRepositoryInterface;
 use \Magento\Sales\Api\ShipmentRepositoryInterface;
@@ -17,6 +18,10 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
     protected $urlBuilder;
     protected $orderRepository;
     protected $shipmentRepository;
+    /**
+     * @var presetService
+     */
+    protected $presetService;
 
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
@@ -26,6 +31,7 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
         UrlInterface $urlBuilder,
         OrderRepositoryInterface $orderRepository,
         ShipmentRepositoryInterface $shipmentRepository,
+        presetService $presetService,
         array $components = [],
         array $data = []
     ) {
@@ -34,6 +40,7 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
         $this->urlBuilder = $urlBuilder;
         $this->orderRepository = $orderRepository;
         $this->shipmentRepository = $shipmentRepository;
+        $this->presetService = $presetService;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -82,7 +89,19 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
             $trackingUrl = $this->urlBuilder->getUrl('dhlparcel_shipping/shipment/download', ['shipment_id' => $shipment->getId()]);
             $trackingText = $piece->getIsReturn() ? $track->getTitle() : $trackNumber;
 
-            $output = html_entity_decode('<span style="white-space: nowrap;">[ <a href="' . $trackingUrl . '" target="_blank">' . $trackingText . '</a> ]</span>');
+            // Build service options text
+            $serviceOptions = [];
+            foreach (explode(',', $piece->getServiceOptions()) as $serviceOption) {
+                if ($this->presetService->getTranslation($serviceOption) !== null) {
+                    $serviceOptions[] = sprintf('<span data-key="%s" class="dhlparcel-shipping-service-option-chip">%s</span>', strtoupper($serviceOption), $this->presetService->getTranslation($serviceOption));
+                }
+            }
+            $serviceOptionsText = '';
+            if (!empty($serviceOptions)) {
+                $serviceOptionsText = '<span class="dhlparcel-shipping-service-options-wrapper">' . implode('', $serviceOptions) . '</span>';
+            }
+
+            $output = html_entity_decode('<span class="dhlparcel-shipping-label-chip"><a href="' . $trackingUrl . '" target="_blank">' . $trackingText . '</a> ' . $serviceOptionsText .'</span>');
 
             $labels[$trackNumber] = $output;
         }

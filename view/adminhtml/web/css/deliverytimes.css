@@ -49,3 +49,46 @@
     line-height: normal;
     text-align: left;
 }
+
+.dhlparcel-shipping-label-chip {
+    display: inline-block;
+    line-height: normal;
+    text-align: center;
+    border-radius: 4px;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 8px;
+    background: #c8d7e1;
+}
+.dhlparcel-shipping-label-chip a,
+.dhlparcel-shipping-label-chip .dhlparcel-shipping-service-options-wrapper {
+    white-space: nowrap;
+}
+
+.dhlparcel-shipping-label-chip a {
+    display: block;
+    line-height: normal;
+    text-align: center;
+    border-radius: 2px;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    margin-bottom: 4px;
+}
+
+.dhlparcel-shipping-service-option-chip {
+    display: inline-block;
+    line-height: normal;
+    text-align: center;
+    border-radius: 2px;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    font-size: 75%;
+    margin: 0 2px;
+}
+.dhlparcel-shipping-service-option-chip:first-child {
+    margin-left: 0;
+}
+.dhlparcel-shipping-service-option-chip:last-child {
+    margin-right: 0;
+}

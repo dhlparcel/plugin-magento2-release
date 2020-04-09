@@ -145,7 +145,7 @@ class UpgradeData implements UpgradeDataInterface
                 'label'                   => 'Disable in checkout: delivery methods with these service options',
                 'input'                   => 'multiselect',
                 'class'                   => '',
-                'source'                  => \DHLParcel\Shipping\Model\Entity\Attribute\Source\BlackList::class,
+                'source'                  => \DHLParcel\Shipping\Model\Entity\Attribute\Source\Blacklist::class,
                 'global'                  => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
                 'visible'                 => true,
                 'required'                => false,

@@ -160,6 +160,7 @@ class Shipment
         // Enrich pieces with postalCode
         $shipmentResponse = $this->tagPostalCode($shipmentResponse, $shipmentRequest->receiver->address->postalCode);
         $shipmentResponse = $this->tagShipmentRequest($shipmentResponse, $shipmentRequest);
+        $shipmentResponse = $this->tagServiceOptions($shipmentResponse, $shipmentRequest);
 
         return $shipmentResponse;
     }
@@ -189,7 +190,8 @@ class Shipment
                 'piece_number'      => $pieceResponse->pieceNumber,
                 'label_type'        => $pieceResponse->labelType,
                 'is_return'         => $isReturn,
-                'shipment_request'  => $pieceResponse->shipmentRequest
+                'shipment_request'  => $pieceResponse->shipmentRequest,
+                'service_options'   => $pieceResponse->serviceOptions
             ]);
 
             $this->pieceResource->save($piece);
@@ -237,6 +239,27 @@ class Shipment
                 $shipmentResponse->pieces = $updatedPieces;
             }
         }
+        return $shipmentResponse;
+    }
+
+    protected function tagServiceOptions(ShipmentResponse $shipmentResponse, $shipmentRequest)
+    {
+        if (!empty($shipmentResponse) && !empty($shipmentResponse->pieces)) {
+            $serviceOptions = [];
+            foreach ($shipmentRequest->options as $option) {
+                $serviceOptions[] = $option->key;
+            }
+
+            $serviceOptions = array_unique($serviceOptions);
+
+            $updatedPieces = [];
+            foreach ($shipmentResponse->pieces as $piece) {
+                $piece->serviceOptions = implode(',', $serviceOptions);
+                $updatedPieces[] = $piece;
+            }
+            $shipmentResponse->pieces = $updatedPieces;
+        }
+
         return $shipmentResponse;
     }
 
