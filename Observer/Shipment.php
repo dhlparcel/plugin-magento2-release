@@ -18,6 +18,11 @@ use DHLParcel\Shipping\Model\Exception\LabelCreationException;
 
 class Shipment implements \Magento\Framework\Event\ObserverInterface
 {
+    /**
+     * @var \Magento\Shipping\Model\ShipmentNotifier
+     */
+    protected $shipmentNotifier;
+
     protected $capabilityService;
     protected $labelService;
     protected $optionFactory;
@@ -37,6 +42,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory $trackCollectionFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository,
+        \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
         CapabilityService $capabilityService,
         LabelService $labelService,
         OptionFactory $optionFactory,
@@ -55,6 +61,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $this->shipmentService = $shipmentService;
         $this->trackCollectionFactory = $trackCollectionFactory;
         $this->shipmentRepository = $shipmentRepository;
+        $this->shipmentNotifier = $shipmentNotifier;
     }
 
     /**
@@ -91,7 +98,13 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             /** @var $track \Magento\Sales\Model\Order\Shipment\Track */
             $shipment->addTrack($track);
         }
+
         $this->shipmentRepository->save($shipment);
+
+        // Send Shipment Email
+        if ($shipment->getEmailSent() == 0) {
+            $this->shipmentNotifier->notify($shipment);
+        }
 
         // Fetching labels so they are cached
         foreach (array_keys($tracks) as $labelId) {

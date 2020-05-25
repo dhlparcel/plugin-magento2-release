@@ -1,6 +1,6 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <css src="DHLParcel_Shipping::css/deliverytimes.css" />
+        <css src="DHLParcel_Shipping::css/deliveryoptions.css" />
         <css src="DHLParcel_Shipping::css/servicepoint.modal.css" />
         <css src="https://servicepoint-locator.dhlparcel.nl/servicepoint-locator.css" src_type="url" />
     </head>
@@ -33,7 +33,7 @@
                                         <item name="displayArea" xsi:type="string">shippingAdditional</item>
                                         <item name="children" xsi:type="array">
                                             <item name="deliverytimes-info" xsi:type="array">
-                                                <item name="component" xsi:type="string">DHLParcel_Shipping/js/view/deliverytimes-info</item>
+                                                <item name="component" xsi:type="string">DHLParcel_Shipping/js/view/deliveryoptions-info</item>
                                             </item>
                                             <item name="servicepoint-info" xsi:type="array">
                                                 <item name="component" xsi:type="string">DHLParcel_Shipping/js/view/servicepoint-info</item>

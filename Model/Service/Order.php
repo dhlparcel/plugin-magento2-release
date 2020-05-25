@@ -11,28 +11,39 @@ use Magento\Framework\Exception\LocalizedException;
 
 class Order
 {
+    /**
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     */
     protected $orderRepository;
+
+    /**
+     * @var \Magento\Sales\Model\Convert\Order
+     */
     protected $convertOrder;
-    protected $shipmentNotifier;
+
+    /**
+     * @var \Magento\Sales\Api\ShipmentRepositoryInterface
+     */
     protected $shipmentRepository;
+
+    /**
+     * @var \Magento\Sales\Api\OrderItemRepositoryInterface
+     */
+    protected $orderItemRepository;
 
     /**
      * Order constructor.
      * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      * @param \Magento\Sales\Model\Convert\Order $convertOrder
-     * @param \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier
-     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderResource
      * @param \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository
      */
     public function __construct(
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\Sales\Model\Convert\Order $convertOrder,
-        \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
         \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository
     ) {
         $this->orderRepository = $orderRepository;
         $this->convertOrder = $convertOrder;
-        $this->shipmentNotifier = $shipmentNotifier;
         $this->shipmentRepository = $shipmentRepository;
     }
 
@@ -52,7 +63,6 @@ class Order
         }
 
         $shipment = $this->convertOrder->toShipment($order);
-
         foreach ($order->getAllItems() as $orderItem) {
             // Check virtual item and item Quantity
             if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
@@ -71,9 +81,6 @@ class Order
             // Save created Order Shipment
             $this->shipmentRepository->save($shipment);
             $this->orderRepository->save($order);
-
-            // Send Shipment Email
-            $this->shipmentNotifier->notify($shipment);
         } catch (\Exception $e) {
             if ($e instanceof FaultyServiceOptionException) {
                 throw new FaultyServiceOptionException(__($e->getMessage()), $e);

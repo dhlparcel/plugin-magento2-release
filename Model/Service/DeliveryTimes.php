@@ -140,7 +140,10 @@ class DeliveryTimes
             return null;
         }
 
-        $date = $deliveryDate->format('D. j M.');
+        $dayName = __($deliveryDate->format('D')) . '.';
+        $dayOfTheMonth = $deliveryDate->format('j');
+        $monthName = __($deliveryDate->format('M')) . '.';
+        $date = implode(' ', [$dayName, $dayOfTheMonth, $monthName]);
         $weekDay = $deliveryDate->format('w');
         $day = $deliveryDate->format('w');
         $month = $deliveryDate->format('n');
@@ -174,12 +177,12 @@ class DeliveryTimes
      */
     public function filterTimeFrames($deliveryTimes, $dayTime = true)
     {
-        $dayInSeconds = 24 * 60 * 60;
         $filteredTimes = [];
 
         $cutoffGeneral = $this->getCutoffTimestamp();
-        $currentDateTime = $this->timezone->date();
-        $todayMidnightTimestamp = $currentDateTime->getTimestamp() + $dayInSeconds - 1;
+        $currentDayTimestamp = $this->timezone->date();
+        $currentDayTimestamp->setTime(23, 59, 59);
+        $todayMidnightTimestamp = $currentDayTimestamp->getTimestamp();
 
         $displayDays = intval($this->helper->getConfigData('delivery_times/display_days'));
         $displayDays += 1; // When setting '1 display day' for example, to make tomorrow available, you actually add 2 days. One for today, one for tomorrow. Thus you always add this one additional day to the check.
@@ -232,8 +235,8 @@ class DeliveryTimes
 
     public function showSameday()
     {
-        if ($this->isEnabled()) {
-            $cutoffSetting = $this->helper->getConfigData('shipping_methods/sameday/cutoff');
+        $cutoffSetting = $this->helper->getConfigData('shipping_methods/sameday/cutoff');
+        if ($cutoffSetting) {
             $cutoffHour = intval($cutoffSetting);
         } else {
             $cutoffHour = 18; // Default to 18:00 if not using cutoff setting
@@ -445,16 +448,16 @@ class DeliveryTimes
 
         $cutoff = boolval($currentHour >= $cutoffHour);
 
-        $currentTimestamp = $currentDateTime->getTimestamp() - 1;
+        // set the time of the DateTime object to 0:00:00, after which we wil remove 1 second to make it yesterday
+        $currentDateTime->setTime(0, 0, 0);
+        $currentDayTimestamp = $currentDateTime->getTimestamp() - 1;
 
         $transitDaysSetting = $this->helper->getConfigData('delivery_times/transit_days');
         $days = intval($transitDaysSetting);
         $days += $cutoff ? 1 : 0;
         $addDays = $dayInSeconds * $days;
 
-        $cutoffTimestamp = $currentTimestamp + $addDays;
-
-        return $cutoffTimestamp;
+        return $currentDayTimestamp + $addDays;
     }
 
     protected function getShippingDays()

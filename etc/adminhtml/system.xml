@@ -488,6 +488,12 @@
                             <comment>This only applies to B2C customers and 'Send to business by default' must be set to No</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <field id="check" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\SameDayFieldCheck" sortOrder="102" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <depends>
+                                <field id="enabled">1</field>
+                                <field id="carriers/dhlparcel/delivery_times/shipping_days"><![CDATA[]]></field>
+                            </depends>
+                        </field>
                         <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Title</label>
                             <comment>Leave empty to use default title</comment>
@@ -610,9 +616,6 @@
                     <field id="shipping_days" translate="Module" type="multiselect" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Ship on the following days</label>
                         <source_model>Magento\Config\Model\Config\Source\Locale\Weekdays</source_model>
-                        <depends>
-                            <field id="enabled">1</field>
-                        </depends>
                     </field>
                     <field id="cutoff" translate="Module" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Cutoff time</label>

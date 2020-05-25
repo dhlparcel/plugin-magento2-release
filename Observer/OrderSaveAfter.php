@@ -8,6 +8,7 @@ use DHLParcel\Shipping\Model\Service\Shipment as ShipmentService;
 use DHLParcel\Shipping\Model\Service\Label as LabelService;
 use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
 use Magento\Framework\Event\ManagerInterface as EventManager;
+use Magento\Sales\Model\Order;
 
 class OrderSaveAfter implements \Magento\Framework\Event\ObserverInterface
 {
@@ -48,9 +49,11 @@ class OrderSaveAfter implements \Magento\Framework\Event\ObserverInterface
 
     /**
      * OrderSaveAfter constructor.
+     * @param \Magento\Framework\App\ProductMetadataInterface $productMetadata
      * @param EventManager $eventManager
      * @param Data $helper
      * @param OrderService $orderService
+     * @param ShipmentService $shipmentService
      * @param LabelService $labelService
      * @param PrintingService $printingService
      */
@@ -80,6 +83,9 @@ class OrderSaveAfter implements \Magento\Framework\Event\ObserverInterface
             return;
         }
 
+        /**
+         * @var $order Order
+         */
         $order = $observer->getEvent()->getOrder();
 
         if ($order->getStatus() == $this->helper->getConfigData('usability/auto_print/on_order_status')) {

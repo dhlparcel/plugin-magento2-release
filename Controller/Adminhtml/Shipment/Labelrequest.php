@@ -23,6 +23,7 @@ use DHLParcel\Shipping\Model\Service\Label as LabelService;
 use DHLParcel\Shipping\Model\PieceFactory as PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
 
+use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order\Shipment;
@@ -31,25 +32,57 @@ use Magento\Framework\Exception\NoSuchEntityException;
 
 class Labelrequest extends \Magento\Backend\App\Action
 {
+    /**
+     * @var LabelService
+     */
     protected $labelService;
+
+    /**
+     * @var ShipmentRepository
+     */
     protected $shipmentRepository;
+
+    /**
+     * @var PieceFactory
+     */
     protected $pieceFactory;
+
+    /**
+     * @var PieceResource
+     */
     protected $pieceResource;
+
+    /**
+     * @var NotificationService
+     */
+    protected $notificationService;
 
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
      */
     protected $jsonResultFactory;
 
+    /**
+     * Labelrequest constructor.
+     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory
+     * @param LabelService $labelService
+     * @param NotificationService $notificationService
+     * @param ShipmentRepository $shipmentRepository
+     * @param PieceFactory $pieceFactory
+     * @param PieceResource $pieceResource
+     */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory,
         LabelService $labelService,
+        NotificationService $notificationService,
         ShipmentRepository $shipmentRepository,
         PieceFactory $pieceFactory,
         PieceResource $pieceResource
     ) {
         $this->labelService = $labelService;
+        $this->notificationService = $notificationService;
         $this->shipmentRepository = $shipmentRepository;
         $this->pieceFactory = $pieceFactory;
         $this->pieceResource = $pieceResource;

@@ -374,7 +374,21 @@ class Shipment
     protected function parseStreetData($raw)
     {
         $skipAdditionCheck = false;
-        preg_match('/([^\d]*)\s*(.*)/i', trim($raw), $streetParts);
+
+        //if first word has ONE numbers and letter(s)
+        $rawParts = explode(" ", trim($raw));
+        $streetPrefix = '';
+        $streetFirstWord = reset($rawParts);
+
+        preg_match('/[0-9]+[a-zA-Z]+/i', trim($streetFirstWord), $firstWordParts);
+        if (!empty($firstWordParts)) {
+            $streetPrefix = $streetFirstWord . " ";
+            unset($rawParts[key($rawParts)]);
+        }
+
+        $raw = implode(" ", $rawParts);
+
+        preg_match('/([^0-9]*)\s*(.*)/i', trim($raw), $streetParts);
         $data = [
             'street' => isset($streetParts[1]) ? trim($streetParts[1]) : '',
             'number' => isset($streetParts[2]) ? trim($streetParts[2]) : '',
@@ -398,6 +412,11 @@ class Shipment
             preg_match('/([\d]+)[ .-]*(.*)/i', $data['number'], $numberParts);
             $data['number'] = isset($numberParts[1]) ? trim($numberParts[1]) : '';
             $data['addition'] = isset($numberParts[2]) ? trim($numberParts[2]) : '';
+        }
+
+        // Reassemble street
+        if (isset($data['street'])) {
+            $data['street'] = $streetPrefix . $data['street'];
         }
 
         return $data;

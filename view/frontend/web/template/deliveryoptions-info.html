@@ -7,8 +7,7 @@
                 <span data-bind="i18n: 'Preferred moment of delivery'"></span>
                 <select data-bind="options: dayTimes,
                                    optionsText: 'displayLabel',
-                                   value: selectedTime,
-                                   optionsCaption: 'Choose...'"></select>
+                                   value: selectedTime"></select>
             </p>
         </div>
         <div data-bind="if: showNightTimes()">
@@ -16,8 +15,7 @@
                 <span data-bind="i18n: 'Preferred moment of delivery'"></span>
                 <select data-bind="options: nightTimes,
                                    optionsText: 'displayLabel',
-                                   value: selectedTime,
-                                   optionsCaption: 'Choose...'"></select>
+                                   value: selectedTime"></select>
             </p>
         </div>
         <div id="dhlparcel-shipping-deliverytimes-info-error" data-bind="i18n: 'Please choose the moment of delivery'" style="display: none;"></div>

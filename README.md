@@ -33,8 +33,8 @@ DHL offers a convenient plug-in for Magento 2 online stores. This plug-in allows
 - De plugin uses de Guzzle package to communicate with the API. Add Guzzle to the Magento root `composer.json`.  
 `composer require guzzlehttp/guzzle`
 
-- De plugin uses fpdi-tcpdf for merging pdf's. Add fpdi-tcpdf to the Magento root `composer.json`.  
-`composer require setasign/fpdi-tcpdf`
+- De plugin uses fpdi-fpdf for merging pdf's. Add fpdi-fpdf to the Magento root `composer.json`.  
+`composer require setasign/fpdi-fpdf`
 
 - Enable the DHL module by executing the following from the Magento root:  
 `php bin/magento module:enable DHLParcel_Shipping`
@@ -44,3 +44,8 @@ DHL offers a convenient plug-in for Magento 2 online stores. This plug-in allows
 
 - When running in production, complete the installation by recompiling  
 `php bin/magento setup:di:compile`
+
+## When updating with zip with a version before 1.0.10 to current
+
+- De plugin uses fpdi-fpdf for merging pdf's. Add fpdi-fpdf to the Magento root `composer.json`.  
+`composer require setasign/fpdi-fpdf`
