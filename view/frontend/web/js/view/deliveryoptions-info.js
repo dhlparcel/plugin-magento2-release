@@ -32,6 +32,7 @@ define([
         excludedServiceData: ko.observableArray([]),
 
         initObservable: function () {
+            this._super();
 
             var self = this;
             var postcode_memory = null;
