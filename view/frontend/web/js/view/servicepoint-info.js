@@ -12,6 +12,7 @@ define([
         },
 
         initObservable: function () {
+            this._super();
 
             this.DHLParcel_Shipping_SelectedMethod = ko.computed(function() {
 
