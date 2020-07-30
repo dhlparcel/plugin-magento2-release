@@ -4,5 +4,6 @@
     <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
         <attribute code="dhlparcel_shipping_servicepoint_id" type="string"/>
         <attribute code="dhlparcel_shipping_checkout_options" type="string"/>
+        <attribute code="dhlparcel_shipping_connectors_date_preference" type="string"/>
     </extension_attributes>
 </config>

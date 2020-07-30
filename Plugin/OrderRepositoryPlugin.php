@@ -2,6 +2,7 @@
 
 namespace DHLParcel\Shipping\Plugin;
 
+use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderExtensionInterface;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -15,20 +16,24 @@ class OrderRepositoryPlugin
     protected $presetService;
     protected $deliveryServicesService;
     protected $extensionFactory;
+    protected $deliveryTimesService;
 
     /**
-     * OrderRepositoryPlugin constructor.
-     * @param PresetService $presetService
-     * @param OrderExtensionFactory $extensionFactory
+     * @param PresetService           $presetService
+     * @param DeliveryServicesService $deliveryServicesService
+     * @param OrderExtensionFactory   $extensionFactory
+     * @param DeliveryTimesService    $deliveryTimesService
      */
     public function __construct(
         PresetService $presetService,
         DeliveryServicesService $deliveryServicesService,
-        OrderExtensionFactory $extensionFactory
+        OrderExtensionFactory $extensionFactory,
+        DeliveryTimesService $deliveryTimesService
     ) {
         $this->presetService = $presetService;
         $this->deliveryServicesService = $deliveryServicesService;
         $this->extensionFactory = $extensionFactory;
+        $this->deliveryTimesService = $deliveryTimesService;
     }
 
     /**
@@ -58,6 +63,9 @@ class OrderRepositoryPlugin
         return $searchResult;
     }
 
+    /**
+     * @param OrderInterface $order
+     */
     protected function extendAttributes($order)
     {
         $extensionAttributes = $order->getExtensionAttributes();
@@ -72,6 +80,12 @@ class OrderRepositoryPlugin
 
         $optionsString = implode(',', $options);
         $extensionAttributes->setData('dhlparcel_shipping_checkout_options', $optionsString);
+
+        $timeSelection = $this->deliveryTimesService->getTimeSelection($order);
+        $datePreference = $timeSelection ? date_create_from_format('d-m-Y', $timeSelection->date) : null;
+        if ($datePreference) {
+            $extensionAttributes->setData('dhlparcel_shipping_connectors_date_preference', $datePreference->format('Y-m-d'));
+        }
 
         $order->setExtensionAttributes($extensionAttributes);
     }

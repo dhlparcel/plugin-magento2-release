@@ -210,21 +210,23 @@ class DeliveryTimes
                 continue;
             }
 
-            if ($cutoffGeneral !== null) {
-                if ($this->validateWithShippingDays($cutoffGeneral, $timestamp, $shippingDays)) {
-                    // This is an intentional ambiguous check, due to the lack of strict regulations on the type of input from the Time Window API so far
-                    // Check if end time is AFTER 18:00 (int check), or is exactly 00:00
-                    if (intval($deliveryTime->source->startTime) > 1400
-                        && (intval($deliveryTime->source->endTime) > 1800 || $deliveryTime->source->endTime === '0000')) {
-                        // Evening
-                        if ($dayTime !== true) {
-                            $filteredTimes[] = $deliveryTime;
-                        }
-                    } else {
-                        // Day
-                        if ($dayTime !== false) {
-                            $filteredTimes[] = $deliveryTime;
-                        }
+            if (!$cutoffGeneral) {
+                continue;
+            }
+
+            if ($this->validateWithShippingDays($cutoffGeneral, $timestamp, $shippingDays)) {
+                // This is an intentional ambiguous check, due to the lack of strict regulations on the type of input from the Time Window API so far
+                // Check if end time is AFTER 18:00 (int check), or is exactly 00:00
+                if (intval($deliveryTime->source->startTime) > 1400
+                    && (intval($deliveryTime->source->endTime) > 1800 || $deliveryTime->source->endTime === '0000')) {
+                    // Evening
+                    if ($dayTime !== true) {
+                        $filteredTimes[] = $deliveryTime;
+                    }
+                } else {
+                    // Day
+                    if ($dayTime !== false) {
+                        $filteredTimes[] = $deliveryTime;
                     }
                 }
             }
@@ -235,27 +237,30 @@ class DeliveryTimes
 
     public function showSameday()
     {
+        $isEnabled = boolval($this->helper->getConfigData('shipping_methods/sameday/enabled'));
+
+        if (!$isEnabled) {
+            return false;
+        }
+
+        /** @var \DateTime $currentDateTime */
+        $currentDateTime = $this->timezone->date();
+        $shippingDays    = explode(',', $this->helper->getConfigData('delivery_times/shipping_days'));
+
+        if (!in_array($currentDateTime->format('w'), $shippingDays)) {
+            return false;
+        }
+
+        $cutoffHour = 18; // Default to 18:00 if not using cutoff setting
         $cutoffSetting = $this->helper->getConfigData('shipping_methods/sameday/cutoff');
+
         if ($cutoffSetting) {
             $cutoffHour = intval($cutoffSetting);
-        } else {
-            $cutoffHour = 18; // Default to 18:00 if not using cutoff setting
         }
 
-        $currentDateTime = $this->timezone->date();
         $currentHour = intval($currentDateTime->format('G'));
 
-        $cutoff = boolval($currentHour >= $cutoffHour);
-        if ($cutoff) {
-            return false;
-        }
-
-        $enabled = $this->helper->getConfigData('shipping_methods/sameday/enabled');
-        if (!$enabled) {
-            return false;
-        }
-
-        return true;
+        return $currentHour < $cutoffHour;
     }
 
     public function showPriority()

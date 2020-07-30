@@ -202,7 +202,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             $method->setPrice($this->getConfigData('shipping_methods/' . $methodKey . '/price') + $serviceCost);
         }
 
-        if ($request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
+        if ($request->getFreeShipping() === true || $request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
             $method->setPrice('0.00');
         }
 

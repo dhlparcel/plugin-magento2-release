@@ -68,8 +68,7 @@ class DeliveryServices
             );
         }
         if (array_key_exists(self::EVENING, $options) &&
-            $this->isEnabled(self::EVENING, $options) &&
-            $this->isEnabled(self::NO_NEIGHBOUR)) {
+            $this->isEnabled(self::EVENING, $options)) {
             $availability->serviceData[] = $this->getServiceData(
                 self::EVENING,
                 $this->getTitle(self::EVENING),
