@@ -36,7 +36,7 @@ class Preset
      */
     public function getDefaultOptions($order, $requiredOnly = false)
     {
-        $options = $this->getOptions($this->getMethodKey($order));
+        $options = $this->getOptions($this->getMethodKey($order), $requiredOnly);
         $options += $this->deliveryServicesService->getSelection($order, true);
 
         if (isset($options['PS'])) {
@@ -69,6 +69,12 @@ class Preset
             $options['AGE_CHECK'] = '';
         }
 
+        if ($this->helper->getConfigData('label/default_send_signature', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
+            || $this->helper->getConfigData('label/default_send_signature', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
+            && !$requiredOnly) {
+            $options['HANDT'] = '';
+        }
+
         if ($this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
             || $this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
@@ -90,12 +96,16 @@ class Preset
         return str_replace('dhlparcel_', '', $order->getShippingMethod());
     }
 
-    public function getOptions($shippingMethodKey)
+    public function getOptions($shippingMethodKey, $deliveryMethodOnly = false)
     {
         $collection = $this->getOptionsCollection();
 
         if (!array_key_exists($shippingMethodKey, $collection)) {
             $shippingMethodKey = self::SHIPPING_METHOD_DOOR;
+        }
+
+        if ($deliveryMethodOnly) {
+            return $this->filterDeliveryMethodsOnly($collection[$shippingMethodKey]);
         }
 
         return $collection[$shippingMethodKey];
@@ -133,6 +143,26 @@ class Preset
         ];
     }
 
+    protected function filterDeliveryMethodsOnly($options)
+    {
+        if (!is_array($options)) {
+            return ['DOOR' => ''];
+        }
+
+        foreach ($options as $key => $data) {
+            if (!in_array($key, ['DOOR', 'PS', 'BP'])) {
+                $options[$key] = null;
+                unset($options[$key]);
+            }
+        }
+
+        if (empty($options)) {
+            return ['DOOR' => ''];
+        }
+
+        return $options;
+    }
+
     /**
      * @param null $storeId
      * @return bool
@@ -145,6 +175,13 @@ class Preset
     public function filterSkippableDefaults($presetOptions, $storeId)
     {
         $options = [];
+
+        foreach ($presetOptions as $key => $data) {
+            if (in_array($key, ['SDD', 'EXP', 'NBB', 'EVE', 'S'])) {
+                $options[] = $key;
+            }
+        }
+
         if (array_key_exists('EA', $presetOptions)) {
             if ($this->helper->getConfigData('label/default_extra_assured', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
                 $options[] = 'EA';
@@ -154,6 +191,12 @@ class Preset
         if (array_key_exists('ADD_RETURN_LABEL', $presetOptions)) {
             if ($this->helper->getConfigData('label/default_return_label', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
                 $options[] = 'ADD_RETURN_LABEL';
+            }
+        }
+
+        if (array_key_exists('HANDT', $presetOptions)) {
+            if ($this->helper->getConfigData('label/default_send_signature', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
+                $options[] = 'HANDT';
             }
         }
 

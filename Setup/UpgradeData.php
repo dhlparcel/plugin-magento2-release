@@ -70,6 +70,15 @@ class UpgradeData implements UpgradeDataInterface
             $this->updateBlacklistSourceClass();
         }
 
+        if (version_compare($context->getVersion(), "1.0.15", "<")) {
+            $configs = [
+                'carriers/dhlparcel/usability/auto_print/enabled'         => 'carriers/dhlparcel/usability/automation/shipment',
+                'carriers/dhlparcel/usability/auto_print/on_order_status' => 'carriers/dhlparcel/usability/automation/on_order_status',
+                'carriers/dhlparcel/usability/auto_print/auto_print'      => 'carriers/dhlparcel/usability/automation/print'
+            ];
+            $this->updateConfigPaths($configs);
+        }
+
         $setup->endSetup();
     }
 

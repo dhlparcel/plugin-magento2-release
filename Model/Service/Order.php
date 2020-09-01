@@ -8,79 +8,39 @@ use DHLParcel\Shipping\Model\Exception\LabelCreationException;
 use DHLParcel\Shipping\Model\Exception\NoTrackException;
 
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\ResourceModel\Order\Shipment as ShipmentResource;
+use Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader;
+use Magento\Framework\DB\TransactionFactory;
 
 class Order
 {
-    /**
-     * @var \Magento\Sales\Api\OrderRepositoryInterface
-     */
-    protected $orderRepository;
+    protected $shipmentLoader;
+    protected $shipmentResource;
+    protected $transactionFactory;
 
-    /**
-     * @var \Magento\Sales\Model\Convert\Order
-     */
-    protected $convertOrder;
-
-    /**
-     * @var \Magento\Sales\Api\ShipmentRepositoryInterface
-     */
-    protected $shipmentRepository;
-
-    /**
-     * @var \Magento\Sales\Api\OrderItemRepositoryInterface
-     */
-    protected $orderItemRepository;
-
-    /**
-     * Order constructor.
-     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
-     * @param \Magento\Sales\Model\Convert\Order $convertOrder
-     * @param \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository
-     */
     public function __construct(
-        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-        \Magento\Sales\Model\Convert\Order $convertOrder,
-        \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository
+        ShipmentLoader $shipmentLoader,
+        ShipmentResource $shipmentResource,
+        TransactionFactory $transactionFactory
     ) {
-        $this->orderRepository = $orderRepository;
-        $this->convertOrder = $convertOrder;
-        $this->shipmentRepository = $shipmentRepository;
+        $this->shipmentLoader = $shipmentLoader;
+        $this->shipmentResource = $shipmentResource;
+        $this->transactionFactory = $transactionFactory;
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order $order
-     * @return \Magento\Sales\Model\Order\Shipment
-     * @throws FaultyServiceOptionException
-     * @throws LabelCreationException
-     * @throws LocalizedException
-     * @throws NoTrackException
-     * @throws NotShippableException
-     */
-    public function createShipment(\Magento\Sales\Model\Order $order)
+    public function createShipment($orderId)
     {
-        if (!$order->canShip()) {
+        $this->shipmentLoader->setOrderId($orderId);
+        $shipment = $this->shipmentLoader->load();
+        if ($shipment === false) {
             throw new NotShippableException(__("A shipment cannot be created for the order"));
         }
 
-        $shipment = $this->convertOrder->toShipment($order);
-        foreach ($order->getAllItems() as $orderItem) {
-            // Check virtual item and item Quantity
-            if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
-                continue;
-            }
-
-            $qty = $orderItem->getQtyToShip();
-            $shipmentItem = $this->convertOrder->itemToShipmentItem($orderItem);
-            $shipmentItem->setQty($qty);
-            $shipment->addItem($shipmentItem);
-        }
-
-        $shipment->register();
-        $order->setIsInProcess(true);
         try {
-            // Save created Order Shipment
-            $this->shipmentRepository->save($shipment);
-            $this->orderRepository->save($order);
+            $shipment->setData('dhlparcel_shipping_is_created', true);
+            $this->shipmentResource->saveAttribute($shipment, ['dhlparcel_shipping_is_created']);
+            $shipment->register();
+            $this->saveShipment($shipment);
         } catch (\Exception $e) {
             if ($e instanceof FaultyServiceOptionException) {
                 throw new FaultyServiceOptionException(__($e->getMessage()), $e);
@@ -99,11 +59,21 @@ class Order
     }
 
     /**
-     * @param $orderId
-     * @return \Magento\Sales\Api\Data\OrderInterface
+     * Save shipment and order in one transaction
+     *
+     * @param \Magento\Sales\Model\Order\Shipment $shipment
+     * @return $this
+     * @throws \Exception
      */
-    public function getOrderById($orderId)
+    protected function saveShipment($shipment)
     {
-        return $this->orderRepository->get($orderId);
+        $shipment->getOrder()->setIsInProcess(true);
+        /** @var \Magento\Framework\DB\Transaction $transaction */
+        $transaction = $this->transactionFactory->create();
+        $transaction->addObject($shipment)
+            ->addObject($shipment->getOrder())
+            ->save();
+
+        return $this;
     }
 }

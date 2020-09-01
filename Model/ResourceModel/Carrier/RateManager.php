@@ -7,6 +7,7 @@
 namespace DHLParcel\Shipping\Model\ResourceModel\Carrier;
 
 use DHLParcel\Shipping\Model\Config\Source\RateConditions;
+use DHLParcel\Shipping\Model\ResourceModel\Carrier\Rate\CSV\ColumnNotFoundException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\DirectoryList;
 use DHLParcel\Shipping\Model\ResourceModel\Carrier\Rate\Import;
@@ -229,6 +230,9 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             foreach ($this->import->getData($file, $websiteId, $storeId, $conditionName, $conditionFullName, $method) as $bunch) {
                 $this->importData($columns, $bunch);
             }
+        } catch (ColumnNotFoundException $e) {
+            $this->logger->critical($e);
+            throw $e;
         } catch (\Exception $e) {
             $this->logger->critical($e);
             throw new \Magento\Framework\Exception\LocalizedException(

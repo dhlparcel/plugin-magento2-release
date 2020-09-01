@@ -53,12 +53,12 @@ class ColumnResolver
             if (array_key_exists($column, $this->nameToPositionIdMap)) {
                 $columnIndex = $this->nameToPositionIdMap[$column];
             } else {
-                throw new ColumnNotFoundException(__('Requested column "%1" cannot be resolved', $column));
+                throw new ColumnNotFoundException(__('Requested column "%1" cannot be resolved (is the condition correct?)', $column));
             }
         }
 
         if (!array_key_exists($columnIndex, $values)) {
-            throw new ColumnNotFoundException(__('Column "%1" not found', $column));
+            throw new ColumnNotFoundException(__('Value for column "%1" not found', $column));
         }
 
         return trim($values[$columnIndex]);

@@ -107,10 +107,11 @@
                         <email_order_servicepoint>1</email_order_servicepoint>
                         <email_invoice_servicepoint>1</email_invoice_servicepoint>
                     </template_overwrites>
-                    <auto_print>
-                        <enabled>0</enabled>
-                        <auto_print>0</auto_print>
-                    </auto_print>
+                    <automation>
+                        <mail>1</mail>
+                        <shipment>0</shipment>
+                        <print>0</print>
+                    </automation>
                 </usability>
                 <debug>
                     <enabled>0</enabled>

@@ -54,7 +54,7 @@ class Create extends \Magento\Backend\App\Action
                 /** @var Order $order */
                 $order = $this->orderRepository->get($orderId);
                 try {
-                    $this->orderService->createShipment($order);
+                    $this->orderService->createShipment($orderId);
                     $success[] = '#' . $order->getRealOrderId();
                     $successOrderIds[] = $orderId;
                 } catch (LocalizedException $e) {

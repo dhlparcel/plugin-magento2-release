@@ -31,10 +31,11 @@
     <event name="email_invoice_set_template_vars_before">
         <observer name="dhlparcel_shipping_email_servicepoint" instance="DHLParcel\Shipping\Observer\EmailServicePoint" />
     </event>
-    <event name="dhlparcel_create_shipment">
-        <observer name="dhlparcel_create_shipment" instance="DHLParcel\Shipping\Observer\Shipment"/>
-    </event>
     <event name="sales_order_save_after">
-        <observer name="dhlparcel_sales_order_save_after" instance="DHLParcel\Shipping\Observer\OrderSaveAfter"/>
+        <observer name="dhlparcel_shipping_auto_shipment" instance="DHLParcel\Shipping\Observer\AutoShipment"/>
+        <observer name="dhlparcel_shipping_auto_mail" instance="DHLParcel\Shipping\Observer\AutoMail"/>
+    </event>
+    <event name="sales_order_shipment_save_after">
+        <observer name="dhlparcel_shipping_shipment" instance="DHLParcel\Shipping\Observer\Shipment"/>
     </event>
 </config>

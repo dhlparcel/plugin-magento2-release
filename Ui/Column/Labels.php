@@ -64,7 +64,7 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
                 $labels = array_merge($labels, $parsedLabels);
             }
 
-            $item[$this->getData('name')] = implode('<br /><br />', $labels);
+            $item[$this->getData('name')] = implode('<br />', $labels);
         }
 
         return $dataSource;
@@ -91,9 +91,10 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
 
             // Build service options text
             $serviceOptions = [];
+            $serviceCounter = 0;
             foreach (explode(',', $piece->getServiceOptions()) as $serviceOption) {
                 if ($this->presetService->getTranslation($serviceOption) !== null) {
-                    $serviceOptions[] = sprintf('<span data-key="%s" class="dhlparcel-shipping-service-option-chip">%s</span>', strtoupper($serviceOption), $this->presetService->getTranslation($serviceOption));
+                    $serviceOptions[] = sprintf('<span data-key="%s" class="dhlparcel-shipping-service-option-chip">%s</span>', strtoupper($serviceOption), $this->presetService->getTranslation($serviceOption)) . (++$serviceCounter % 4 ? '' : '<br/>');
                 }
             }
             $serviceOptionsText = '';

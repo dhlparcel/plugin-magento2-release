@@ -133,7 +133,11 @@
                         <label>Auto-enable: Return label</label>
                         <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
                     </field>
-                    <field id="default_age_check" translate="label" type="select" sortOrder="610" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="default_send_signature" translate="label" type="select" sortOrder="610" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Auto-enable: Signature</label>
+                        <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
+                    </field>
+                    <field id="default_age_check" translate="label" type="select" sortOrder="620" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Auto-enable: Age check 18+</label>
                         <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
                     </field>
@@ -843,16 +847,21 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
-                    <group id="auto_print" translate="label" type="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Automatically create new shipments with DHL labels</label>
-                        <field id="enabled" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Enabled</label>
-                            <comment>Auto. Create new Shipment</comment>
+                    <group id="automation" translate="label" type="label" sortOrder="301" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Automation</label>
+                        <field id="mail" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Send tracking mail</label>
+                            <comment>Automatically mail tracking information after creating a new shipment</comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="shipment" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create shipments with DHL labels</label>
+                            <comment>Automatically create new shipments with DHL labels based on order status</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="on_order_status" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>On orderstatus</label>
-                            <comment>Create shipment when order has this orderstatus for the first time</comment>
+                            <label>On order status</label>
+                            <comment>Create shipment when order has this order status for the first time. Note some status don't allow shipments.</comment>
                             <source_model>DHLParcel\Shipping\Model\Config\Source\AutoPrintStatus</source_model>
                             <depends>
                                 <field id="enabled">1</field>
@@ -863,8 +872,8 @@
                                 <field id="carriers/dhlparcel/usability/printing_service/enable">0</field>
                             </depends>
                         </field>
-                        <field id="auto_print" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Automatically print DHL labels</label>
+                        <field id="print" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Immediately print created DHL labels</label>
                             <comment>With this feature enabled, all your automatically created labels will be sent to your printer.</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <depends>

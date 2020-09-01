@@ -6,43 +6,31 @@ use DHLParcel\Shipping\Model\Exception\FaultyServiceOptionException;
 use DHLParcel\Shipping\Model\Exception\NoTrackException;
 use DHLParcel\Shipping\Model\Service\Capability as CapabilityService;
 use DHLParcel\Shipping\Model\Service\Label as LabelService;
-use Magento\Framework\App\RequestInterface;
 use DHLParcel\Shipping\Model\Data\Api\Request\Shipment\Option;
 use DHLParcel\Shipping\Model\Data\Api\Request\Shipment\OptionFactory;
 use DHLParcel\Shipping\Model\Data\Api\Request\Shipment\Piece;
 use DHLParcel\Shipping\Model\Data\Api\Request\Shipment\PieceFactory;
 use DHLParcel\Shipping\Model\Service\Shipment as ShipmentService;
-use Magento\Framework\Exception\LocalizedException;
 use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 use DHLParcel\Shipping\Model\Exception\LabelCreationException;
 
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Api\OrderRepositoryInterface;
+
 class Shipment implements \Magento\Framework\Event\ObserverInterface
 {
-    /**
-     * @var \Magento\Shipping\Model\ShipmentNotifier
-     */
-    protected $shipmentNotifier;
-
     protected $capabilityService;
     protected $labelService;
     protected $optionFactory;
     protected $orderRepository;
-    protected $shipmentRepository;
     protected $pieceFactory;
     protected $presetService;
     protected $request;
     protected $shipmentService;
 
-    /**
-     * @var \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory
-     */
-    protected $trackCollectionFactory;
-
     public function __construct(
-        \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\CollectionFactory $trackCollectionFactory,
-        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-        \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository,
-        \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
+        OrderRepositoryInterface $orderRepository,
         CapabilityService $capabilityService,
         LabelService $labelService,
         OptionFactory $optionFactory,
@@ -59,9 +47,6 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $this->presetService = $presetService;
         $this->request = $request;
         $this->shipmentService = $shipmentService;
-        $this->trackCollectionFactory = $trackCollectionFactory;
-        $this->shipmentRepository = $shipmentRepository;
-        $this->shipmentNotifier = $shipmentNotifier;
     }
 
     /**
@@ -85,32 +70,21 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         }
 
         if (!empty($this->request->getParam('shipment')['create_dhlparcel_shipping_label'])) {
-            $tracks = $this->formSubmitShipment($shipment->getOrderId());
-        } elseif (($this->request->getModuleName() === 'dhlparcel_shipping' && $this->request->getActionName() === 'create')
-            || $observer->getEvent()->getName() == 'dhlparcel_create_shipment') {
-            $tracks = $this->bulkShipment($shipment->getOrder());
+            $tracks = $this->processForm($shipment->getOrderId());
+        } elseif ($shipment->getData('dhlparcel_shipping_is_created')) {
+            $tracks = $this->processGrid($shipment->getOrder());
         } else {
             return;
         }
 
-        $shipment->unsetData('tracks');
-        foreach ($tracks as $track) {
+        foreach ($tracks as $labelId => $track) {
             /** @var $track \Magento\Sales\Model\Order\Shipment\Track */
             $shipment->addTrack($track);
-        }
 
-        $this->shipmentRepository->save($shipment);
-
-        // Send Shipment Email
-        if ($shipment->getEmailSent() == 0) {
-            $this->shipmentNotifier->notify($shipment);
-        }
-
-        // Fetching labels so they are cached
-        foreach (array_keys($tracks) as $labelId) {
+            // Fetching labels so they are cached
             $this->labelService->getLabelPdf($labelId);
         }
-
+        
         return $shipment;
     }
 
@@ -121,24 +95,22 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
      * @throws LabelCreationException
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    protected function bulkShipment($order)
+    protected function processGrid($order)
     {
         $toCountry = $order->getShippingAddress()->getCountryId();
         $storeId = $order->getStoreId();
         $toPostalCode = str_replace(' ', '', $order->getShippingAddress()->getPostcode());
         $toBusiness = $this->presetService->defaultToBusiness($storeId);
         $defaultOptions = $this->presetService->getDefaultOptions($order);
-
-        if ($this->request->getParam('method_override') == 'mailbox' && array_key_exists('DOOR', $defaultOptions)) {
-            unset($defaultOptions['DOOR']);
-            $defaultOptions['BP'] = '';
-        }
+        $defaultOptions = $this->checkMailboxOverride($defaultOptions);
 
         $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
 
         if (empty($sizes) || !is_array($sizes)) {
             $skippableOptions = $this->presetService->filterSkippableDefaults($defaultOptions, $storeId);
             $requiredOptions = $this->presetService->getDefaultOptions($order, true);
+            $requiredOptions = $this->checkMailboxOverride($requiredOptions);
+
             $options = $this->capabilityService->getOptions($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($requiredOptions));
 
             $allowedOptions = [];
@@ -187,7 +159,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
      * @return array
      * @throws LocalizedException
      */
-    protected function formSubmitShipment($orderId)
+    protected function processForm($orderId)
     {
         if (!isset($this->request->getParam('dhlparcel')['shipment'])) {
             throw new LocalizedException(__('Shipment option label form not present'));
@@ -234,6 +206,15 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         $tracks = $this->shipmentService->create($order, $options, $pieces, $business);
         return $tracks;
+    }
+
+    protected function checkMailboxOverride($options)
+    {
+        if ($this->request->getParam('method_override') == 'mailbox' && array_key_exists('DOOR', $options)) {
+            unset($options['DOOR']);
+            $options['BP'] = '';
+        }
+        return $options;
     }
 
     /**
