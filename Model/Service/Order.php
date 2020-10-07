@@ -11,26 +11,31 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\ResourceModel\Order\Shipment as ShipmentResource;
 use Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader;
 use Magento\Framework\DB\TransactionFactory;
+use Magento\Framework\Registry;
 
 class Order
 {
     protected $shipmentLoader;
     protected $shipmentResource;
     protected $transactionFactory;
+    protected $registry;
 
     public function __construct(
         ShipmentLoader $shipmentLoader,
         ShipmentResource $shipmentResource,
-        TransactionFactory $transactionFactory
+        TransactionFactory $transactionFactory,
+        Registry $registry
     ) {
         $this->shipmentLoader = $shipmentLoader;
         $this->shipmentResource = $shipmentResource;
         $this->transactionFactory = $transactionFactory;
+        $this->registry = $registry;
     }
 
     public function createShipment($orderId)
     {
         $this->shipmentLoader->setOrderId($orderId);
+        $this->preloadShipment();
         $shipment = $this->shipmentLoader->load();
         if ($shipment === false) {
             throw new NotShippableException(__("A shipment cannot be created for the order"));
@@ -75,5 +80,15 @@ class Order
             ->save();
 
         return $this;
+    }
+
+    /**
+     * Magento's shipmentLoader sets a deprecated 'current_shipment', but doesn't seem to clear it causing errors.
+     * We need to use their deprecated method to unregister.
+     * Might need to update this in the future.
+     */
+    protected function preloadShipment()
+    {
+        $this->registry->unregister('current_shipment');
     }
 }

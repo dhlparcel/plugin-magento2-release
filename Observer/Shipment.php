@@ -72,7 +72,11 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         if (!empty($this->request->getParam('shipment')['create_dhlparcel_shipping_label'])) {
             $tracks = $this->processForm($shipment->getOrderId());
         } elseif ($shipment->getData('dhlparcel_shipping_is_created')) {
-            $tracks = $this->processGrid($shipment->getOrder());
+            $order = $shipment->getOrder();
+            if ($this->onlyDHL() && !$this->presetService->exists($order)) {
+                return;
+            }
+            $tracks = $this->processGrid($order);
         } else {
             return;
         }
@@ -215,6 +219,11 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             $options['BP'] = '';
         }
         return $options;
+    }
+
+    protected function onlyDHL()
+    {
+        return boolval($this->request->getParam('dhlparcel_only') == 'true');
     }
 
     /**

@@ -29,11 +29,8 @@ class RateQuery
      */
     public function preparePreSelect(\Magento\Framework\DB\Select $select)
     {
-        $select->where(
-            'website_id = :website_id AND store_id = :store_id'
-        )->where(
-            'method_name = :method_name'
-        );
+        $select->where('website_id = :website_id AND store_id = :store_id')
+            ->where('method_name = :method_name');
 
         // Render condition by condition name
         if (is_array($this->request->getConditionName())) {
@@ -62,8 +59,8 @@ class RateQuery
     public function getPreBindings($method, $websiteId, $storeId)
     {
         $bind = [
-            ':website_id'  => (int)$websiteId,
-            ':store_id'    => (int)$storeId,
+            ':website_id' => (int)$websiteId,
+            ':store_id' => (int)$storeId,
             ':method_name' => $method
         ];
 
@@ -88,19 +85,24 @@ class RateQuery
      */
     public function prepareSelect(\Magento\Framework\DB\Select $select)
     {
-        $select->where(
-            'website_id = :website_id AND store_id = :store_id'
-        )->where(
-            'method_name = :method_name'
-        )->order(
-            ['dest_country_id DESC', 'dest_region_id DESC', 'dest_zip DESC', 'condition_value DESC']
-        )->limit(
-            1
-        );
+        $select->where('website_id = :website_id AND store_id = :store_id')
+            ->where('method_name = :method_name')
+            ->order(['dest_country_id DESC', 'dest_region_id DESC', 'dest_zip DESC', 'condition_value DESC'])
+            ->limit(1);
 
         $conditions = [
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = :postcode",
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = ''",
+
+            // Handle wildcard
+            "(dest_country_id = :country_id OR dest_country_id = 0 OR dest_country_id = '*') AND 
+            (dest_region_id = :region_id OR dest_region_id = 0 OR dest_region_id = '*') AND 
+            ((LENGTH(dest_zip) = 1 AND dest_zip = '*') OR 
+            IF( 
+                RIGHT(dest_zip, 1) = '*', 
+                ((SUBSTR(:postcode, 1, (LENGTH(dest_zip)-1))) = LEFT(`dest_zip`, length(dest_zip)-1)), 
+                0 
+            ))",
 
             // Handle asterisk in dest_zip field
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = '*'",
@@ -131,6 +133,7 @@ class RateQuery
             $select->where('condition_name = :condition_name');
             $select->where('condition_value <= :condition_value');
         }
+
         return $select;
     }
 
@@ -143,12 +146,12 @@ class RateQuery
     public function getBindings($method, $websiteId, $storeId)
     {
         $bind = [
-            ':website_id'  => (int)$websiteId,
-            ':store_id'    => (int)$storeId,
+            ':website_id' => (int)$websiteId,
+            ':store_id' => (int)$storeId,
             ':method_name' => $method,
-            ':country_id'  => $this->request->getDestCountryId(),
-            ':region_id'   => (int)$this->request->getDestRegionId(),
-            ':postcode'    => $this->request->getDestPostcode(),
+            ':country_id' => $this->request->getDestCountryId(),
+            ':region_id' => (int)$this->request->getDestRegionId(),
+            ':postcode' => $this->request->getDestPostcode(),
         ];
 
         // Render condition by condition name

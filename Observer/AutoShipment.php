@@ -7,6 +7,8 @@ use DHLParcel\Shipping\Model\Service\Order as OrderService;
 use DHLParcel\Shipping\Model\Service\Shipment as ShipmentService;
 use DHLParcel\Shipping\Model\Service\Label as LabelService;
 use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
+use DHLParcel\Shipping\Model\Service\Preset as PresetService;
+use DHLParcel\Shipping\Model\Config\Source\YesNoDHL;
 
 use Magento\Framework\Event\ManagerInterface as EventManager;
 
@@ -17,6 +19,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
     protected $shipmentService;
     protected $labelService;
     protected $printingService;
+    protected $presetService;
     protected $eventManager;
     protected $productMetadata;
 
@@ -27,7 +30,8 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
         OrderService $orderService,
         ShipmentService $shipmentService,
         LabelService $labelService,
-        PrintingService $printingService
+        PrintingService $printingService,
+        PresetService $presetService
     ) {
         $this->productMetadata = $productMetadata;
         $this->helper = $helper;
@@ -35,6 +39,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
         $this->shipmentService = $shipmentService;
         $this->labelService = $labelService;
         $this->printingService = $printingService;
+        $this->presetService = $presetService;
         $this->eventManager = $eventManager;
     }
 
@@ -53,6 +58,10 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
         }
 
         if (!$order->canShip() || $order->hasShipments()) {
+            return;
+        }
+
+        if (intval($this->helper->getConfigData('usability/automation/shipment')) === YesNoDHL::OPTION_DHL && !$this->presetService->exists($order)) {
             return;
         }
 

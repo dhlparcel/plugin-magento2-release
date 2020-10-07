@@ -57,6 +57,24 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             );
         }
 
+        $enabled = $this->helper->getConfigData('usability/bulk/create_dhl_only');
+        if ($enabled && !$skipCreate) {
+            $options[] = $this->createOption(
+                'create_dhl_only',
+                __('Create labels (only for DHL shipping methods)'),
+                $this->urlBuilder->getUrl($this->urlPath . 'create', ['dhlparcel_only' => 'true'])
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_mailbox_dhl_only');
+        if ($enabled && !$skipCreate) {
+            $options[] = $this->createOption(
+                'create_mailbox_dhl_only',
+                __('Create mailbox labels (only for DHL shipping methods)'),
+                $this->urlBuilder->getUrl($this->urlPath . 'create', ['method_override' => 'mailbox', 'dhlparcel_only' => 'true'])
+            );
+        }
+
         $enabled = $this->helper->getConfigData('usability/bulk/download');
         if ($enabled) {
             $options[] = $this->createOption(

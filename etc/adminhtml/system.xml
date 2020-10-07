@@ -789,11 +789,19 @@
                             <label>Create mailbox labels</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="download" translate="label" sortOrder="300" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="create_dhl_only" translate="label" sortOrder="300" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create labels (only for DHL shipping methods)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_mailbox_dhl_only" translate="label" sortOrder="400" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create mailbox labels (only for DHL shipping methods)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="download" translate="label" sortOrder="500" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Download labels</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="print" translate="label" sortOrder="300" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="print" translate="label" sortOrder="600" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Print labels</label>
                             <comment>Only available if printing service has been enabled and a valid printer has been selected</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -857,7 +865,7 @@
                         <field id="shipment" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Create shipments with DHL labels</label>
                             <comment>Automatically create new shipments with DHL labels based on order status</comment>
-                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <source_model>DHLParcel\Shipping\Model\Config\Source\YesNoDHL</source_model>
                         </field>
                         <field id="on_order_status" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>On order status</label>

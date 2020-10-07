@@ -12,29 +12,34 @@ use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use DHLParcel\Shipping\Model\Service\Order as OrderService;
 
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order;
 
 class Create extends \Magento\Backend\App\Action
 {
-
     const REDIRECT_PATH = 'sales/order/';
 
     protected $orderRepository;
     protected $orderService;
     protected $notificationService;
     protected $helper;
+    protected $massActionFilter;
+    protected $collectionFactory;
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
+        \Magento\Ui\Component\MassAction\Filter $massActionFilter,
+        \Magento\Sales\Model\ResourceModel\Order\CollectionFactoryInterface $collectionFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         OrderService $orderService,
         NotificationService $notificationService,
         Data $helper
     ) {
+        $this->massActionFilter = $massActionFilter;
         $this->orderRepository = $orderRepository;
         $this->orderService = $orderService;
         $this->notificationService = $notificationService;
         $this->helper = $helper;
+        $this->collectionFactory = $collectionFactory;
+
         parent::__construct($context);
     }
 
@@ -48,18 +53,15 @@ class Create extends \Magento\Backend\App\Action
         $success = [];
         $successOrderIds = [];
         $errors = [];
-        $orderIds = $this->_request->getParam('selected');
-        if (is_array($orderIds)) {
-            foreach ($orderIds as $orderId) {
-                /** @var Order $order */
-                $order = $this->orderRepository->get($orderId);
-                try {
-                    $this->orderService->createShipment($orderId);
-                    $success[] = '#' . $order->getRealOrderId();
-                    $successOrderIds[] = $orderId;
-                } catch (LocalizedException $e) {
-                    $errors['#' . $order->getRealOrderId()] = $e;
-                }
+        $collection = $this->massActionFilter->getCollection($this->collectionFactory->create());
+
+        foreach ($collection as $order) {
+            try {
+                $this->orderService->createShipment($order->getId());
+                $success[] = '#' . $order->getRealOrderId();
+                $successOrderIds[] = $order->getId();
+            } catch (LocalizedException $e) {
+                $errors['#' . $order->getRealOrderId()] = $e;
             }
         }
 

@@ -36,9 +36,16 @@ require([
                 if ($(this).prop('checked')) {
                     $('#dhlparcel-options-container').show();
                     $('#dhlparcel-options-container .dhlparcel-package-selection').prop('required',true)
+                    $('#dhlparcel-options-container .dhlparcel-service-option input').each(function () {
+                        $(this).prop('disabled', false)
+                    })
+                    self._updateExceptions()
                 } else {
                     $('#dhlparcel-options-container').hide();
                     $('#dhlparcel-options-container .dhlparcel-package-selection').prop('required',false)
+                    $('#dhlparcel-options-container .dhlparcel-service-option input').each(function () {
+                        $(this).prop('disabled', true)
+                    })
                 }
             })
 

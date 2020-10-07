@@ -6,7 +6,7 @@ DHL offers a convenient plug-in for Magento 2 online stores. This plug-in allows
 ## Update instructions
 - If you've installed a previous version with zip extraction, please remove the files found in `app/code/DHLParcel/Shipping` and proceed with the installation instructions (can be either composer or zip extraction).
 
-- If you're installed a previous version with composer with the recommended version range, just run the following commands to complete the update
+- If you're installed a previous version with composer with the recommended version range, just run the following commands to complete the update  
 `composer update dhlparcel/magento2-plugin:~1.0.0`  
 `php bin/magento setup:upgrade`  
 `php bin/magento setup:di:compile (only for production environments)`

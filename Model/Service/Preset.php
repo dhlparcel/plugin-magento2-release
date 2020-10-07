@@ -111,6 +111,12 @@ class Preset
         return $collection[$shippingMethodKey];
     }
 
+    public function exists($order)
+    {
+        $collection = $this->getOptionsCollection();
+        return array_key_exists($this->getMethodKey($order), $collection);
+    }
+
     public function searchMethodKey($options)
     {
         if (!is_array($options)) {

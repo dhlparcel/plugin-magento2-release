@@ -1,39 +1,30 @@
 {
-    "name": "dhlparcel/magento2-plugin",
-    "description": "DHL Parcel plugin for Magento 2",
-    "type": "magento2-module",
-    "version": "1.0.15",
-    "license": [
-        "OSL-3.0"
+  "name": "dhlparcel/magento2-plugin",
+  "description": "DHL Parcel plugin for Magento 2",
+  "type": "magento2-module",
+  "version": "1.0.16",
+  "license": [
+    "OSL-3.0"
+  ],
+  "require": {
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "~6.0",
+    "setasign/fpdi-fpdf": "^2.0"
+  },
+  "autoload": {
+    "files": [
+      "registration.php"
     ],
-    "require": {
-        "ext-json": "*",
-        "guzzlehttp/guzzle": "~6.0",
-        "setasign/fpdi-fpdf": "^2.0"
-    },
-    "autoload": {
-        "files": [
-            "registration.php"
-        ],
-        "psr-4": {
-            "DHLParcel\\Shipping\\": ""
-        }
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "authors": [
-        {
-            "name": "Shin Ho",
-            "email": "shin.ho@dhl.com"
-        },
-        {
-            "name": "Ron Oerlemans",
-            "email": "ron.oerlemans@dhl.com"
-        },
-        {
-            "name": "Elmar van Wijnen",
-            "email": "elmar.van.wijnen@system4.nl"
-        }
-    ]
+    "psr-4": {
+      "DHLParcel\\Shipping\\": ""
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "authors": [
+    {
+      "name": "DHL Parcel"
+    }
+  ]
 }

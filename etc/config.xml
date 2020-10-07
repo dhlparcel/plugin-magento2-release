@@ -94,6 +94,9 @@
                 <usability>
                     <bulk>
                         <create>1</create>
+                        <create_mailbox>0</create_mailbox>
+                        <create_dhl_only>0</create_dhl_only>
+                        <create_mailbox_dhl_only>0</create_mailbox_dhl_only>
                         <download>1</download>
                         <print>0</print>
                     </bulk>
