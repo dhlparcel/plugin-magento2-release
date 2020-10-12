@@ -97,12 +97,14 @@ class RateQuery
             // Handle wildcard
             "(dest_country_id = :country_id OR dest_country_id = 0 OR dest_country_id = '*') AND 
             (dest_region_id = :region_id OR dest_region_id = 0 OR dest_region_id = '*') AND 
-            ((LENGTH(dest_zip) = 1 AND dest_zip = '*') OR 
-            IF( 
-                RIGHT(dest_zip, 1) = '*', 
-                ((SUBSTR(:postcode, 1, (LENGTH(dest_zip)-1))) = LEFT(`dest_zip`, length(dest_zip)-1)), 
-                0 
-            ))",
+            (
+                (dest_zip != '*') AND 
+                IF( 
+                    RIGHT(dest_zip, 1) = '*', 
+                    ((SUBSTR(:postcode, 1, (LENGTH(dest_zip)-1))) = LEFT(`dest_zip`, LENGTH(dest_zip)-1)), 
+                    false 
+                )
+            )",
 
             // Handle asterisk in dest_zip field
             "dest_country_id = :country_id AND dest_region_id = :region_id AND dest_zip = '*'",
