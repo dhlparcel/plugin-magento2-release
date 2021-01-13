@@ -29,6 +29,7 @@ business,business
 "Print service has been activated. However to use print in bulk actions it must first be enabled. This can be found under Usability - Bulk Operations - Print labels","Print service has been activated. However to use print in bulk actions it must first be enabled. This can be found under Usability - Bulk Operations - Print labels"
 "View Log","View Log"
 "Reset log","Reset log"
+"No shipping days have been set, for sameday to function this field is required","No shipping days have been set, for sameday to function this field is required"
 "Export CSV","Export CSV"
 Country,Country
 Region/State,Region/State
@@ -114,8 +115,9 @@ No,No
 "Yes (and for bulk label creation: enable if available)","Yes (and for bulk label creation: enable if available)"
 "Yes (and for bulk label creation: must be available)","Yes (and for bulk label creation: must be available)"
 Yes,Yes
-"Requested column ""%1"" cannot be resolved","Requested column ""%1"" cannot be resolved"
-"Column ""%1"" not found","Column ""%1"" not found"
+"Yes, but only for orders with DHL shipping methods","Yes, but only for orders with DHL shipping methods"
+"Requested column ""%1"" cannot be resolved (is the condition correct?)","Requested column ""%1"" cannot be resolved (is the condition correct?)"
+"Value for column ""%1"" not found","Value for column ""%1"" not found"
 "Please correct Table Rates format in the Row #%1.","Please correct Table Rates format in the Row #%1."
 "Please correct Country ""%1"" in the Row #%2.","Please correct Country ""%1"" in the Row #%2."
 "Please correct Region/State ""%1"" in the Row #%2.","Please correct Region/State ""%1"" in the Row #%2."
@@ -189,9 +191,12 @@ Expresser,Expresser
 "DHL Label Request","DHL Label Request"
 "Create labels","Create labels"
 "Create mailbox labels","Create mailbox labels"
+"Create labels (only for DHL shipping methods)","Create labels (only for DHL shipping methods)"
+"Create mailbox labels (only for DHL shipping methods)","Create mailbox labels (only for DHL shipping methods)"
 "Download labels","Download labels"
 "Print labels","Print labels"
 "No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.","No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab."
+"Service: Saturday","Service: Saturday"
 "Expected in %s","Expected in %s"
 "Selected date has passed","Selected date has passed"
 from,from
@@ -265,6 +270,7 @@ Title,Title
 "Default text source for reference 2","Default text source for reference 2"
 "Default text for reference 2","Default text for reference 2"
 "Auto-enable: Return label","Auto-enable: Return label"
+"Auto-enable: Signature","Auto-enable: Signature"
 "Auto-enable: Age check 18+","Auto-enable: Age check 18+"
 "Auto-enable: Hide shipper","Auto-enable: Hide shipper"
 "Alternative tracking URL","Alternative tracking URL"
@@ -308,6 +314,7 @@ Phonenumber,Phonenumber
 "Alternative Shipping Address for Hide Shipper Service","Alternative Shipping Address for Hide Shipper Service"
 Usability,Usability
 "Bulk Operations","Bulk Operations"
+"Show service: Saturday","Show service: Saturday"
 "Bulk Reports","Bulk Reports"
 "Bulk status notification","Bulk status notification"
 "Bulk success notification","Bulk success notification"
@@ -316,9 +323,11 @@ Usability,Usability
 "Enable print service usage","Enable print service usage"
 "Zebra printer","Zebra printer"
 "Hide download button","Hide download button"
-"Automatically create new shipments with DHL labels","Automatically create new shipments with DHL labels"
-"On orderstatus","On orderstatus"
-"Automatically print DHL labels","Automatically print DHL labels"
+Automation,Automation
+"Send tracking mail","Send tracking mail"
+"Create shipments with DHL labels","Create shipments with DHL labels"
+"On order status","On order status"
+"Immediately print created DHL labels","Immediately print created DHL labels"
 "Email Templates","Email Templates"
 "Shipment: Overwrite 'email/shipment/track.phtml'","Shipment: Overwrite 'email/shipment/track.phtml'"
 "Order: ServicePoint address","Order: ServicePoint address"
@@ -338,22 +347,5 @@ Usability,Usability
 "ServicePoint ID","ServicePoint ID"
 "Change Status","Change Status"
 "Are you sure?","Are you sure?"
-Sat,Sat
-Sun,Sun
-Mon,Mon
-Tue,Tue
-Wed,Wed
-Thu,Thu
-Fri,Fri
-May,May
-Jun,Jun
-Jul,Jul
-Aug,Aug
-Sep,Sep
-Oct,Oct
-Nov,Nov
-Dec,Dec
-Jan,Jan
-Feb,Feb
-Mar,Mar
-Apr,Apr
+"Save preferred date to 'Shipping Description'","Save preferred date to 'Shipping Description'"
+"Save the preferred shipping date to the order's 'Shipping Description' when a date is selected.","Save the preferred shipping date to the order's 'Shipping Description' when a date is selected."

@@ -10,8 +10,10 @@ use DHLParcel\Shipping\Model\Exception\NoTrackException;
 use DHLParcel\Shipping\Model\Exception\NotShippableException;
 use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use DHLParcel\Shipping\Model\Service\Order as OrderService;
+use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 
 use Magento\Framework\Exception\LocalizedException;
+use Zend_Db_Expr;
 
 class Create extends \Magento\Backend\App\Action
 {
@@ -19,6 +21,7 @@ class Create extends \Magento\Backend\App\Action
 
     protected $orderRepository;
     protected $orderService;
+    protected $presetService;
     protected $notificationService;
     protected $helper;
     protected $massActionFilter;
@@ -30,12 +33,14 @@ class Create extends \Magento\Backend\App\Action
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactoryInterface $collectionFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         OrderService $orderService,
+        PresetService $presetService,
         NotificationService $notificationService,
         Data $helper
     ) {
         $this->massActionFilter = $massActionFilter;
         $this->orderRepository = $orderRepository;
         $this->orderService = $orderService;
+        $this->presetService = $presetService;
         $this->notificationService = $notificationService;
         $this->helper = $helper;
         $this->collectionFactory = $collectionFactory;
@@ -55,8 +60,17 @@ class Create extends \Magento\Backend\App\Action
         $errors = [];
         $collection = $this->massActionFilter->getCollection($this->collectionFactory->create());
 
+        $selected = $this->_request->getParam(\Magento\Ui\Component\MassAction\Filter::SELECTED_PARAM);
+        if (!empty($selected) && is_array($selected)) {
+            $collection->getSelect()->order(new Zend_Db_Expr('FIELD(entity_id,' . implode(',', $selected) . ')'));
+        }
+
         foreach ($collection as $order) {
             try {
+                if ($this->onlyDHL() && !$this->presetService->exists($order)) {
+                    continue;
+                }
+
                 $this->orderService->createShipment($order->getId());
                 $success[] = '#' . $order->getRealOrderId();
                 $successOrderIds[] = $order->getId();
@@ -203,5 +217,10 @@ class Create extends \Magento\Backend\App\Action
             'action' => $url,
             'target' => '_self',
         ];
+    }
+
+    protected function onlyDHL()
+    {
+        return boolval($this->_request->getParam('dhlparcel_only') == 'true');
     }
 }

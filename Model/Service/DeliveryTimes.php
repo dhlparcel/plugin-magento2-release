@@ -308,6 +308,8 @@ class DeliveryTimes
 
         $order->setData('dhlparcel_shipping_deliverytimes_selection', $timeSelection->toJSON());
         $order->setData('dhlparcel_shipping_deliverytimes_priority', 9999999999 - intval($timeSelection->timestamp)); // Compatible up to year 2286
+
+        $order->setShippingDescription($order->getShippingDescription());
     }
 
     /**

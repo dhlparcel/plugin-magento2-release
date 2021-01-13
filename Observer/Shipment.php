@@ -73,9 +73,6 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             $tracks = $this->processForm($shipment->getOrderId());
         } elseif ($shipment->getData('dhlparcel_shipping_is_created')) {
             $order = $shipment->getOrder();
-            if ($this->onlyDHL() && !$this->presetService->exists($order)) {
-                return;
-            }
             $tracks = $this->processGrid($order);
         } else {
             return;
@@ -107,6 +104,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $toBusiness = $this->presetService->defaultToBusiness($storeId);
         $defaultOptions = $this->presetService->getDefaultOptions($order);
         $defaultOptions = $this->checkMailboxOverride($defaultOptions);
+        $defaultOptions = $this->additionalServices($defaultOptions);
 
         $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
 
@@ -114,6 +112,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             $skippableOptions = $this->presetService->filterSkippableDefaults($defaultOptions, $storeId);
             $requiredOptions = $this->presetService->getDefaultOptions($order, true);
             $requiredOptions = $this->checkMailboxOverride($requiredOptions);
+            $requiredOptions = $this->additionalServices($requiredOptions);
 
             $options = $this->capabilityService->getOptions($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($requiredOptions));
 
@@ -221,9 +220,12 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         return $options;
     }
 
-    protected function onlyDHL()
+    protected function additionalServices($options)
     {
-        return boolval($this->request->getParam('dhlparcel_only') == 'true');
+        if ($this->request->getParam('service_saturday') == 'true' && !array_key_exists('S', $options)) {
+            $options['S'] = '';
+        }
+        return $options;
     }
 
     /**

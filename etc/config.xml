@@ -90,6 +90,7 @@
                     <transit_days>1</transit_days>
                     <shipping_days>1, 2, 3, 4, 5</shipping_days>
                     <cutoff>16:00</cutoff>
+                    <save_to_shippingdescription>1</save_to_shippingdescription>
                 </delivery_times>
                 <usability>
                     <bulk>
@@ -97,6 +98,7 @@
                         <create_mailbox>0</create_mailbox>
                         <create_dhl_only>0</create_dhl_only>
                         <create_mailbox_dhl_only>0</create_mailbox_dhl_only>
+                        <create_service_saturday>0</create_service_saturday>
                         <download>1</download>
                         <print>0</print>
                     </bulk>
@@ -105,6 +107,9 @@
                         <notification_success>1</notification_success>
                         <notification_error>notification_single</notification_error>
                     </bulk_reports>
+                    <disable_housenumber_validation>
+                        <countries></countries>
+                    </disable_housenumber_validation>
                     <template_overwrites>
                         <email_shipment_track>1</email_shipment_track>
                         <email_order_servicepoint>1</email_order_servicepoint>

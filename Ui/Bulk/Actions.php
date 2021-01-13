@@ -41,37 +41,44 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
         $skipCreate = in_array('create', $this->skipActions);
         $enabled = $this->helper->getConfigData('usability/bulk/create');
         if ($enabled && !$skipCreate) {
-            $options[] = $this->createOption(
+            $this->addOptionStack(
+                $options,
                 'create',
                 __('Create labels'),
-                $this->urlBuilder->getUrl($this->urlPath . 'create')
+                $this->urlPath . 'create'
             );
         }
 
         $enabled = $this->helper->getConfigData('usability/bulk/create_mailbox');
         if ($enabled && !$skipCreate) {
-            $options[] = $this->createOption(
+            $this->addOptionStack(
+                $options,
                 'create_mailbox',
                 __('Create mailbox labels'),
-                $this->urlBuilder->getUrl($this->urlPath . 'create', ['method_override' => 'mailbox'])
+                $this->urlPath . 'create',
+                ['method_override' => 'mailbox']
             );
         }
 
         $enabled = $this->helper->getConfigData('usability/bulk/create_dhl_only');
         if ($enabled && !$skipCreate) {
-            $options[] = $this->createOption(
+            $this->addOptionStack(
+                $options,
                 'create_dhl_only',
                 __('Create labels (only for DHL shipping methods)'),
-                $this->urlBuilder->getUrl($this->urlPath . 'create', ['dhlparcel_only' => 'true'])
+                $this->urlPath . 'create',
+                ['dhlparcel_only' => 'true']
             );
         }
 
         $enabled = $this->helper->getConfigData('usability/bulk/create_mailbox_dhl_only');
         if ($enabled && !$skipCreate) {
-            $options[] = $this->createOption(
+            $this->addOptionStack(
+                $options,
                 'create_mailbox_dhl_only',
                 __('Create mailbox labels (only for DHL shipping methods)'),
-                $this->urlBuilder->getUrl($this->urlPath . 'create', ['method_override' => 'mailbox', 'dhlparcel_only' => 'true'])
+                $this->urlPath . 'create',
+                ['method_override' => 'mailbox', 'dhlparcel_only' => 'true']
             );
         }
 
@@ -80,7 +87,7 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $options[] = $this->createOption(
                 'download',
                 __('Download labels'),
-                $this->urlBuilder->getUrl($this->urlPath . 'download')
+                $this->urlPath . 'download'
             );
         }
 
@@ -90,7 +97,7 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $options[] = $this->createOption(
                 'print',
                 __('Print labels'),
-                $this->urlBuilder->getUrl($this->urlPath . 'print')
+                $this->urlPath . 'print'
             );
         }
 
@@ -99,7 +106,7 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $options[] = $this->createOption(
                 'disabled',
                 __('No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.'),
-                $this->urlBuilder->getUrl('admin/system_config/edit/section/carriers/#carriers_dhlparcel')
+                'admin/system_config/edit/section/carriers/#carriers_dhlparcel'
             );
         }
 
@@ -124,19 +131,52 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
         }
     }
 
-    protected function createOption($id, $label, $url = null)
+    protected function addOptionStack(&$options, $id, $label, $routePath = null, $routeParams = null)
+    {
+        $options[] = $this->createOption(
+            $id,
+            $label,
+            $routePath,
+            $routeParams
+        );
+
+        if ($this->helper->getConfigData('usability/bulk/create_service_saturday')) {
+            $options[] = $this->createOption(
+                $id . '_service_saturday',
+                $label . ' + ' . __('Service: Saturday'),
+                $routePath,
+                $this->additionalParams($routeParams, ['service_saturday' => 'true'])
+            );
+        }
+    }
+
+    protected function createOption($id, $label, $routePath = null, $routeParams = null)
     {
         $option = [
             'type'  => 'dhlparcel_bulk_' . $id,
             'label' => $label,
         ];
 
-        if ($url) {
-            $option['url'] = $url;
+        if ($routePath) {
+            $option['url'] = $this->urlBuilder->getUrl($routePath, $routeParams);
         }
 
         $option = array_merge_recursive($option, $this->additionalData);
 
         return $option;
+    }
+
+    protected function additionalParams($routeParams, $pair)
+    {
+        if (!is_array($routeParams) && !is_array($pair)) {
+            return $routeParams;
+        }
+        if (!is_array($routeParams)) {
+            return $pair;
+        }
+        if (!is_array($pair)) {
+            return $routeParams;
+        }
+        return $routeParams + $pair;
     }
 }

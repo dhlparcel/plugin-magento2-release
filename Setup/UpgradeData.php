@@ -79,6 +79,10 @@ class UpgradeData implements UpgradeDataInterface
             $this->updateConfigPaths($configs);
         }
 
+        if (version_compare($context->getVersion(), "1.0.18", "<")) {
+            $this->addBlacklistAll();
+        }
+
         $setup->endSetup();
     }
 
@@ -207,5 +211,51 @@ class UpgradeData implements UpgradeDataInterface
             'source_model',
             \DHLParcel\Shipping\Model\Entity\Attribute\Source\Blacklist::class
         );
+    }
+
+    private function addBlacklistAll()
+    {
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_SERVICEPOINT,
+            'position',
+            200
+        );
+
+        $this->eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_GENERAL,
+            'position',
+            300
+        );
+
+        $this->eavSetup->addAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            Carrier::BLACKLIST_ALL,
+            [
+                'type'                    => 'int',
+                'backend'                 => '',
+                'frontend'                => '',
+                'label'                   => 'Disable all DHL delivery methods in checkout',
+                'input'                   => 'select',
+                'class'                   => '',
+                'source'                  => \DHLParcel\Shipping\Model\Entity\Attribute\Source\NoYes::class,
+                'global'                  => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
+                'visible'                 => true,
+                'required'                => false,
+                'user_defined'            => false,
+                'default'                 => 0,
+                'searchable'              => false,
+                'filterable'              => false,
+                'comparable'              => false,
+                'visible_on_front'        => false,
+                'used_in_product_listing' => false,
+                'unique'                  => false,
+                'apply_to'                => '',
+                'sort_order'              => 100,
+            ]
+        );
+
+        $this->addAttributesToAttributeSets([Carrier::BLACKLIST_ALL]);
     }
 }

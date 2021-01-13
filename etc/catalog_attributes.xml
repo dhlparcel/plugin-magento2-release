@@ -3,5 +3,6 @@
     <group name="quote_item">
         <attribute name="dhlparcel_blacklist"/>
         <attribute name="dhlparcel_blacklist_sp"/>
+        <attribute name="dhlparcel_blacklist_all"/>
     </group>
 </config>

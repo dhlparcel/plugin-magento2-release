@@ -22,6 +22,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     // Attributes are restricted to Mage_Eav_Model_Entity_Attribute::ATTRIBUTE_CODE_MAX_LENGTH = 30 max characters
     const BLACKLIST_GENERAL = 'dhlparcel_blacklist';
     const BLACKLIST_SERVICEPOINT = 'dhlparcel_blacklist_sp';
+    const BLACKLIST_ALL = 'dhlparcel_blacklist_all';
     protected $_code = 'dhlparcel';
     protected $capabilityService;
     protected $cartService;
@@ -118,7 +119,9 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->_rateFactory->create();
         $blacklist = $this->createBlacklist($request->getAllItems());
-
+        if ($blacklist === true) {
+            return $result;
+        }
         foreach ($this->getMethods() as $key => $title) {
             $method = $this->getShippingMethod($request, $key, $blacklist);
             if ($method) {
@@ -369,7 +372,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
     /**
      * @param \Magento\Quote\Model\Quote\Item[] $items
-     * @return array
+     * @return array|bool
      */
     protected function createBlacklist($items)
     {
@@ -378,6 +381,10 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         foreach ($items as $item) {
             /** @var \Magento\Quote\Model\Quote\Item $item **/
             $product = $item->getProduct();
+            if ($product[self::BLACKLIST_ALL]) {
+                return true;
+            }
+
             if ($product[self::BLACKLIST_SERVICEPOINT]) {
                 $blacklist[] = 'PS';
             }

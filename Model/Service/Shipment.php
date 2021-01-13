@@ -2,6 +2,8 @@
 
 namespace DHLParcel\Shipping\Model\Service;
 
+use DHLParcel\Shipping\Helper\Data;
+use DHLParcel\Shipping\Model\Carrier;
 use DHLParcel\Shipping\Model\Exception\LabelCreationException;
 use DHLParcel\Shipping\Model\Service\Logic\Shipment as ShipmentLogic;
 use DHLParcel\Shipping\Model\Data\Api\Request\Shipment\Option;
@@ -17,13 +19,17 @@ class Shipment
     /** @var ShipmentLogic \DHLParcel\Shipping\Model\Service\Logic\Shipment */
     protected $shipmentLogic;
     protected $shipmentRepository;
+    /** @var Data */
+    protected $helper;
 
     public function __construct(
         \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository,
-        ShipmentLogic $shipmentLogic
+        ShipmentLogic $shipmentLogic,
+        Data $helper
     ) {
         $this->shipmentLogic = $shipmentLogic;
         $this->shipmentRepository = $shipmentRepository;
+        $this->helper = $helper;
     }
 
     /**
@@ -102,7 +108,9 @@ class Shipment
             throw new LabelCreationException(__('Failed to create label, missing receiver street'));
         }
 
-        if (empty($shipmentRequest->receiver->address->number)) {
+        $disableHousenumberValidationCountries = explode(',', strval($this->helper->getConfigData('usability/disable_housenumber_validation/countries')));
+        $validateHousenumber = (bool) !in_array($shipmentRequest->receiver->address->countryCode, $disableHousenumberValidationCountries);
+        if ($validateHousenumber && empty($shipmentRequest->receiver->address->number)) {
             throw new LabelCreationException(__('Failed to create label, missing receiver street number'));
         }
 

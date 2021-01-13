@@ -73,4 +73,7 @@
         <plugin name="dhlparcel_shipping_change_track_template" type="DHLParcel\Shipping\Plugin\ChangeTrackTemplate"/>
     </type>
 
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="dhlparcel_shipping_change_shipping_method_name" type="DHLParcel\Shipping\Plugin\ChangeShippingMethodName"/>
+    </type>
 </config>

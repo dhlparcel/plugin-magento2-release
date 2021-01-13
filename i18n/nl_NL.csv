@@ -22,7 +22,6 @@
 "Please correct Country ""%1"" in the Row #%2.","Corrigeer Land ""%1"" in rij #%2"
 "Please correct Region/State ""%1"" in the Row #%2.","Corrigeer Regio/Staat ""%1"" in rij #%2"
 "Please correct Shipping Price ""%1"" in the Row #%2.","Corrigeer Verzendkosten ""%1"" in rij #%2"
-"Requested column ""%1"" cannot be resolved","Gevraagde kolom ""%1"" kan niet worden opgelost"
 "Something unexpected happened, please contact your administrator","Er is een onverwachte fout opgetreden, neem contact op met uw websitebeheerder"
 %1 / %2 rate:,%1 / %2 rate:
 %1 label(s) were not printed due to errors,%1 label(s) konden niet worden geprint door fouten
@@ -57,9 +56,9 @@ Authentication successful,Authenticatie succesvol
 Auto-enable: Age check 18+,Standaard ingeschakeld: leeftijdscheck (18+)
 Auto-enable: Extra assured,Standaard ingeschakeld: Extra Zeker
 Auto-enable: Hide shipper,Standaard ingeschakeld: Verberg Verzender
-Auto-enable: Reference 2,Standaard ingeschakeld: referentie 2
-Auto-enable: Reference,Standaard ingeschakeld: referentie
-Auto-enable: Return label,Standaard ingeschakeld: retourlabel
+Auto-enable: Reference 2,Standaard ingeschakeld: Referentie 2
+Auto-enable: Reference,Standaard ingeschakeld: Referentie
+Auto-enable: Return label,Standaard ingeschakeld: Retourlabel
 Billing Address,Factuuradres
 Bulk Operations,Bulk acties
 Bulk Reports,Bulk rapporten
@@ -370,3 +369,13 @@ Jan,Jan
 Feb,Feb
 Mar,Maa
 Apr,Apr
+"No shipping days have been set, for sameday to function this field is required","Er zijn geen verzenddagen ingesteld, dit is nodig om DHL Vandaag te gebruiken"
+"Yes, but only for orders with DHL shipping methods","Ja, maar alleen voor bestellingen met DHL verzendmethodes"
+"Requested column ""%1"" cannot be resolved (is the condition correct?)","Gevraagde kolom ""%1"" kan niet worden opgelost (is the conditie correct?)"
+"Value for column ""%1"" not found","Geen waarde voor kolom ""%1"" gevonden"
+"Create labels (only for DHL shipping methods)","Maak labels (alleen voor DHL verzendmethodes)"
+"Create mailbox labels (only for DHL shipping methods)","Maak brievenbuspakket labels (alleen voor DHL verzendmethodes)"
+"Service: Saturday","Service: Zaterdagbezorging"
+"Auto-enable: Signature","Standaard ingeschakeld: Handtekening bij ontvangst"
+"Save preferred date to 'Shipping Description'","Sla de bezorgdag-voorkeur op bij de 'Verzendmethode beschrijving'"
+"Save the preferred shipping date to the order's 'Shipping Description' when a date is selected.","Sla de voorkeur bezorgdag op bij de 'Verzendmethode beschrijving' wanneer deze is gekozen door de klant."

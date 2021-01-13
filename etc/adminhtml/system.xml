@@ -405,7 +405,6 @@
                         <label>Saturday delivery</label>
                         <field id="enabled" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Enabled</label>
-                            <comment>This only applies to B2B customers and 'Send to business by default' must be set to Yes</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="title" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -629,6 +628,14 @@
                             <field id="enabled">1</field>
                         </depends>
                     </field>
+                    <field id="save_to_shippingdescription" translate="label" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Save preferred date to 'Shipping Description'</label>
+                        <comment>Save the preferred shipping date to the order's 'Shipping Description' when a date is selected.</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <depends>
+                            <field id="enabled">1</field>
+                        </depends>
+                    </field>
                 </group>
 
                 <group id="shipper" translate="label" type="label" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -665,7 +672,7 @@
                         <label>City</label>
                         <comment>Please enter the shipper city</comment>
                     </field>
-                    <field id="country_code" translate="label" type="select" sortOrder="309" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="country_code" translate="label" type="multiselect" sortOrder="309" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Country</label>
                         <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                         <can_be_empty>0</can_be_empty>
@@ -797,11 +804,15 @@
                             <label>Create mailbox labels (only for DHL shipping methods)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="download" translate="label" sortOrder="500" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="create_service_saturday" translate="label" sortOrder="500" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Show service: Saturday</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="download" translate="label" sortOrder="600" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Download labels</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
-                        <field id="print" translate="label" sortOrder="600" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <field id="print" translate="label" sortOrder="700" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Print labels</label>
                             <comment>Only available if printing service has been enabled and a valid printer has been selected</comment>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -890,7 +901,15 @@
                             </depends>
                         </field>
                     </group>
-                    <group id="template_overwrites" translate="label" type="label" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="disable_housenumber_validation" translate="label" type="label" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>House number validation</label>
+                        <field id="countries" sortOrder="201" translate="label" type="multiselect" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Disable house number validation for these countries</label>
+                            <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                            <can_be_empty>1</can_be_empty>
+                        </field>
+                    </group>
+                    <group id="template_overwrites" translate="label" type="label" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Email Templates</label>
                         <field id="email_shipment_track" translate="label" sortOrder="100" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Shipment: Overwrite 'email/shipment/track.phtml'</label>
