@@ -15,6 +15,7 @@ class DeliveryServices
 
     protected $assetRepository;
     protected $priceHelper;
+    protected $taxHelper;
     protected $helper;
     protected $availabilityFactory;
     protected $optionFactory;
@@ -29,12 +30,14 @@ class DeliveryServices
     public function __construct(
         \Magento\Framework\View\Asset\Repository $assetRepository,
         \Magento\Framework\Pricing\Helper\Data $priceHelper,
+        \Magento\Tax\Helper\Data $taxHelper,
         Data $helper,
         DeliveryServicesAvailabilityFactory $availabilityFactory,
         OptionFactory $optionFactory
     ) {
         $this->assetRepository = $assetRepository;
         $this->priceHelper = $priceHelper;
+        $this->taxHelper = $taxHelper;
         $this->helper = $helper;
         $this->availabilityFactory = $availabilityFactory;
         $this->optionFactory = $optionFactory;
@@ -51,7 +54,7 @@ class DeliveryServices
      * @param array $selections
      * @return \DHLParcel\Shipping\Model\Data\DeliveryServicesAvailability
      */
-    public function getAvailability($options, $subtotal = 0, $selections = [])
+    public function getAvailability($options, $subtotal = 0, $selections = [], $store = null)
     {
         /** @var \DHLParcel\Shipping\Model\Data\DeliveryServicesAvailability $availability */
         $availability = $this->availabilityFactory->create();
@@ -64,7 +67,8 @@ class DeliveryServices
                 self::NO_NEIGHBOUR,
                 $this->getTitle(self::NO_NEIGHBOUR),
                 __('Do not drop off at neighbours'),
-                $subtotal
+                $subtotal,
+                $store
             );
         }
         if (array_key_exists(self::EVENING, $options) &&
@@ -73,7 +77,8 @@ class DeliveryServices
                 self::EVENING,
                 $this->getTitle(self::EVENING),
                 __('Delivery in the evening'),
-                $subtotal
+                $subtotal,
+                $store
             );
         }
         if (array_key_exists(self::SATURDAY, $options) &&
@@ -82,7 +87,8 @@ class DeliveryServices
                 self::SATURDAY,
                 $this->getTitle(self::SATURDAY),
                 __('Package will also be delivered on Saturdays'),
-                $subtotal
+                $subtotal,
+                $store
             );
         }
         if (array_key_exists(self::MORNING, $options) &&
@@ -91,7 +97,8 @@ class DeliveryServices
                 self::MORNING,
                 $this->getTitle(self::MORNING),
                 __('Deliver shipment before 11 AM'),
-                $subtotal
+                $subtotal,
+                $store
             );
         }
 
@@ -254,20 +261,36 @@ class DeliveryServices
         return $titles[$key];
     }
 
-    protected function getServiceData($code, $title, $description, $subtotal)
+    protected function getServiceData($code, $title, $description, $subtotal, $store = null)
     {
+        $price = $this->getTaxPrice($this->serviceCost($subtotal, [$code]), $store);
+
         return [
             'value'       => $code,
             'title'       => $title,
             'description' => $description,
             'image'       => $this->getImageUrl($code),
-            'price'       => '+ ' . $this->priceHelper->currencyByStore(
-                $this->serviceCost($subtotal, [$code]),
-                null,
+            'price'       => $price,
+        ];
+    }
+
+    protected function getTaxPrice($serviceCost, $store = null)
+    {
+        if ($this->taxHelper->getShippingPriceDisplayType($store) === \Magento\Tax\Model\Config::DISPLAY_TYPE_EXCLUDING_TAX) {
+            return '+ ' . $this->priceHelper->currencyByStore(
+                $serviceCost,
+                $store,
                 true,
                 false
-            ),
-        ];
+            );
+        }
+
+        return '+ ' . $this->priceHelper->currencyByStore(
+            $this->taxHelper->getShippingPrice($serviceCost, true, null, null, $store),
+            $store,
+            true,
+            false
+        );
     }
 
     protected function sanitizeData($array)

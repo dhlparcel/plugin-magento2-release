@@ -110,6 +110,9 @@
                     <disable_housenumber_validation>
                         <countries></countries>
                     </disable_housenumber_validation>
+                    <return_tracks>
+                        <show_for_customers>0</show_for_customers>
+                    </return_tracks>
                     <template_overwrites>
                         <email_shipment_track>1</email_shipment_track>
                         <email_order_servicepoint>1</email_order_servicepoint>

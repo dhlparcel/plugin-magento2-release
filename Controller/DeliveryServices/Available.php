@@ -44,7 +44,7 @@ class Available extends \DHLParcel\Shipping\Controller\AbstractResponse
             $options = $this->capabilityService->getOptions($this->storeManager->getStore()->getId(), $toCountry, $toPostalCode, $toBusiness, ['DOOR']);
         }
 
-        $data = $this->deliveryServicesService->getAvailability($options, $subtotal, $selections);
+        $data = $this->deliveryServicesService->getAvailability($options, $subtotal, $selections, $this->storeManager->getStore()->getId());
 
         return $this->resultFactory
             ->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON)

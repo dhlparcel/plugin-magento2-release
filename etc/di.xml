@@ -22,7 +22,13 @@
     </virtualType>
 
     <type name="Magento\Sales\Model\Order\Shipment">
-        <plugin name="DHLParcel_Shipping::emailShipmentTrack" type="DHLParcel\Shipping\Plugin\Email\Shipment\Track"/>
+        <plugin name="DHLParcel_Shipping::ShipmentHideReturnTrack" type="DHLParcel\Shipping\Plugin\Shipment\HideReturnTrack"/>
+    </type>
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="DHLParcel_Shipping::OrderHideReturnTrack" type="DHLParcel\Shipping\Plugin\Order\HideReturnTrack"/>
+    </type>
+    <type name="Magento\Shipping\Block\Tracking\Popup">
+        <plugin name="DHLParcel_Shipping::ShipmentPopupHideReturnTrack" type="DHLParcel\Shipping\Plugin\Shipment\Popup\HideReturnTrack"/>
     </type>
     <type name="DHLParcel\Shipping\Logger\ErrorHandler">
         <arguments>

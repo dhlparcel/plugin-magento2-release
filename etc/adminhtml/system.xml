@@ -909,6 +909,13 @@
                             <can_be_empty>1</can_be_empty>
                         </field>
                     </group>
+                    <group id="return_tracks" translate="label" type="label" sortOrder="401" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Return tracking numbers</label>
+                        <field id="show_for_customers" translate="label" type="select" sortOrder="100"  showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Show for customers</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                    </group>
                     <group id="template_overwrites" translate="label" type="label" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Email Templates</label>
                         <field id="email_shipment_track" translate="label" sortOrder="100" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
