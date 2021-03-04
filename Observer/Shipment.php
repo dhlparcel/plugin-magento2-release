@@ -85,7 +85,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             // Fetching labels so they are cached
             $this->labelService->getLabelPdf($labelId);
         }
-        
+
         return $shipment;
     }
 
@@ -106,7 +106,8 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $defaultOptions = $this->checkMailboxOverride($defaultOptions);
         $defaultOptions = $this->additionalServices($defaultOptions);
 
-        $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
+        $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness,
+            array_keys($defaultOptions));
 
         if (empty($sizes) || !is_array($sizes)) {
             $skippableOptions = $this->presetService->filterSkippableDefaults($defaultOptions, $storeId);
@@ -114,7 +115,8 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             $requiredOptions = $this->checkMailboxOverride($requiredOptions);
             $requiredOptions = $this->additionalServices($requiredOptions);
 
-            $options = $this->capabilityService->getOptions($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($requiredOptions));
+            $options = $this->capabilityService->getOptions($storeId, $toCountry, $toPostalCode, $toBusiness,
+                array_keys($requiredOptions));
 
             $allowedOptions = [];
             foreach ($skippableOptions as $skippableOption) {
@@ -124,12 +126,14 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             }
 
             $defaultOptions = array_merge($requiredOptions, $allowedOptions);
-            $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
+            $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness,
+                array_keys($defaultOptions));
 
             if (empty($sizes) || !is_array($sizes)) {
                 $translations = $this->presetService->getTranslations();
                 $translatedOptions = array_intersect_key($translations, $defaultOptions);
-                throw new FaultyServiceOptionException(__('No DHL services could be found for this order with the selected service options: %1', implode(', ', $translatedOptions)));
+                throw new FaultyServiceOptionException(__('No DHL services could be found for this order with the selected service options: %1',
+                    implode(', ', $translatedOptions)));
             }
         }
 
@@ -224,6 +228,10 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
     {
         if ($this->request->getParam('service_saturday') == 'true' && !array_key_exists('S', $options)) {
             $options['S'] = '';
+        }
+
+        if ($this->request->getParam('service_sdd') == 'true' && !array_key_exists('SDD', $options)) {
+            $options['SDD'] = '';
         }
         return $options;
     }

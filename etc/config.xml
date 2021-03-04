@@ -99,6 +99,7 @@
                         <create_dhl_only>0</create_dhl_only>
                         <create_mailbox_dhl_only>0</create_mailbox_dhl_only>
                         <create_service_saturday>0</create_service_saturday>
+                        <create_service_sdd>0</create_service_sdd>
                         <download>1</download>
                         <print>0</print>
                     </bulk>

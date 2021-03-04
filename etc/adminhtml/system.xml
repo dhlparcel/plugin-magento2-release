@@ -808,6 +808,10 @@
                             <label>Show service: Saturday</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <field id="create_service_sdd" translate="label" sortOrder="510" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Show service: Same-day delivery</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
                         <field id="download" translate="label" sortOrder="600" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Download labels</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

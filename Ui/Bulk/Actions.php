@@ -148,12 +148,21 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
                 $this->additionalParams($routeParams, ['service_saturday' => 'true'])
             );
         }
+
+        if ($this->helper->getConfigData('usability/bulk/create_service_sdd')) {
+            $options[] = $this->createOption(
+                $id . '_service_sdd',
+                $label . ' + ' . __('Service: Same-day delivery'),
+                $routePath,
+                $this->additionalParams($routeParams, ['service_sdd' => 'true'])
+            );
+        }
     }
 
     protected function createOption($id, $label, $routePath = null, $routeParams = null)
     {
         $option = [
-            'type'  => 'dhlparcel_bulk_' . $id,
+            'type' => 'dhlparcel_bulk_' . $id,
             'label' => $label,
         ];
 

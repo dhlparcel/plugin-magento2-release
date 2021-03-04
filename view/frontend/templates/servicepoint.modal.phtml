@@ -1,12 +1,11 @@
 <div id="dhlparcel-shipping-modal-content">
-    <div id="dhl-servicepoint-locator-component"
+    <div id="dhlparcel_shipping_locator_real_reset">
+        <div id="dhl-servicepoint-locator-component"
          data-query=""
          data-limit="7"
-         data-disable-refresh="true"
-         data-disable-url-sync="true"
-         data-locale="nl-NL"
-         data-onchange="dhlparcel_shipping_select_servicepoint"
+         data-locale="<?=$block->getLanguage()?>"
          data-setup="dhlparcel_shipping_reset_servicepoint"
          data-maps-key="<?=$block->getGoogleMapsKey()?>"
-    ></div>
+        ></div>
+    </div>
 </div>

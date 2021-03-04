@@ -4,7 +4,8 @@
     .checkout-index-index .modal-popup.dhlparcel-shipping-modal .modal-inner-wrap {
         width: 95%;
         width: 95vw;
-        margin: 15vh auto 0 auto;
+        height: 95vh;
+        margin: 2.5vh auto 0 auto;
     }
 }
 
@@ -13,23 +14,26 @@
     .checkout-index-index .modal-popup.dhlparcel-shipping-modal .modal-inner-wrap {
         width: 80%;
         width: 80vw;
-        margin: 8vh auto 0 auto;
+        height: 95vh;
+        margin: 2.5vh auto 0 auto;
     }
 }
 
 @media screen and (min-width: 1025px) {
     .modal-popup.dhlparcel-shipping-modal .modal-inner-wrap,
     .checkout-index-index .modal-popup.dhlparcel-shipping-modal .modal-inner-wrap {
-        width: 65%;
-        width: 65vw;
-        margin: 5vh auto 0 auto;
+        width: 85%;
+        width: 85vw;
+        height: 95vh;
+        margin: 2.5vh auto 0 auto;
     }
     /** Amasty checkout compatibility **/
     .checkout-index-index .modals-wrapper .modal-popup.dhlparcel-shipping-modal:not(.agreements-modal):not(.popup-authentication) .modal-inner-wrap {
-        width: 65%;
-        width: 65vw;
+        width: 85%;
+        width: 85vw;
         max-width: none;
-        margin: 5vh auto 0 auto;
+        height: 95vh;
+        margin: 2.5vh auto 0 auto;
     }
 }
 
@@ -37,14 +41,13 @@
 .checkout-index-index .modal-popup.dhlparcel-shipping-modal .modal-inner-wrap {
     background-color: #f7f7f7;
     background-repeat: repeat-x;
-    margin: 5% auto; /* 5% from the top and centered */
-    padding: 5px 15px 20px 15px;
     border: 1px solid #888;
     left: 0; /* Disable the default modal setting a left */
 }
 
 .modal-popup.dhlparcel-shipping-modal .modal-header {
     padding-left: 0;
+    display: none;
 }
 
 .modal-popup.dhlparcel-shipping-modal .modal-content {
@@ -56,113 +59,82 @@
     padding: 0;
 }
 
-.modal-popup.dhlparcel-shipping-modal .modal-content button {
-    box-shadow: none;
-    border-radius: 0;
-    border: none;
+#dhlparcel_shipping_locator_real_reset {
+    all: initial;
 }
 
-.modal-popup.dhlparcel-shipping-modal .modal-footer button {
-    width:34%;
-    box-shadow: none;
-    border-radius: 0;
-    border: none;
+
+.modal-popup.dhlparcel-shipping-modal #dhlparcel-shipping-modal-content,
+.modal-popup.dhlparcel-shipping-modal #dhl-servicepoint-locator-component,
+.modal-popup.dhlparcel-shipping-modal .modal-inner-wrap,
+.modal-popup.dhlparcel-shipping-modal .modal-content {
+    height: 100%;
 }
 
-.dhlparcel-shipping-modal-logo {
-    float: left;
-    width: 112px;
+
+#dhl-servicepoint-locator-component *:focus {outline:none !important}
+
+#dhl-servicepoint-locator-component input[type='text'],
+#dhl-servicepoint-locator-component input[type='number'],
+#dhl-servicepoint-locator-component input[type='email'],
+#dhl-servicepoint-locator-component input[type='tel'],
+#dhl-servicepoint-locator-component input[type='url'],
+#dhl-servicepoint-locator-component input[type='password'],
+#dhl-servicepoint-locator-component input[type='search'],
+#dhl-servicepoint-locator-component textarea,
+#dhl-servicepoint-locator-component .input-text {
+    font: inherit;
+    color: currentColor;
+    width: 100%;
+    border: 0;
+    height: 1.1876em;
     margin: 0;
     display: block;
-    box-sizing: border-box;
-    padding-top: 18px;
-}
-
-.dhlparcel-shipping-modal-logo img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    vertical-align: middle;
-}
-
-/* Reset input styling */
-#dhlparcel-shipping-modal-content .input-text,
-#dhlparcel-shipping-modal-content input[type="email"],
-#dhlparcel-shipping-modal-content input[type="password"],
-#dhlparcel-shipping-modal-content input[type="search"],
-#dhlparcel-shipping-modal-content input[type="text"],
-#dhlparcel-shipping-modal-content input[type="url"],
-#dhlparcel-shipping-modal-content textarea {
+    padding: 6px 0 7px;
+    min-width: 0;
+    background: none;
+    box-sizing: content-box;
+    animation-name: mui-auto-fill-cancel;
+    letter-spacing: inherit;
+    animation-duration: 10ms;
+    -webkit-tap-highlight-color: transparent;
     box-shadow: none;
 }
 
-#dhlparcel-shipping-modal-content .input-text:focus,
-#dhlparcel-shipping-modal-content input[type="email"]:focus,
-#dhlparcel-shipping-modal-content input[type="password"]:focus,
-#dhlparcel-shipping-modal-content input[type="search"]:focus,
-#dhlparcel-shipping-modal-content input[type="text"]:focus,
-#dhlparcel-shipping-modal-content input[type="url"]:focus,
-#dhlparcel-shipping-modal-content textarea:focus {
-    background-color: transparent;
+#dhl-servicepoint-locator-component input.MuiOutlinedInput-input[type='text'],
+#dhl-servicepoint-locator-component input.MuiOutlinedInput-input[type='number'],
+#dhl-servicepoint-locator-component input.MuiOutlinedInput-input[type='email'],
+#dhl-servicepoint-locator-component input.MuiOutlinedInput-input[type='tel'],
+#dhl-servicepoint-locator-component input.MuiOutlinedInput-input[type='url'],
+#dhl-servicepoint-locator-component input.MuiOutlinedInput-input[type='password'],
+#dhl-servicepoint-locator-component input.MuiOutlinedInput-input[type='search'],
+#dhl-servicepoint-locator-component textarea.MuiOutlinedInput-input,
+#dhl-servicepoint-locator-component .input-text.MuiOutlinedInput-input {
+    color: #333333;
+    padding: 28px 14px 10px;
+    font-size: 16px;
+    font-style: normal;
+    font-family: Delivery Light;
+    font-weight: 400;
+    z-index: 9;
+    border: none;
 }
 
-/* Component changes */
-.dhl-parcelshop-locator div.dhlparcel-shipping-servicepoint-component-confirm-button {
-    height: auto;
-    margin: 15px 20% 15px 16px;
-    cursor: pointer;
-    color: #ffffff;
-    background-color: #CD030C;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    font-weight: bold;
-    display: block;
-    text-align: center;
-
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
-    user-select: none; /* Standard */
+#dhl-servicepoint-locator-component input[type='text']:focus,
+#dhl-servicepoint-locator-component input[type='number']:focus,
+#dhl-servicepoint-locator-component input[type='email']:focus,
+#dhl-servicepoint-locator-component input[type='tel']:focus,
+#dhl-servicepoint-locator-component input[type='url']:focus,
+#dhl-servicepoint-locator-component input[type='password']:focus,
+#dhl-servicepoint-locator-component input[type='search']:focus,
+#dhl-servicepoint-locator-component textarea:focus,
+#dhl-servicepoint-locator-component .input-text:focus {
+    background: transparent;
 }
 
-.dhl-parcelshop-locator div.dhlparcel-shipping-servicepoint-component-confirm-button:hover {
-    background-color: #e9030c;
-}
-
-.dhl-parcelshop-locator div.dhl-parcelshop-locator-desktop {
-    min-height: 60vh;
-}
-
-@media screen and (min-width: 600px) and (max-width: 1024px) {
-    .dhl-parcelshop-locator div.md-text--theme-primary,
-    .dhl-parcelshop-locator div.md-text--theme-primary + div {
-        padding-left: 4px;
-        border-left: 6px #fccc01 solid;
-    }
-}
-
-@media screen and (min-width: 1025px) {
-    .dhl-parcelshop-locator div.md-text--theme-primary,
-    .dhl-parcelshop-locator div.md-text--theme-primary + div {
-        padding-left: 5px;
-        border-left: 10px #fccc01 solid;
-    }
-}
-
-/* Info */
-#dhlparcel-shipping-servicepoint-info {
-    margin-top: 2rem;
-}
-
-#dhlparcel-shipping-servicepoint-info p {
-    margin-top: 2rem;
-}
-
-#dhlparcel-shipping-servicepoint-info-error {
-    color:#e02b27;
-    font-size: 1.2rem;
-}
-
-#dhlparcel-shipping-servicepoint-button {
-    margin-bottom: 10px;
+#dhlparcel_shipping_locator_real_reset form,
+#dhlparcel_shipping_locator_real_reset input[name="postNumber"],
+#dhlparcel_shipping_locator_real_reset fieldset:not(.MuiOutlinedInput-notchedOutline),
+#dhlparcel_shipping_locator_real_reset {
+    all: initial;
 }
