@@ -322,6 +322,9 @@ define([
                 if (sequence === 1 && $('.iosc-place-order-button').length === 0) {
                     // Ignore the first sequence as it only double refreshes. The first one is always called due to the subscription
                     // But make an exception for Onestepcheckout
+
+                    // Update sequence for this skip
+                    window.dhlparcel_shipping_services_current_request_sequence_validation = sequence;
                     return;
                 }
 
