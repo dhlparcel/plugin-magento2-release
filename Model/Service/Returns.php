@@ -2,7 +2,6 @@
 
 namespace DHLParcel\Shipping\Model\Service;
 
-
 use DHLParcel\Shipping\Model\Piece;
 use DHLParcel\Shipping\Model\PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
@@ -54,5 +53,4 @@ class Returns
 
         return $tracks;
     }
-
 }

@@ -16,14 +16,11 @@ class TimeSelection extends AbstractData
 
         $betweenTimes = $dateTimeStringStart->format('H:i') . ' - ' . $dateTimeStringEnd->format('H:i');
 
-        return implode(' ',
-            [
+        return implode(' ', [
                 $dateTimeStringStart->format('d'),
                 __($dateTimeStringStart->format('M')) . '.',
                 $dateTimeStringStart->format('Y'),
                 $betweenTimes
-            ]
-        );
-
+        ]);
     }
 }

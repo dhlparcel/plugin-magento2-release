@@ -10,7 +10,7 @@ define([
                 errorDeliveryValidationMessage: ko.observable(false),
                 validateShippingInformation: function () {
                     var method = quote.shippingMethod();
-                    if (method !== null) {
+                    if (typeof method !== 'undefined' && method !== null && typeof method.carrier_code !== 'undefined' && typeof method.method_code !== 'undefined') {
                         if (method.carrier_code === 'dhlparcel' && method.method_code === 'servicepoint') {
                             if (window.dhlparcel_shipping_servicepoint_validate !== true) {
                                 $('#dhlparcel-shipping-servicepoint-info-error').show();

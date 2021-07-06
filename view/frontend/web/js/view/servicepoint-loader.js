@@ -171,7 +171,7 @@ define([
 
         // Save shipping method to global
         quote.shippingMethod.subscribe(function(method) {
-            if (method === null) {
+            if (typeof method === 'undefined' || method === null || typeof method.carrier_code === 'undefined' || typeof method.method_code === 'undefined') {
                 return;
             }
 

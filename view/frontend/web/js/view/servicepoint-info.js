@@ -17,7 +17,7 @@ define([
             this.DHLParcel_Shipping_SelectedMethod = ko.computed(function() {
 
                 var method = quote.shippingMethod();
-                if (method === null) {
+                if (typeof method === 'undefined' || method === null || typeof method.carrier_code === 'undefined' || typeof method.method_code === 'undefined') {
                     return null;
                 }
 
@@ -28,7 +28,7 @@ define([
             this.DHLParcel_Shipping_ServicePointName = ko.computed(function() {
 
                 var method = quote.shippingMethod();
-                if (method === null) {
+                if (typeof method === 'undefined' || method === null || typeof method.method_title === 'undefined') {
                     return null;
                 }
 

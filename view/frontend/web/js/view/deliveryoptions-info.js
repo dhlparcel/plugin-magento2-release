@@ -143,7 +143,7 @@ define([
             this.showDeliveryTimes = ko.computed(function() {
 
                 var method = quote.shippingMethod();
-                if (method === null) {
+                if (typeof method === 'undefined' || method === null || typeof method.carrier_code === 'undefined' || typeof method.method_code === 'undefined') {
                     return false;
                 }
 
@@ -175,7 +175,7 @@ define([
             this.showDayTimes = ko.computed(function() {
 
                 var method = quote.shippingMethod();
-                if (method === null) {
+                if (typeof method === 'undefined' || method === null || typeof method.carrier_code === 'undefined' || typeof method.method_code === 'undefined') {
                     return false;
                 }
 
@@ -198,7 +198,7 @@ define([
             this.showNightTimes = ko.computed(function() {
 
                 var method = quote.shippingMethod();
-                if (method === null) {
+                if (typeof method === 'undefined' || method === null || typeof method.carrier_code === 'undefined' || typeof method.method_code === 'undefined') {
                     return false;
                 }
 
@@ -253,7 +253,7 @@ define([
             this.showDeliveryServices = ko.computed(function() {
 
                 var method = quote.shippingMethod();
-                if (method === null) {
+                if (typeof method === 'undefined' || method === null || typeof method.carrier_code === 'undefined' || typeof method.method_code === 'undefined') {
                     return false;
                 }
 
