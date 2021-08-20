@@ -9,36 +9,33 @@ use DHLParcel\Shipping\Model\Exception\NoTrackException;
 use DHLParcel\Shipping\Model\Exception\ShipmentNoLabelsException;
 use DHLParcel\Shipping\Model\Service\Label as LabelService;
 use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
-
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Shipment;
-
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Api\ShipmentRepositoryInterface;
 use setasign\Fpdi\FpdiException;
 
 class Download extends \Magento\Backend\App\Action
 {
     protected $helper;
     protected $labelService;
-    protected $orderRepository;
-    protected $shipmentRepository;
     protected $notificationService;
+    protected $orderCollectionFactory;
+    protected $massActionFilter;
+    protected $shipmentCollectionFactory;
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
+        \Magento\Ui\Component\MassAction\Filter $massActionFilter,
+        \Magento\Sales\Model\ResourceModel\Order\CollectionFactoryInterface $orderCollectionFactory,
+        \Magento\Sales\Model\ResourceModel\Order\Shipment\CollectionFactory $shipmentCollectionFactory,
         Data $helper,
         LabelService $labelService,
-        NotificationService $notificationService,
-        OrderRepositoryInterface $orderRepository,
-        ShipmentRepositoryInterface $shipmentRepository
+        NotificationService $notificationService
     ) {
         $this->helper = $helper;
         $this->notificationService = $notificationService;
         $this->labelService = $labelService;
-        $this->orderRepository = $orderRepository;
-        $this->shipmentRepository = $shipmentRepository;
+        $this->massActionFilter = $massActionFilter;
+        $this->orderCollectionFactory = $orderCollectionFactory;
+        $this->shipmentCollectionFactory = $shipmentCollectionFactory;
         parent::__construct($context);
     }
 
@@ -50,15 +47,13 @@ class Download extends \Magento\Backend\App\Action
         if ($this->_request->getParam('create_and_download')) {
             $redirectPath = 'sales/order/';
             $orderIds = json_decode(base64_decode($this->_request->getParam('create_and_download')));
-            $labels = $this->processOrderIds($orderIds, $success, $errors);
+            $labels = $this->getSelectedOrderLabels($success, $errors, $orderIds);
         } elseif ($this->_request->getParam('namespace') === 'sales_order_grid') {
             $redirectPath = 'sales/order/';
-            $orderIds = $this->_request->getParam('selected');
-            $labels = $this->processOrderIds($orderIds, $success, $errors);
+            $labels = $this->getSelectedOrderLabels($success, $errors);
         } elseif ($this->_request->getParam('namespace') === 'sales_order_shipment_grid') {
             $redirectPath = 'sales/shipment/';
-            $shipmentIds = $this->_request->getParam('selected');
-            $labels = $this->processShipmentIds($shipmentIds, $success, $errors);
+            $labels = $this->getSelectedShipmentLabels($success, $errors);
         } else {
             $this->notificationService->error(__('DHL Parcel bulk action called from an invalid page'));
             return $this->resultRedirectFactory->create()->setPath('sales/order/');
@@ -159,16 +154,22 @@ class Download extends \Magento\Backend\App\Action
         return $pdfResponse;
     }
 
-    protected function processOrderIds($orderIds, &$successStorage = null, &$errorStorage = null)
+    protected function getSelectedOrderLabels(&$successStorage = null, &$errorStorage = null, $orderIds = [])
     {
-        if (!is_array($orderIds)) {
-            return [];
+        $labels = [];
+
+        if (!$orderIds) {
+            $collection = $this->massActionFilter->getCollection($this->orderCollectionFactory->create());
+            $selected = $this->_request->getParam(\Magento\Ui\Component\MassAction\Filter::SELECTED_PARAM);
+            if (!empty($selected) && is_array($selected)) {
+                $collection->getSelect()->order(new Zend_Db_Expr('FIELD(entity_id,' . implode(',', $selected) . ')'));
+            }
+        } else {
+            $collection = $this->orderCollectionFactory->create()
+                               ->addFieldToFilter('entity_id', [ 'in' => $orderIds ]);
         }
 
-        $labels = [];
-        foreach ($orderIds as $orderId) {
-            /** @var Order $order */
-            $order = $this->orderRepository->get($orderId);
+        foreach ($collection as $order) {
             $exceptions = [];
             foreach ($order->getShipmentsCollection() as $shipment) {
                 $retrievedLabels = $this->getLabels($shipment, $exceptions);
@@ -184,16 +185,16 @@ class Download extends \Magento\Backend\App\Action
         return $labels;
     }
 
-    protected function processShipmentIds($shipmentIds, &$successStorage = null, &$errorStorage = null)
+    protected function getSelectedShipmentLabels(&$successStorage = null, &$errorStorage = null)
     {
-        if (!is_array($shipmentIds)) {
-            return [];
+        $collection = $this->massActionFilter->getCollection($this->shipmentCollectionFactory->create());
+        $selected = $this->_request->getParam(\Magento\Ui\Component\MassAction\Filter::SELECTED_PARAM);
+        if (!empty($selected) && is_array($selected)) {
+            $collection->getSelect()->order(new Zend_Db_Expr('FIELD(entity_id,' . implode(',', $selected) . ')'));
         }
 
         $labels = [];
-        foreach ($shipmentIds as $shipmentId) {
-            /** @var Shipment $shipment */
-            $shipment = $this->shipmentRepository->get($shipmentId);
+        foreach ($collection as $shipment) {
             $exceptions = [];
             $retrievedLabels = $this->getLabels($shipment, $exceptions);
             $labels = array_merge($labels, $retrievedLabels);

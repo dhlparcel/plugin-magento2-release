@@ -138,3 +138,11 @@
 #dhlparcel_shipping_locator_real_reset {
     all: initial;
 }
+
+.dhlparcel-shipping-modal .modal-inner-wrap {
+    display: none;
+}
+
+.dhlparcel-shipping-modal._show .modal-inner-wrap {
+    display: block;
+}
