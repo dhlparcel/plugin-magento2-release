@@ -11,8 +11,8 @@ class YesNoDHL implements \Magento\Framework\Option\ArrayInterface
     public function toOptionArray()
     {
         return [
-            self::OPTION_YES => __('No'),
-            self::OPTION_NO  => __('Yes'),
+            self::OPTION_NO => __('No'),
+            self::OPTION_YES => __('Yes'),
             self::OPTION_DHL => __('Yes, but only for orders with DHL shipping methods'),
         ];
     }

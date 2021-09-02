@@ -23,7 +23,10 @@ class AutoPrintStatus implements \Magento\Framework\Option\ArrayInterface
 
         $statuses = array();
         foreach ($coreStatuses as $i => $status) {
-            if ($status['value'] != 'pending') {
+            if ($status['value'] != 'pending' &&
+                $status['value'] != 'complete' &&
+                $status['value'] != 'canceled' &&
+                $status['value'] != 'closed') {
                 $statuses[] = $status;
             }
         }

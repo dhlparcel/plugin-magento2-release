@@ -3,13 +3,12 @@
 namespace DHLParcel\Shipping\Observer;
 
 use DHLParcel\Shipping\Helper\Data;
-use DHLParcel\Shipping\Model\Service\Order as OrderService;
-use DHLParcel\Shipping\Model\Service\Shipment as ShipmentService;
-use DHLParcel\Shipping\Model\Service\Label as LabelService;
-use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
-use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 use DHLParcel\Shipping\Model\Config\Source\YesNoDHL;
-
+use DHLParcel\Shipping\Model\Service\Label as LabelService;
+use DHLParcel\Shipping\Model\Service\Order as OrderService;
+use DHLParcel\Shipping\Model\Service\Preset as PresetService;
+use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
+use DHLParcel\Shipping\Model\Service\Shipment as ShipmentService;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 
 class AutoShipment implements \Magento\Framework\Event\ObserverInterface
@@ -57,7 +56,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
             return;
         }
 
-        if (!$order->canShip() || $order->hasShipments()) {
+        if (!$order->canShip() || $order->hasShipments() || !empty($order->getShipmentsCollection()->getData())) {
             return;
         }
 
