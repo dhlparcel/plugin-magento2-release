@@ -10,6 +10,8 @@ use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
 use DHLParcel\Shipping\Model\Service\Shipment as ShipmentService;
 use Magento\Framework\Event\ManagerInterface as EventManager;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
 
 class AutoShipment implements \Magento\Framework\Event\ObserverInterface
 {
@@ -21,9 +23,11 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
     protected $presetService;
     protected $eventManager;
     protected $productMetadata;
+    protected $orderRepository;
 
     public function __construct(
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
+        OrderRepositoryInterface $orderRepository,
         EventManager $eventManager,
         Data $helper,
         OrderService $orderService,
@@ -33,6 +37,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
         PresetService $presetService
     ) {
         $this->productMetadata = $productMetadata;
+        $this->orderRepository = $orderRepository;
         $this->helper = $helper;
         $this->orderService = $orderService;
         $this->shipmentService = $shipmentService;
@@ -50,13 +55,25 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
             return;
         }
 
-        $order = $observer->getEvent()->getOrder();
-
-        if ($order->getStatus() !== $this->helper->getConfigData('usability/automation/on_order_status')) {
+        $observerOrder = $observer->getEvent()->getOrder();
+        if (!$observerOrder || !$observerOrder->getId()) {
             return;
         }
 
-        if (!$order->canShip() || $order->hasShipments() || !empty($order->getShipmentsCollection()->getData())) {
+        if ($observerOrder->getStatus() !== $this->helper->getConfigData('usability/automation/on_order_status')) {
+            return;
+        }
+        if (!$observerOrder->canShip() || $observerOrder->hasShipments() || $observerOrder->getShipmentsCollection()->count() > 0) {
+            return;
+        }
+
+        /**
+         * Force new order from database, looks like object is not always reliable
+         *
+         * @var $order Order
+         */
+        $order = $this->orderRepository->get($observer->getEvent()->getOrder()->getId());
+        if (!$order->canShip() || $order->hasShipments() || $order->getShipmentsCollection()->count() > 0) {
             return;
         }
 
