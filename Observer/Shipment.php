@@ -74,6 +74,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         } elseif ($shipment->getData('dhlparcel_shipping_is_created')) {
             $order = $shipment->getOrder();
             $tracks = $this->processGrid($order);
+            $shipment->setData('dhlparcel_shipping_is_created', false);
         } else {
             return;
         }

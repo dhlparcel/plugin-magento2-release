@@ -111,7 +111,6 @@ define([
             }
 
             dhlparcel_shipping_servicepoint_selected = true;
-
             var data = {
                 'servicepoint_id': servicepoint_id,
                 'servicepoint_country': servicepoint_country,
@@ -157,10 +156,15 @@ define([
                 try {
                     var data = response.data;
                 } catch (error) {
+                    var data = false
+
                     console.log(error);
                     return;
                 }
                 window.dhlparcel_shipping_servicepoint_validate = data;
+
+                $(document.body).trigger('dhlparcel_shipping:servicepoint_validated', [ data ]);
+
                 $('#dhlparcel-shipping-servicepoint-info-error').hide();
             });
 
