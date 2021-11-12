@@ -194,6 +194,10 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             $conditionName = $this->getConfigData('shipping_methods/' . $methodKey . '/rate_condition');
             $request->setConditionName($conditionName ? $conditionName : $this->defaultConditionName);
 
+            // Use discounted price to send a rate request if setting enabled
+            if (boolval($this->getConfigData('usability/discount_after_coupon/enabled'))) {
+                $request->setPackageValue($request->getPackageValueWithDiscount());
+            }
             if (!$rate = $this->rateManager->getRate($request, $methodKey)) {
                 $this->debugLogger->info("CARRIER method $methodKey no variable rates found");
                 return null;

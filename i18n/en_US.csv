@@ -350,3 +350,5 @@ Automation,Automation
 "Are you sure?","Are you sure?"
 "Save preferred date to 'Shipping Description'","Save preferred date to 'Shipping Description'"
 "Save the preferred shipping date to the order's 'Shipping Description' when a date is selected.","Save the preferred shipping date to the order's 'Shipping Description' when a date is selected."
+"Discounts and shipping price","Discounts and shipping price"
+"Calculate shipping price after discounts","Calculate shipping price after discounts"

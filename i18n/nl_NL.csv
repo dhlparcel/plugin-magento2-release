@@ -380,3 +380,5 @@ Apr,Apr
 "Auto-enable: Signature","Standaard ingeschakeld: Handtekening bij ontvangst"
 "Save preferred date to 'Shipping Description'","Sla de bezorgdag-voorkeur op bij de 'Verzendmethode beschrijving'"
 "Save the preferred shipping date to the order's 'Shipping Description' when a date is selected.","Sla de voorkeur bezorgdag op bij de 'Verzendmethode beschrijving' wanneer deze is gekozen door de klant."
+"Discounts and shipping price","Kortingen en verzendkosten"
+"Calculate shipping price after discounts","Bereken verzendkosten na het toepassen van kortingen"

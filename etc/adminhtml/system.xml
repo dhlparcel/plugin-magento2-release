@@ -938,6 +938,13 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
+                    <group id="discount_after_coupon" translate="label" type="label" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Discounts and shipping price</label>
+                        <field id="enabled" translate="label" type="select" sortOrder="100"  showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Calculate shipping price after discounts</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                    </group>
                 </group>
 
                 <group id="debug" translate="label" type="label" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="1">
