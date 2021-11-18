@@ -9,6 +9,7 @@ use DHLParcel\Shipping\Model\Service\Order as OrderService;
 use DHLParcel\Shipping\Model\Service\Preset as PresetService;
 use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
 use DHLParcel\Shipping\Model\Service\Shipment as ShipmentService;
+use DHLParcel\Shipping\Model\Registry\CurrentAutoShipment;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
@@ -24,6 +25,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
     protected $eventManager;
     protected $productMetadata;
     protected $orderRepository;
+    protected $currentAutoShipment;
 
     public function __construct(
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
@@ -34,7 +36,8 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
         ShipmentService $shipmentService,
         LabelService $labelService,
         PrintingService $printingService,
-        PresetService $presetService
+        PresetService $presetService,
+        CurrentAutoShipment $currentAutoShipment
     ) {
         $this->productMetadata = $productMetadata;
         $this->orderRepository = $orderRepository;
@@ -45,6 +48,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
         $this->printingService = $printingService;
         $this->presetService = $presetService;
         $this->eventManager = $eventManager;
+        $this->currentAutoShipment = $currentAutoShipment;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -79,6 +83,14 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
 
         if (intval($this->helper->getConfigData('usability/automation/shipment')) === YesNoDHL::OPTION_DHL && !$this->presetService->exists($order)) {
             return;
+        }
+
+        // Check if current autoShipment is already initiated
+        if ($this->currentAutoShipment === $order->getId()) {
+            // Skip auto shipment, it's already underway
+            return;
+        } else {
+            $this->currentAutoShipment->setOrderId($order->getId());
         }
 
         $shipment = $this->orderService->createShipment($order->getId());
