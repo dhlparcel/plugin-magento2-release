@@ -11,6 +11,7 @@ use DHLParcel\Shipping\Model\Service\Label as LabelService;
 use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use Magento\Framework\Exception\LocalizedException;
 use setasign\Fpdi\FpdiException;
+use Zend_Db_Expr;
 
 class Download extends \Magento\Backend\App\Action
 {

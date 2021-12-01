@@ -12,6 +12,7 @@ use DHLParcel\Shipping\Model\Service\Label as LabelService;
 use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
 use Magento\Framework\Exception\LocalizedException;
+use Zend_Db_Expr;
 
 class PrintAction extends \Magento\Backend\App\Action
 {
