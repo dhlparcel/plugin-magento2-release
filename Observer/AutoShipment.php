@@ -86,7 +86,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
         }
 
         // Check if current autoShipment is already initiated
-        if ($this->currentAutoShipment === $order->getId()) {
+        if ($this->currentAutoShipment->getOrderId() === $order->getId()) {
             // Skip auto shipment, it's already underway
             return;
         } else {
