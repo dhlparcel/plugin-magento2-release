@@ -5,6 +5,7 @@
             data-bind="text: DHLParcel_Shipping_ServicePointName()"></span></strong>.</p>
     <div id="dhlparcel-shipping-servicepoint-info-error" style="display: none;"
          data-bind="i18n: 'Please choose a DHL ServicePoint.'"></div>
-    <button id="dhlparcel-shipping-servicepoint-button" data-bind="i18n: DHLParcel_Shipping_HasServicePoint() ? 'Choose a different DHL ServicePoint' : 'Please choose a DHL ServicePoint'">
+    <button id="dhlparcel-shipping-servicepoint-button"
+            data-bind="text: DHLParcel_Shipping_HasServicePoint() ? $t('Choose a different DHL ServicePoint') : $t('Please choose a DHL ServicePoint')">
     </button>
 </div>
