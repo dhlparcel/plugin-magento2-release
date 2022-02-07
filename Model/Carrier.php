@@ -210,7 +210,11 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         }
 
         if ($request->getFreeShipping() === true || $request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
-            $method->setPrice('0.00');
+            if (boolval($this->getConfigData('usability/discount_after_coupon/always_charge_servicecosts'))) {
+                $method->setPrice($serviceCost);
+            } else {
+                $method->setPrice('0.00');
+            }
         }
 
         $title = $this->getConfigData('title');

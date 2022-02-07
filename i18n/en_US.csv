@@ -352,3 +352,4 @@ Automation,Automation
 "Save the preferred shipping date to the order's 'Shipping Description' when a date is selected.","Save the preferred shipping date to the order's 'Shipping Description' when a date is selected."
 "Discounts and shipping price","Discounts and shipping price"
 "Calculate shipping price after discounts","Calculate shipping price after discounts"
+"Do not apply 'free shipping' on service costs","Do not apply 'free shipping' on service costs"

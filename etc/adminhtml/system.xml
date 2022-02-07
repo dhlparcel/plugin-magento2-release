@@ -944,6 +944,10 @@
                             <label>Calculate shipping price after discounts</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <field id="always_charge_servicecosts" translate="label" type="select" sortOrder="110"  showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Do not apply 'free shipping' on service costs</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
                     </group>
                 </group>
 
