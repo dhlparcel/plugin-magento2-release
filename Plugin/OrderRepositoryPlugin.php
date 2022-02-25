@@ -76,7 +76,7 @@ class OrderRepositoryPlugin
 
         $shippingMethodKey = $this->presetService->getMethodKey($order);
         $options = array_keys($this->presetService->getOptions($shippingMethodKey));
-        $options += $this->deliveryServicesService->getSelection($order, true);
+        $options = array_merge($options, $this->deliveryServicesService->getSelection($order));
 
         $optionsString = implode(',', $options);
         $extensionAttributes->setData('dhlparcel_shipping_checkout_options', $optionsString);
