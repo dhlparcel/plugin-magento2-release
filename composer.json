@@ -8,7 +8,7 @@
   ],
   "require": {
     "ext-json": "*",
-    "guzzlehttp/guzzle": "~6.0",
+    "guzzlehttp/guzzle": "~7.3",
     "setasign/fpdi-fpdf": "^2.0"
   },
   "autoload": {
