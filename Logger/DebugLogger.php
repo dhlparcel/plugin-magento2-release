@@ -24,7 +24,7 @@ class DebugLogger extends \Monolog\Logger
         $this->active = boolval($this->helper->getConfigData('debug/enabled'));
     }
 
-    public function addRecord($level, $message, array $context = [])
+    public function addRecord(int $level, string $message, array $context = []): bool
     {
         if (!$this->active) {
             return false;
