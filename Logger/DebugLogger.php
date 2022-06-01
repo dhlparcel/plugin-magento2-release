@@ -6,9 +6,9 @@ use DHLParcel\Shipping\Helper\Data;
 
 class DebugLogger extends \Monolog\Logger
 {
+    const LOG_LOCATION = '/var/log/dhlparcel_shipping.log';
     protected $helper;
     protected $active;
-    const LOG_LOCATION = '/var/log/dhlparcel_shipping.log';
 
     /**
      * Logger constructor.
@@ -20,15 +20,12 @@ class DebugLogger extends \Monolog\Logger
     public function __construct($name, Data $helper, $handlers = [], $processors = [])
     {
         parent::__construct(strval($name), $handlers, $processors);
+
         $this->helper = $helper;
         $this->active = boolval($this->helper->getConfigData('debug/enabled'));
-    }
 
-    public function addRecord($level, $message, array $context = [])
-    {
         if (!$this->active) {
-            return false;
+            $this->pushHandler(new \Monolog\Handler\NullHandler());
         }
-        return parent::addRecord($level, $message, $context);
     }
 }

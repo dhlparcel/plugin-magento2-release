@@ -5,10 +5,10 @@ namespace DHLParcel\Shipping\Model\Service;
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Api\Connector;
 use DHLParcel\Shipping\Model\Cache\Api as ApiCache;
-use DHLParcel\Shipping\Model\Data\Capability\OptionFactory;
-use DHLParcel\Shipping\Model\Data\Capability\ProductFactory;
 use DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheckFactory;
 use DHLParcel\Shipping\Model\Data\Api\Response\CapabilityFactory;
+use DHLParcel\Shipping\Model\Data\Capability\OptionFactory;
+use DHLParcel\Shipping\Model\Data\Capability\ProductFactory;
 
 class Capability
 {
@@ -138,14 +138,14 @@ class Capability
 
         /** @var \DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheck $capabilityCheck */
         $capabilityCheck = $this->capabilityCheckFactory->create();
-        $capabilityCheck->fromCountry = trim($fromCountry);
-        $capabilityCheck->fromPostalCode = strtoupper($fromPostalCode);
-        $capabilityCheck->toCountry = trim($toCountry) ?: trim($fromCountry);
+        $capabilityCheck->fromCountry = trim($fromCountry ?? '');
+        $capabilityCheck->fromPostalCode = strtoupper($fromPostalCode ?? '');
+        $capabilityCheck->toCountry = trim($toCountry ?? '') ?: trim($fromCountry ?? '');
         $capabilityCheck->toBusiness = $toBusiness ? 'true' : 'false';
         $capabilityCheck->accountNumber = $accountNumber;
 
         if ($toPostalCode !== '') {
-            $capabilityCheck->toPostalCode = strtoupper($toPostalCode);
+            $capabilityCheck->toPostalCode = strtoupper($toPostalCode ?? '');
         }
 
         if (is_array($requestOptions) && count($requestOptions)) {

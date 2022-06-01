@@ -159,6 +159,7 @@ class Shipment
         $shipmentResponse = $this->shipmentResponseFactory->create(['automap' => $response]);
         // Enrich pieces with postalCode
         $shipmentResponse = $this->tagPostalCode($shipmentResponse, $shipmentRequest->receiver->address->postalCode);
+        $shipmentResponse = $this->tagCountryCode($shipmentResponse, $shipmentRequest->receiver->address->countryCode);
         $shipmentResponse = $this->tagShipmentRequest($shipmentResponse, $shipmentRequest);
         $shipmentResponse = $this->tagServiceOptions($shipmentResponse, $shipmentRequest);
 
@@ -191,7 +192,8 @@ class Shipment
                 'label_type'        => $pieceResponse->labelType,
                 'is_return'         => $isReturn,
                 'shipment_request'  => $pieceResponse->shipmentRequest,
-                'service_options'   => $pieceResponse->serviceOptions
+                'service_options'   => $pieceResponse->serviceOptions,
+                'country_code'      => $pieceResponse->countryCode
             ]);
 
             $this->pieceResource->save($piece);
@@ -269,6 +271,19 @@ class Shipment
             $updatedPieces = [];
             foreach ($shipmentResponse->pieces as $piece) {
                 $piece->postalCode = strtoupper(trim($postalCode));
+                $updatedPieces[] = $piece;
+            }
+            $shipmentResponse->pieces = $updatedPieces;
+        }
+        return $shipmentResponse;
+    }
+
+    protected function tagCountryCode(ShipmentResponse $shipmentResponse, $countryCode)
+    {
+        if (!empty($shipmentResponse) && !empty($shipmentResponse->pieces)) {
+            $updatedPieces = [];
+            foreach ($shipmentResponse->pieces as $piece) {
+                $piece->countryCode = strtoupper(trim($countryCode));
                 $updatedPieces[] = $piece;
             }
             $shipmentResponse->pieces = $updatedPieces;

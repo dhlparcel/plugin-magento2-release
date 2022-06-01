@@ -2,34 +2,37 @@
 
 namespace DHLParcel\Shipping\Model\Service;
 
-use DHLParcel\Shipping\Model\Exception\NotShippableException;
 use DHLParcel\Shipping\Model\Exception\FaultyServiceOptionException;
 use DHLParcel\Shipping\Model\Exception\LabelCreationException;
 use DHLParcel\Shipping\Model\Exception\NoTrackException;
-
+use DHLParcel\Shipping\Model\Exception\NotShippableException;
+use Magento\Framework\DB\TransactionFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Registry;
+use Magento\Sales\Model\Order\ShipmentRepository;
 use Magento\Sales\Model\ResourceModel\Order\Shipment as ShipmentResource;
 use Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader;
-use Magento\Framework\DB\TransactionFactory;
-use Magento\Framework\Registry;
 
 class Order
 {
     protected $shipmentLoader;
     protected $shipmentResource;
     protected $transactionFactory;
+    protected $shipmentRepository;
     protected $registry;
 
     public function __construct(
         ShipmentLoader $shipmentLoader,
         ShipmentResource $shipmentResource,
         TransactionFactory $transactionFactory,
-        Registry $registry
+        Registry $registry,
+        ShipmentRepository $shipmentRepository
     ) {
         $this->shipmentLoader = $shipmentLoader;
         $this->shipmentResource = $shipmentResource;
         $this->transactionFactory = $transactionFactory;
         $this->registry = $registry;
+        $this->shipmentRepository = $shipmentRepository;
     }
 
     public function createShipment($orderId)
@@ -63,16 +66,47 @@ class Order
         return $shipment;
     }
 
+    public function undoShipment($shipmentId)
+    {
+        /** @var Shipment $shipment */
+        $shipment = $this->shipmentRepository->get($shipmentId);
+        if (!$shipment) {
+            throw new NoSuchEntityException();
+        }
+
+        $canShip = $shipment->getOrder()
+            ->canShip();
+
+        // Order is shippable
+        if ($canShip === true) {
+            return true;
+        }
+
+        // Shipped items
+        foreach ($shipment->getItemsCollection() as $shippedItem) {
+            $orderItem = $shippedItem->getOrderItem();
+            if ($orderItem) {
+                $orderItem->setQtyShipped(0)
+                    ->save();
+            }
+        }
+
+        return $shipment->getOrder()
+            ->canShip();
+    }
+
     /**
      * Save shipment and order in one transaction
      *
      * @param \Magento\Sales\Model\Order\Shipment $shipment
+     *
      * @return $this
      * @throws \Exception
      */
     protected function saveShipment($shipment)
     {
-        $shipment->getOrder()->setIsInProcess(true);
+        $shipment->getOrder()
+            ->setIsInProcess(true);
         /** @var \Magento\Framework\DB\Transaction $transaction */
         $transaction = $this->transactionFactory->create();
         $transaction->addObject($shipment)

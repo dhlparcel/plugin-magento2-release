@@ -26,6 +26,6 @@ class PrintButton extends \DHLParcel\Shipping\Plugin\Adminhtml\AbstractShipments
             return;
         }
 
-        $this->addButtons($subject, $shipment->getId());
+        $this->addButtons($subject, $shipment);
     }
 }

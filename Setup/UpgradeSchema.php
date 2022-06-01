@@ -2,11 +2,11 @@
 
 namespace DHLParcel\Shipping\Setup;
 
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Setup\UpgradeSchemaInterface;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
@@ -40,6 +40,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->updateServicePointId($setup);
             $this->updateDeliveryTimeSelection($setup);
             $this->updateDeliveryServices($setup);
+        }
+
+        if (version_compare($context->getVersion(), "1.0.37", "<")) {
+            $this->installCountryCode($setup);
         }
         $installer->endSetup();
     }
@@ -152,6 +156,23 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'length'   => 255,
                 'nullable' => true,
                 'comment'  => 'DHL Parcel Shipping Service Options Selection'
+            ]
+        );
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    protected function installCountryCode(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable('dhlparcel_shipping_pieces'),
+            'country_code',
+            [
+                'type'     => Table::TYPE_TEXT,
+                'length'   => 8,
+                'nullable' => true,
+                'comment'  => 'DHL Parcel Shipping Country Code'
             ]
         );
     }

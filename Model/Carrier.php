@@ -3,19 +3,18 @@
 namespace DHLParcel\Shipping\Model;
 
 use DHLParcel\Shipping\Logger\DebugLogger;
-use Magento\Checkout\Model\Session as CheckoutSession;
-use DHLParcel\Shipping\Model\Service\Capability as CapabilityService;
-use DHLParcel\Shipping\Model\Service\CartService;
-use DHLParcel\Shipping\Model\PieceFactory;
-use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
-use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
-use DHLParcel\Shipping\Model\Service\DeliveryServices as DeliveryServicesService;
-use DHLParcel\Shipping\Model\Service\Preset as PresetService;
-use DHLParcel\Shipping\Model\ResourceModel\Carrier\RateManager;
-use DHLParcel\Shipping\Model\Service\ServicePoint as ServicePointService;
-
 use DHLParcel\Shipping\Model\Config\Source\RateConditions;
 use DHLParcel\Shipping\Model\Config\Source\RateMethod;
+use DHLParcel\Shipping\Model\PieceFactory;
+use DHLParcel\Shipping\Model\ResourceModel\Carrier\RateManager;
+use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
+use DHLParcel\Shipping\Model\Service\Capability as CapabilityService;
+use DHLParcel\Shipping\Model\Service\CartService;
+use DHLParcel\Shipping\Model\Service\DeliveryServices as DeliveryServicesService;
+use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
+use DHLParcel\Shipping\Model\Service\Preset as PresetService;
+use DHLParcel\Shipping\Model\Service\ServicePoint as ServicePointService;
+use Magento\Checkout\Model\Session as CheckoutSession;
 
 class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline implements \Magento\Shipping\Model\Carrier\CarrierInterface
 {
@@ -38,6 +37,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     protected $servicePointService;
     protected $storeManager;
     protected $trackingUrl = 'https://www.dhlparcel.nl/nl/volg-uw-zending?tc={{trackerCode}}&pc={{postalCode}}';
+    protected $trackingUrlBe = 'https://www.dhlparcel.be/nl/particulieren/volg-je-zending?tc={{trackerCode}}&pc={{postalCode}}';
 
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -101,10 +101,6 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         $this->rateManager = $rateManager;
         $this->servicePointService = $servicePointService;
         $this->storeManager = $storeManager;
-
-        if ($this->getConfigData('label/alternative_tracking/enabled')) {
-            $this->trackingUrl = $this->getConfigData('label/alternative_tracking/url');
-        }
     }
 
     /**
@@ -142,8 +138,11 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
      * @return \Magento\Quote\Model\Quote\Address\RateResult\Method|null
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function getShippingMethod(\Magento\Quote\Model\Quote\Address\RateRequest $request, $methodKey, $blacklist)
-    {
+    protected function getShippingMethod(
+        \Magento\Quote\Model\Quote\Address\RateRequest $request,
+        $methodKey,
+        $blacklist
+    ) {
         $this->debugLogger->info("CARRIER starting get shipping method $methodKey");
         if (!$this->getConfigData('shipping_methods/' . $methodKey . '/enabled')) {
             $this->debugLogger->info("CARRIER method $methodKey disabled");
@@ -341,10 +340,19 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             return false;
         }
 
+        if ($this->getConfigData('label/alternative_tracking/enabled')) {
+            $trackingUrl = $this->getConfigData('label/alternative_tracking/enabled');
+        } else {
+            $trackingUrl = $this->trackingUrl;
+            if ($piece->getCountryCode() && $piece->getCountryCode() === 'BE') {
+                $trackingUrl = $this->trackingUrlBe;
+            }
+        }
+
         $postalCode = $piece->getPostalCode();
         $search = ['{{trackerCode}}', '{{postalCode}}'];
         $replace = [$trackerCode, $postalCode];
-        return str_replace($search, $replace, $this->trackingUrl);
+        return str_replace($search, $replace, $trackingUrl);
     }
 
     /**
@@ -396,8 +404,11 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             if ($product[self::BLACKLIST_SERVICEPOINT]) {
                 $blacklist[] = 'PS';
             }
-            foreach (explode(',', $product[self::BLACKLIST_GENERAL]) as $option) {
-                $blacklist[] = $option;
+
+            if (!empty($product[self::BLACKLIST_GENERAL]) && $product[self::BLACKLIST_GENERAL] !== null) {
+                foreach (explode(',', $product[self::BLACKLIST_GENERAL]) as $option) {
+                    $blacklist[] = $option;
+                }
             }
         }
         return array_unique($blacklist);

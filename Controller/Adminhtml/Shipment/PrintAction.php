@@ -18,16 +18,14 @@
 
 namespace DHLParcel\Shipping\Controller\Adminhtml\Shipment;
 
-use DHLParcel\Shipping\Model\Exception\LabelNotFoundException;
 use DHLParcel\Shipping\Model\Service\Label as LabelService;
 use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use DHLParcel\Shipping\Model\Service\Printing as PrintingService;
-
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\ShipmentRepository;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 class PrintAction extends \Magento\Backend\App\Action
 {

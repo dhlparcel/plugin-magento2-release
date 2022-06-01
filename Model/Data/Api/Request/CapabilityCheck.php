@@ -13,6 +13,7 @@ class CapabilityCheck extends AbstractData
     public $parcelType;
     public $option;
     public $toPostalCode;
+    public $fromPostalCode;
     public $accountNumber;
     public $organisationId;
 }

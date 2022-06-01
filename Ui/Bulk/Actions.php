@@ -28,12 +28,8 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
         $this->helper = $helper;
         $this->prepareData();
     }
-
-    /**
-     * Get action options
-     *
-     * @return array
-     */
+    
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $options = [];

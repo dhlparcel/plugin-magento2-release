@@ -29,7 +29,7 @@ class ServicePoint
     {
         $servicePointsResponse = $this->connector->get('parcel-shop-locations/' . $country, [
             'limit'       => $limit,
-            'zipCode'     => strtoupper($postalcode),
+            'zipCode'     => $postalcode === null ? null : strtoupper($postalcode),
             'serviceType' => 'parcel-last-mile',
         ]);
 
