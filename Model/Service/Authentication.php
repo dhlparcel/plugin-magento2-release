@@ -17,6 +17,6 @@ class Authentication
 
     public function test($userId, $key)
     {
-        return $this->connector->testAuthenticate($userId, $key);
+        return isset($userId, $key) ? $this->connector->testAuthenticate($userId, $key) : false;
     }
 }
