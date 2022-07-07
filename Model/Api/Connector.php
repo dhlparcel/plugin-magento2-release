@@ -195,7 +195,7 @@ class Connector
      */
     public function testAuthenticate($userId, $key)
     {
-        if (!isset($userId, $key) {
+        if (!isset($userId, $key)) {
             return false;
         }
         $response = $this->post(self::AUTH_API, [
