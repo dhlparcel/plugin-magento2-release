@@ -252,6 +252,16 @@ class Create extends \Magento\Backend\Block\Template
                 'label'       => $this->presetService->getTranslation('AGE_CHECK'),
                 'description' => __("The recipient's age is checked (18+)")
             ],
+            'PERS_NOTE'        => [
+                'label'       => $this->presetService->getTranslation('PERS_NOTE'),
+                'description' => __('We send the recipient the shipment number for using track & trace. Add your own message to this e-mail:'),
+                'input'       => self::INPUT_TYPE_TEXT,
+                'max'         => 99999
+            ],
+            'BMC'              => [
+                'label'       => $this->presetService->getTranslation('BMC'),
+                'description' => __('We ask for a 4 digit code/QR code on delivery, which is only known to the recipient')
+            ],
         ];
     }
 

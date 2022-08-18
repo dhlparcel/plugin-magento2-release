@@ -11,8 +11,9 @@ class LabelsOnPage implements \Magento\Framework\Option\ArrayInterface
     public function toOptionArray()
     {
         return [
-            self::LABEL_PAGE_DEFAULT => __("Default (1 label per page)"),
-            self::LABEL_PAGE_TRIPLE  => __("Print 3 labels per A4 sheet")
+            self::LABEL_PAGE_DEFAULT   => __("Default (1 label per page)"),
+            self::LABEL_PAGE_TRIPLE    => __("Print 3 labels per A4 sheet"),
+            self::LABEL_PAGE_QUADRUPLE => __("Print 4 labels per A4 sheet")
         ];
     }
 }

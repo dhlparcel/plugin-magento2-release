@@ -69,6 +69,12 @@ class Preset
             $options['AGE_CHECK'] = '';
         }
 
+        if ($this->helper->getConfigData('label/default_pers_note', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
+            || $this->helper->getConfigData('label/default_pers_note', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
+            && !$requiredOnly) {
+            $options['PERS_NOTE'] = '';
+        }
+
         if ($this->helper->getConfigData('label/default_send_signature', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
             || $this->helper->getConfigData('label/default_send_signature', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
@@ -212,6 +218,12 @@ class Preset
             }
         }
 
+        if (array_key_exists('PERS_NOTE', $presetOptions)) {
+            if ($this->helper->getConfigData('label/default_pers_note', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
+                $options[] = 'PERS_NOTE';
+            }
+        }
+
         return $options;
     }
 
@@ -232,10 +244,12 @@ class Preset
             'S'                => __('Saturday delivery (9 AM to 3 PM)'),
             'EXP'              => __('Expresser'),
             'BOUW'             => __('Delivery on construction site'),
+            'PERS_NOTE'        => __('Message to the recipient'),
             'EXW'              => __('Ex Works'),
             'SSN'              => __('Hide Shipper'),
             'SDD'              => __('DHL Same-day delivery (6 p.m. to 9.30 p.m.)'),
             'AGE_CHECK'        => __('Age check (18+)'),
+            'BMC'              => __('Secure delivery by code')
         ];
     }
 

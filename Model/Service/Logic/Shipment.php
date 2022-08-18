@@ -7,7 +7,7 @@ use DHLParcel\Shipping\Model\Api\Connector;
 use DHLParcel\Shipping\Model\Exception\LabelCreationException;
 use DHLParcel\Shipping\Model\Piece;
 use DHLParcel\Shipping\Model\PieceFactory;
-use DHLParcel\Shipping\Model\UUID;
+use DHLParcel\Shipping\Model\Service\Capability;
 use DHLParcel\Shipping\Model\UUIDFactory;
 use DHLParcel\Shipping\Model\Data\Api\Request\Shipment as ShipmentRequest;
 use DHLParcel\Shipping\Model\Data\Api\Request\ShipmentFactory as ShipmentRequestFactory;
@@ -39,6 +39,7 @@ class Shipment
     protected $orderRepository;
     protected $trackFactory;
     protected $helper;
+    protected $capabilityService;
 
     public function __construct(
         Connector $connector,
@@ -51,7 +52,8 @@ class Shipment
         PieceResource $pieceResource,
         OrderRepositoryInterface $orderRepository,
         TrackFactory $trackFactory,
-        Data $helper
+        Data $helper,
+        Capability $capabilityService
     ) {
         $this->connector = $connector;
         $this->pieceFactory = $pieceFactory;
@@ -64,6 +66,7 @@ class Shipment
         $this->orderRepository = $orderRepository;
         $this->trackFactory = $trackFactory;
         $this->helper = $helper;
+        $this->capabilityService = $capabilityService;
     }
 
     /**
@@ -106,7 +109,6 @@ class Shipment
      */
     public function getReturnRequestData($storeId, ShipmentRequest $shipmentRequest)
     {
-
         // Check for alternative return address with settings
         if ($this->helper->getConfigData('shipper/alternative_return_address', $storeId)) {
             $receiver = $this->getShipperAddress($storeId, 'return');
@@ -129,11 +131,29 @@ class Shipment
         $shipmentRequest->shipper = $shipper;
         $shipmentRequest->returnLabel = true;
 
-        // Return labels are DOOR only with no other options
-        $option = $this->optionFactory->create(['automap' => [
-            'key' => 'DOOR'
-        ]]);
-        $shipmentRequest->options = [$option];
+        // Get REFERENCE and REFERENCE2 from shipment request
+        $returnCapabilities = $this->capabilityService->getOptions(
+            $storeId,
+            $shipper->address->countryCode, // Use 'shipper', because we flip it in the capabilities
+            $shipper->address->postalCode, // Use 'shipper', because we flip it in the capabilities
+            true,
+            [],
+            true
+        );
+
+        // Return labels are at least DOOR
+        $options = [ $this->optionFactory->create(['automap' => ['key' => 'DOOR']])];
+        $copyOptions = ['REFERENCE', 'REFERENCE2'];
+
+        foreach ($shipmentRequest->options as $option) {
+            if (!in_array($option->key, $copyOptions) || !array_key_exists($option->key, $returnCapabilities)) {
+                continue;
+            }
+
+            $options[] = $option;
+        }
+
+        $shipmentRequest->options = $options;
 
         return $shipmentRequest;
     }
@@ -380,6 +400,7 @@ class Shipment
 
     /**
      * @param $raw
+     * @param $countryCode
      * @return array [
      *      'street'   => (string) Parsed street $raw
      *      'number'   => (string) Parsed number from $raw
@@ -389,52 +410,100 @@ class Shipment
     protected function parseStreetData($raw)
     {
         $skipAdditionCheck = false;
+        $skipReverseCheck = false;
+        $cutout = '';
 
-        //if first word has ONE numbers and letter(s)
-        $rawParts = explode(" ", trim($raw));
-        $streetPrefix = '';
-        $streetFirstWord = reset($rawParts);
+        // Cutout starting special numbers from regular parsing logic
+        $parsableParts = explode(' ', trim($raw), 2);
 
-        preg_match('/[0-9]+[a-zA-Z]+/i', trim($streetFirstWord), $firstWordParts);
-        if (!empty($firstWordParts)) {
-            $streetPrefix = $streetFirstWord . " ";
-            unset($rawParts[key($rawParts)]);
+        // Check if it has a number with letters
+        if (preg_match('/[0-9]+[a-z]+/i', reset($parsableParts)) === 1) {
+            $cutout = reset($parsableParts) . ' ';
+            $skipReverseCheck = true;
+            unset($parsableParts[0]);
+
+            // Check if it has a number with more than just letters, but also other available numbers
+        } elseif (preg_match('/[0-9]+[^0-9]+/', reset($parsableParts)) === 1 && preg_match('/\d/', end($parsableParts)) === 1) {
+            $cutout = reset($parsableParts) . ' ';
+            $skipReverseCheck = true;
+            unset($parsableParts[0]);
+
+            // Check if it has something before a number
+        } elseif (preg_match('/[^0-9]+[0-9]+/', reset($parsableParts)) === 1) {
+            $cutout = reset($parsableParts) . ' ';
+            $skipReverseCheck = true;
+            unset($parsableParts[0]);
+
+            // Check if starts with number (with anything), but also has numbers in the rest of the address
+        } elseif (preg_match('/[^0-9]*[0-9]+[^0-9]*/', reset($parsableParts)) === 1 && preg_match('/\d/', end($parsableParts)) === 1) {
+            $cutout = reset($parsableParts) . ' ';
+            $skipReverseCheck = true;
+            unset($parsableParts[0]);
         }
 
-        $raw = implode(" ", $rawParts);
+        $parsableStreet = implode(' ', $parsableParts);
 
-        preg_match('/([^0-9]*)\s*(.*)/i', trim($raw), $streetParts);
-        $data = [
+        preg_match('/([^0-9]*)\s*(.*)/', trim($parsableStreet), $streetParts);
+        $address = [
             'street' => isset($streetParts[1]) ? trim($streetParts[1]) : '',
             'number' => isset($streetParts[2]) ? trim($streetParts[2]) : '',
             'addition' => '',
         ];
 
         // Check if $street is empty
-        if (strlen($data['street']) === 0) {
+        if (strlen($address['street']) === 0 && !$skipReverseCheck) {
             // Try a reverse parse
-            preg_match('/([\d]+[\w.-]*)\s*(.*)/i', trim($raw), $streetParts);
-            $data['street'] = isset($streetParts[2]) ? trim($streetParts[2]) : '';
-            $data['number'] = isset($streetParts[1]) ? trim($streetParts[1]) : '';
+            preg_match('/([\d]+[\w.-]*)\s*(.*)/i', trim($parsableStreet), $streetParts);
+            $address['street'] = isset($streetParts[2]) ? trim($streetParts[2]) : '';
+            $address['number'] = isset($streetParts[1]) ? trim($streetParts[1]) : '';
             $skipAdditionCheck = true;
         }
 
-        // Check if $number has numbers
-        if (preg_match("/\d/", $data['number']) !== 1) {
-            $data['street'] = trim($raw);
-            $data['number'] = '';
+        // Check if $number has no numbers
+        if (preg_match('/\d/', $address['number']) === 0) {
+            $address['street'] = trim($parsableStreet);
+            $address['number'] = '';
+
+            // Addition check
         } elseif (!$skipAdditionCheck) {
-            preg_match('/([\d]+)[ .-]*(.*)/i', $data['number'], $numberParts);
-            $data['number'] = isset($numberParts[1]) ? trim($numberParts[1]) : '';
-            $data['addition'] = isset($numberParts[2]) ? trim($numberParts[2]) : '';
+            // If there are no letters, but has additional spaced numbers, use last number as number, no addition
+            preg_match('/([^a-z]+)\s+([\d]+)$/i', $address['number'], $number_parts);
+            if (isset($number_parts[2])) {
+                $address['street'] .= ' ' . $number_parts[1];
+                $address['number'] = $number_parts[2];
+
+                // Regular number / addition split
+            } else {
+                preg_match('/([\d]+)[ .-]*(.*)/i', $address['number'], $number_parts);
+                $address['number'] = isset($number_parts[1]) ? trim($number_parts[1]) : '';
+                $address['addition'] = isset($number_parts[2]) ? trim($number_parts[2]) : '';
+            }
         }
 
         // Reassemble street
-        if (isset($data['street'])) {
-            $data['street'] = $streetPrefix . $data['street'];
+        if (isset($address['street'])) {
+            $address['street'] = $cutout . $address['street'];
         }
 
-        return $data;
+        // Be sure these fields are filled
+        $address['number'] = isset($address['number']) ? $address['number'] : '';
+        $address['addition'] = isset($address['addition']) ? $address['addition'] : '';
+
+        // Clean any starting punctuations
+        preg_match('/^[[:punct:]\s]+(.*)/', $address['street'], $cleanStreet);
+        if (isset($cleanStreet[1])) {
+            $address['street'] = $cleanStreet[1];
+        }
+        preg_match('/^[[:punct:]\s]+(.*)/', $address['number'], $cleanNumber);
+        if (isset($cleanNumber[1])) {
+            $address['number'] = $cleanNumber[1];
+        }
+        preg_match('/^[[:punct:]\s]+(.*)/', $address['addition'], $cleanAddition);
+        if (isset($cleanAddition[1])) {
+            $address['addition'] = $cleanAddition[1];
+        }
+
+        return $address;
     }
 
     /**

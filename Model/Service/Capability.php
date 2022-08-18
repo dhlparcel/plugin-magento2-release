@@ -38,9 +38,9 @@ class Capability
         $this->capabilityFactory = $capabilityFactory;
     }
 
-    public function getOptions($storeId, $toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [])
+    public function getOptions($storeId, $toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [], $returnProduct = false)
     {
-        $capabilityCheck = $this->createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions);
+        $capabilityCheck = $this->createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions, $returnProduct);
         $capabilities = $this->sendRequest($storeId, $capabilityCheck);
 
         $options = [];
@@ -90,9 +90,9 @@ class Capability
         return $options;
     }
 
-    public function getSizes($storeId, $toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [])
+    public function getSizes($storeId, $toCountry = '', $toPostalCode = '', $toBusiness = false, $requestOptions = [], $returnProduct = false)
     {
-        $capabilityCheck = $this->createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions);
+        $capabilityCheck = $this->createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions, $returnProduct);
         $capabilities = $this->sendRequest($storeId, $capabilityCheck);
 
         $products = [];
@@ -130,11 +130,21 @@ class Capability
      * @param $requestOptions
      * @return \DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheck
      */
-    protected function createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions)
+    protected function createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions, $returnProduct)
     {
-        $fromCountry = $this->helper->getConfigData('shipper/country_code', $storeId);
-        $fromPostalCode = $this->helper->getConfigData('shipper/postal_code', $storeId);
         $accountNumber = $this->helper->getConfigData('api/account_id', $storeId);
+
+        // Flip when we want to retreive return products
+        if ($returnProduct === true) {
+            $fromCountry = $toCountry;
+            $fromPostalCode = $toPostalCode;
+
+            $toCountry = $this->helper->getConfigData('shipper/country_code', $storeId);
+            $toPostalCode = $this->helper->getConfigData('shipper/postal_code', $storeId);
+        } else {
+            $fromCountry = $this->helper->getConfigData('shipper/country_code', $storeId);
+            $fromPostalCode = $this->helper->getConfigData('shipper/postal_code', $storeId);
+        }
 
         /** @var \DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheck $capabilityCheck */
         $capabilityCheck = $this->capabilityCheckFactory->create();
@@ -143,6 +153,7 @@ class Capability
         $capabilityCheck->toCountry = trim($toCountry ?? '') ?: trim($fromCountry ?? '');
         $capabilityCheck->toBusiness = $toBusiness ? 'true' : 'false';
         $capabilityCheck->accountNumber = $accountNumber;
+        $capabilityCheck->returnProduct = $returnProduct ? 'true' : 'false';
 
         if ($toPostalCode !== '') {
             $capabilityCheck->toPostalCode = strtoupper($toPostalCode ?? '');

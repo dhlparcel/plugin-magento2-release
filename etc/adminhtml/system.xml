@@ -177,6 +177,11 @@
                         <label>Auto-enable: Age check 18+</label>
                         <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
                     </field>
+                    <field id="default_pers_note" translate="label" type="select" sortOrder="630" showInDefault="1"
+                           showInWebsite="1" showInStore="1">
+                        <label>Auto-enable: Message to the recipient</label>
+                        <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
+                    </field>
                     <field id="default_hide_shipper" translate="label" type="select" sortOrder="800" showInDefault="1"
                            showInWebsite="1" showInStore="1">
                         <label>Auto-enable: Hide shipper</label>

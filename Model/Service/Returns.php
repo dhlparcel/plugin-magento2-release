@@ -27,9 +27,13 @@ class Returns
 
     public function cleanupReturnTracks($tracks)
     {
-
         foreach ($tracks as $key => $track) {
-            if ($track->getCarrierCode() == 'dhlparcel' || $track->getCarrier() == 'dhlparcel') {
+            if (is_object($track) &&
+                method_exists($track, 'getCarrierCode') &&
+                method_exists($track, 'getCarrier') &&
+                (method_exists($track, 'getTrackNumber') || method_exists($track, 'getTracking')) &&
+                ($track->getCarrierCode() == 'dhlparcel' || $track->getCarrier() == 'dhlparcel')
+            ) {
                 // TODO move this to a service function getPiece($track)
                 $trackNumber = $track->getTrackNumber();
                 if (empty($trackNumber)) {

@@ -353,3 +353,8 @@ Automation,Automation
 "Discounts and shipping price","Discounts and shipping price"
 "Calculate shipping price after discounts","Calculate shipping price after discounts"
 "Do not apply 'free shipping' on service costs","Do not apply 'free shipping' on service costs"
+"Message to the recipient","Message to the recipient"
+"We send the recipient the shipment number for using track & trace. Add your own message to this e-mail:","We send the recipient the shipment number for using track & trace. Add your own message to this e-mail:"
+"Auto-enable: Message to the recipient","Auto-enable: Message to the recipient"
+"Secure delivery by code","Secure delivery by code"
+"We ask for a 4 digit code/QR code on delivery, which is only known to the recipient","We ask for a 4 digit code/QR code on delivery, which is only known to the recipient"

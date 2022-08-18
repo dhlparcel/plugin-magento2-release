@@ -383,3 +383,8 @@ Apr,Apr
 "Discounts and shipping price","Kortingen en verzendkosten"
 "Calculate shipping price after discounts","Bereken verzendkosten na het toepassen van kortingen"
 "Do not apply 'free shipping' on service costs","'Gratis verzenden' niet toepassen op service toeslagen"
+"Message to the recipient","Bericht aan de ontvanger"
+"We send the recipient the shipment number for using track & trace. Add your own message to this e-mail:","Wij sturen de ontvanger het zendingsnummer voor track & trace. Voeg aan deze e-mail een eigen bericht toe:"
+"Auto-enable: Message to the recipient","Standaard ingeschakeld: Bericht aan de ontvanger"
+"Secure delivery by code","Veilige bezorging met code"
+"We ask for a 4 digit code/QR code on delivery, which is only known to the recipient","We vragen om een 4 cijferige code/QR-code, die alleen bekend is bij de ontvanger."
