@@ -151,7 +151,8 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
         if ($methodKey === 'sameday') {
             $showSameday = $this->deliveryTimesService->showSameday();
-            if (!$showSameday) {
+            $showSamedayAfterCutoff = $this->deliveryTimesService->showSamedayAfterCutoff();
+            if (!$showSameday && !$showSamedayAfterCutoff) {
                 $this->debugLogger->info("CARRIER same day delivery hidden");
                 return null;
             }
@@ -217,11 +218,16 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         }
 
         $title = $this->getConfigData('title');
+        $titleKey = 'title';
+        if ($methodKey === 'sameday' && $this->deliveryTimesService->showSamedayAfterCutoff()) {
+            $titleKey = 'title_after_cutoff';
+        }
+
         $method->setCarrier($this->getCarrierCode());
         $method->setCarrierTitle(__($title));
 
         $method->setMethod($methodKey);
-        $method->setMethodTitle($this->getMethodTitle($request, $methodKey));
+        $method->setMethodTitle($this->getMethodTitle($request, $methodKey, $titleKey));
 
         return $method;
     }
@@ -255,10 +261,13 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         return $result;
     }
 
-    protected function getMethodTitle(\Magento\Quote\Model\Quote\Address\RateRequest $request, $key)
+    protected function getMethodTitle(\Magento\Quote\Model\Quote\Address\RateRequest $request, $key, $titleKey = 'title')
     {
         // Default
-        $title = $this->getConfigData('shipping_methods/' . $key . '/title');
+        $title = $this->getConfigData('shipping_methods/' . $key . '/' . $titleKey);
+        if ($titleKey !== 'title' && empty($title)) {
+            $title = $this->getConfigData('shipping_methods/' . $key . '/title');
+        }
         if (empty($title)) {
             $title = $this->getMethods($key);
         }

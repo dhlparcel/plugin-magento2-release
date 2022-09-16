@@ -35,9 +35,10 @@ class DeliveryTimesPriority extends \Magento\Ui\Component\Listing\Columns\Column
 
         foreach ($dataSource['data']['items'] as &$item) {
             $order = $this->orderRepository->get($item['entity_id']);
+            $isSDD = $order->getShippingMethod() === 'dhlparcel_sameday';
 
             $timeSelection = $this->deliveryTimesService->getTimeSelection($order);
-            $template = $this->loadTemplate($timeSelection);
+            $template = $this->loadTemplate($timeSelection, $isSDD);
 
             $item[$this->getData('name')] = $template;
         }
@@ -45,7 +46,7 @@ class DeliveryTimesPriority extends \Magento\Ui\Component\Listing\Columns\Column
         return $dataSource;
     }
 
-    protected function loadTemplate($timeSelection)
+    protected function loadTemplate($timeSelection, $isSDD = false)
     {
         if (!$timeSelection) {
             return '';
@@ -57,8 +58,8 @@ class DeliveryTimesPriority extends \Magento\Ui\Component\Listing\Columns\Column
         }
 
         $timeLeft = $this->deliveryTimesService->getTimeLeft($timeSelection->timestamp);
-        $shippingAdvice = $this->deliveryTimesService->getShippingAdvice($timeSelection->timestamp);
-        $shippingAdviceClass = $this->deliveryTimesService->getShippingAdviceClass($timeSelection->timestamp);
+        $shippingAdvice = $this->deliveryTimesService->getShippingAdvice($timeSelection->timestamp, $isSDD);
+        $shippingAdviceClass = $this->deliveryTimesService->getShippingAdviceClass($timeSelection->timestamp, $isSDD);
 
         $view = [
             'time_left'             => $timeLeft,

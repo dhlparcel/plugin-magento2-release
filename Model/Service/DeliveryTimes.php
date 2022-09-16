@@ -263,6 +263,37 @@ class DeliveryTimes
         return $currentHour < $cutoffHour;
     }
 
+    public function showSamedayAfterCutoff()
+    {
+        // Don't show the after cutoff same day when regular same day is active
+        if ($this->showSameday()) {
+            return false;
+        }
+
+        $isSameDayEnabled = boolval($this->helper->getConfigData('shipping_methods/sameday/enabled'));
+        $isSameDayAfterCutoffEnabled = boolval($this->helper->getConfigData('shipping_methods/sameday/show_after_cutoff'));
+
+        if (!$isSameDayEnabled || !$isSameDayAfterCutoffEnabled) {
+            return false;
+        }
+
+        /** @var \DateTime $tomorrowDateTime */
+        $tomorrowDateTime = $this->timezone->date();
+        $tomorrowDateTime->modify('+1 day');
+        $shippingDays    = explode(',', $this->helper->getConfigData('delivery_times/shipping_days'));
+
+        if (!in_array($tomorrowDateTime->format('w'), $shippingDays)) {
+            return false;
+        }
+
+        $cutoffSetting = $this->helper->getConfigData('shipping_methods/sameday/time_after_cutoff');
+        $cutoffHour = intval($cutoffSetting);
+
+        $currentHour = intval($tomorrowDateTime->format('G'));
+
+        return $currentHour >= $cutoffHour;
+    }
+
     public function showPriority()
     {
         $enabled = $this->isEnabled();
@@ -277,6 +308,9 @@ class DeliveryTimes
     public function saveSamedaySelection($order)
     {
         $currentDateTime = $this->timezone->date();
+        if ($this->showSamedayAfterCutoff()) {
+            $currentDateTime->modify('+1 day');
+        }
         $date = $currentDateTime->format('d-m-Y');
         $startTime = '1800';
         $endTime = '2100';
@@ -335,9 +369,9 @@ class DeliveryTimes
         return $this->timeSelectionFactory->create(['automap' => $timeSelectionData]);
     }
 
-    public function getShippingAdviceClass($selectedTimestamp)
+    public function getShippingAdviceClass($selectedTimestamp, $isSDD = false)
     {
-        $shippingPriority = $this->getShippingPriority($selectedTimestamp);
+        $shippingPriority = $this->getShippingPriority($selectedTimestamp, $isSDD);
 
         switch ($shippingPriority) {
             case self::SHIPPING_PRIORITY_TODAY:
@@ -367,9 +401,9 @@ class DeliveryTimes
         return $this->humanTimeDiff($currentTimestamp, $timestamp);
     }
 
-    public function getShippingAdvice($selectedTimestamp)
+    public function getShippingAdvice($selectedTimestamp, $isSDD = false)
     {
-        $shippingPriority = $this->getShippingPriority($selectedTimestamp);
+        $shippingPriority = $this->getShippingPriority($selectedTimestamp, $isSDD);
 
         switch ($shippingPriority) {
             case self::SHIPPING_PRIORITY_ASAP:
@@ -407,7 +441,7 @@ class DeliveryTimes
         }
     }
 
-    protected function getShippingPriority($selectedTimestamp)
+    protected function getShippingPriority($selectedTimestamp, $isSDD = false)
     {
         $currentDateTime = $this->timezone->date();
         $currentTimestamp = $currentDateTime->getTimestamp();
@@ -420,6 +454,9 @@ class DeliveryTimes
         $currentDateTime = $this->timezone->date();
         $currentDayTimestamp = $currentDateTime->getTimestamp();
         $tomorrowDayTimestamp = $currentDayTimestamp + $dayInSeconds;
+
+        $todayDateTime = $this->timezone->date()->setTime(0, 0, 0);
+        $tomorrowStartDayTimestamp = $todayDateTime->getTimestamp() + $dayInSeconds;
 
         $selectedTimestampDateTime = $this->timezone->date();
         $selectedTimestampDateTime->setTimestamp($selectedTimestamp);
@@ -440,6 +477,10 @@ class DeliveryTimes
             }
 
             return self::SHIPPING_PRIORITY_BACKLOG;
+        }
+
+        if ($tomorrowStartDayTimestamp === $selectedDayTimestamp && $isSDD) {
+            return self::SHIPPING_PRIORITY_SOON ;
         }
 
         return self::SHIPPING_PRIORITY_TODAY;

@@ -676,6 +676,30 @@
                                 <field id="rate_method">1</field>
                             </depends>
                         </field>
+                        <field id="show_after_cutoff" translate="label" type="select" sortOrder="800" showInDefault="1"
+                               showInWebsite="1" showInStore="1">
+                            <label>Show after cutoff time</label>
+                            <comment>Show same day option after the cutoff time is expired. By shipping with DHL Same-day delivery, you can offer your customer a next day delivery experience.
+                            </comment>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="title_after_cutoff" translate="label" type="text" sortOrder="801" showInDefault="1"
+                               showInWebsite="1" showInStore="1">
+                            <label>Title after cutoff time</label>
+                            <comment>Leave empty to use default title</comment>
+                            <depends>
+                                <field id="show_after_cutoff">1</field>
+                            </depends>
+                        </field>
+                        <field id="time_after_cutoff" translate="Module" type="select" sortOrder="802" showInDefault="1"
+                               showInWebsite="1" showInStore="1">
+                            <label>Show after specific time</label>
+                            <comment>Display the new title after the regular same day cutoff time. Recommended to set this to the same time the cutoff time of "home delivery" (when using "Delivery Times").</comment>
+                            <source_model>DHLParcel\Shipping\Model\Config\Source\DeliveryTimes\CutoffTime</source_model>
+                            <depends>
+                                <field id="show_after_cutoff">1</field>
+                            </depends>
+                        </field>
                     </group>
                     <group id="servicepoint" translate="label" type="text" sortOrder="600" showInDefault="1"
                            showInWebsite="1" showInStore="1">
