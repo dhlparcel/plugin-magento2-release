@@ -350,7 +350,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         }
 
         if ($this->getConfigData('label/alternative_tracking/enabled')) {
-            $trackingUrl = $this->getConfigData('label/alternative_tracking/enabled');
+            $trackingUrl = $this->getConfigData('label/alternative_tracking/url');
         } else {
             $trackingUrl = $this->trackingUrl;
             if ($piece->getCountryCode() && $piece->getCountryCode() === 'BE') {
