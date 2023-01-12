@@ -116,6 +116,29 @@
                         <validate>validate-number</validate>
                         <comment>Important: The maximum insured amount is € 500,-</comment>
                     </field>
+                    <field id="default_shipment_insurance" translate="label" type="select" sortOrder="311" showInDefault="1"
+                           showInWebsite="1" showInStore="1">
+                        <label>Auto-enable: Shipment insurance</label>
+                        <source_model>DHLParcel\Shipping\Model\Config\Source\ShipmentInsurance</source_model>
+                        <comment>Additional transport insurance.</comment>
+                    </field>
+                    <field id="default_shipment_insurance_custom" translate="label" type="text" sortOrder="312"
+                           showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Shipment insurance: amount</label>
+                        <depends>
+                            <field id="default_shipment_insurance" separator="|">custom</field>
+                        </depends>
+                        <validate>validate-number</validate>
+                        <comment>Important: If the value of the goods exceeds €100.000, please contact our Customer Service prior to shipping.</comment>
+                    </field>
+                    <field id="default_shipment_insurance_min" translate="label" type="text" sortOrder="313"
+                           showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Minimum order amount before enabling shipment insurance</label>
+                        <depends>
+                            <field id="default_shipment_insurance" separator="|">500|1000|custom</field>
+                        </depends>
+                        <validate>validate-number|minimum-length-4</validate>
+                    </field>
                     <field id="default_reference_enabled" translate="label" type="select" sortOrder="400"
                            showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Auto-enable: Reference</label>

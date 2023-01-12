@@ -5,6 +5,7 @@ namespace DHLParcel\Shipping\Model\Service;
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Config\Source\ReferenceOptions;
 use DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault;
+use DHLParcel\Shipping\Model\Config\Source\ShipmentInsurance;
 use DHLParcel\Shipping\Model\Service\DeliveryServices as DeliveryServicesService;
 
 class Preset
@@ -87,6 +88,20 @@ class Preset
             $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_extra_assured_min'));
             if (!is_numeric($minimumOrderAmount) || $order->getSubtotal() >= floatval($minimumOrderAmount)) {
                 $options['EA'] = '';
+            }
+        }
+
+        if ($this->helper->getConfigData('label/default_shipment_insurance', $order->getStoreId()) != ShipmentInsurance::OPTION_NONE) {
+            $insuranceValue = $this->helper->getConfigData('label/default_shipment_insurance', $order->getStoreId());
+            if ($insuranceValue === ShipmentInsurance::OPTION_CUSTOM) {
+                $insuranceValue = $this->helper->getConfigData('label/default_shipment_insurance_custom', $order->getStoreId());
+            }
+
+            if (is_numeric($insuranceValue)) {
+                $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_shipment_insurance_min'));
+                if (!is_numeric($minimumOrderAmount) || $order->getSubtotal() >= floatval($minimumOrderAmount)) {
+                    $options['INS'] = $insuranceValue;
+                }
             }
         }
 

@@ -1,0 +1,192 @@
+variables:
+  # Pipeline settings
+  CONTAINER_REGISTRY: 'Dockerhub DhlDockerhubPusher-Plugin'
+
+  # Application settings
+  DAMPP_PLUGIN_POSTNL: 'false'
+  DAMPP_PLUGIN_OSC: 'false'
+  DAMPP_HOST: 'magento2.docker'
+  DAMPP_INSTALL_POSTNL: 'false'
+  DAMPP_PRODUCTION: 'true'
+
+  # Build settings
+  DAMPP_BUILD_ALL: 'false'
+  CALLED_FROM_DAMPP: 'true'
+  UNIQUE_BUILD_ID: "$(Build.BuildId)-$(Build.SourceVersion)"
+  CYPRESS_VERSION: '12.2.0'
+  RECORD_KEY: "ea450491-8ab3-4c87-9c03-3d2fbdcda01b"
+  DAMPP_INCLUDE_PLUGIN: 'true'
+  DAMPP_PLUGIN_PATH: './plugin'
+  DAMPP_PHP_IMAGE_TAG: 'dhlparcel/plugin-magento2-docker'
+  DAMPP_MARATHON_TAG: 'dhlparcel/plugin-magento2-docker:latest'
+
+  # Deploy settings
+  DEPLOY_VERSION: '2.4.4'
+
+  # AKS
+  overlayPathPrefix: kubernetes
+
+resources:
+  repositories:
+    - repository: Magento2Docker
+      type: github
+      endpoint: dhlparcel-Infrastructure-Plugin
+      name: dhlparcel/plugin-magento2-docker
+      depth: 1
+      ref: feature/PLG-1134-ado
+    - repository: templates
+      type: github
+      endpoint: dhlparcel-Infrastructure-Plugin
+      name: dhlparcel/azure-pipeline-templates
+      ref: main
+
+  containers:
+    - container: polaris
+      image: dhlparcel/azure-pipelines-polaris:latest
+      endpoint: 'Dockerhub DhlDockerhubPusher-Plugin'
+    - container: phpcs
+      options: --rm
+      image: dhlparcel/dhl-parcel-phpcs
+
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+pr:
+  - master
+  - develop
+
+pool: "dhl-build-pool"
+
+stages:
+- stage: SlackStart
+  displayName: 'Slack start message'
+  dependsOn: []
+  jobs:
+    - job: 'slack_start_message'
+      displayName: 'Send start message to slack'
+      steps:
+        - template: .pipeline/slack-message.yaml
+          parameters:
+            isStart: true
+
+- stage: CodeChecks
+  displayName: 'Code checks'
+  dependsOn: []
+  jobs:
+    - job: 'code_checks'
+      steps:
+        - template: .pipeline/prepare-files.yaml
+        - template: .pipeline/docker-login.yaml
+        - script: |
+            if cat plugin/tests/cypress/e2e/*/* |grep -c "\\.only"; then echo "only detected in cypress tests"; exit 1; fi
+          displayName: 'Check if there is no "only" check'
+        - script: |
+            docker run --volume $(System.DefaultWorkingDirectory):/project --rm dhlparcel/dhl-parcel-phpcs ./plugin --standard=plugin/tests/phpcs-custom.xml --ignore=lib/*,tests/*,Setup/* --extensions=php,phtml
+          displayName: 'Run PHPCS'
+
+- stage: PolarisCheck
+  displayName: 'Polaris check'
+  dependsOn: []
+  jobs:
+    - template: .pipeline/test-polaris.yaml
+      parameters:
+        environments: ['test', 'accept']
+        overlayPathPrefix: ${{ variables.overlayPathPrefix }}
+        checkoutRepo: Magento2Docker
+
+- stage: BuildAndTest
+  displayName: 'Build and test'
+  dependsOn:
+    - CodeChecks
+    - PolarisCheck
+    - SlackStart
+  jobs:
+    - job: 'test_versions'
+      strategy:
+        matrix:
+          magento_2_3_5_p1:
+            magentoVersion: '2.3.5-p1'
+            enableElasticSearch: 'false'
+            disableTwoFactor: 'false'
+          magento_2_4_4:
+            magentoVersion: '2.4.4'
+            enableElasticSearch: 'true'
+            disableTwoFactor: 'true'
+        maxParallel: 6
+      steps:
+        - template: .pipeline/prepare-files.yaml
+        - template: .pipeline/docker-login.yaml
+        - template: .pipeline/build-image.yaml
+          parameters:
+            frameworkVersion: $(magentoVersion)
+            enableElasticSearch: $(enableElasticSearch)
+            disableTwoFactor: $(disableTwoFactor)
+        - template: .pipeline/test-image.yaml
+          parameters:
+            frameworkVersion: $(magentoVersion)
+            enableElasticSearch: $(enableElasticSearch)
+            disableTwoFactor: $(disableTwoFactor)
+
+- stage: PushImage
+  displayName: 'Push image'
+  dependsOn: BuildAndTest
+  jobs:
+    - job: 'deployment_accept_k8s'
+      displayName: 'Deploy accept to K8s'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+      steps:
+        - template: .pipeline/prepare-files.yaml
+        - template: .pipeline/docker-login.yaml
+        - template: .pipeline/build-image.yaml
+          parameters:
+            frameworkVersion: $(DEPLOY_VERSION)
+            enableElasticSearch: 'true'
+            disableTwoFactor: 'true'
+            push: 'true'
+            pushTag: "latest-$(DEPLOY_VERSION)"
+
+- stage: SlackEnd
+  displayName: 'Slack start message'
+  dependsOn: PushImage
+  jobs:
+    - job: 'slack_end_message'
+      displayName: 'Send end message to slack'
+      steps:
+        - template: .pipeline/slack-message.yaml
+          parameters:
+            isEnd: true
+
+- stage: DeployMesos
+  displayName: 'Deploy to accept'
+  dependsOn: PushImage
+  pool: 'dhl-deploy-pool'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  variables:
+    dockerTag: "latest-$(DEPLOY_VERSION)"
+    envName: accept
+  jobs:
+    - deployment: deploy
+      pool: 'dhl-deploy-pool'
+      environment: accept
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - template: .pipeline/prepare-files.yaml
+              - template: .pipeline/docker-login.yaml
+              - template: .pipeline/deploy-mesos.yaml
+
+#- stage: DeployAks
+#  displayName: 'Deploy to accept'
+#  dependsOn: PushImage
+#  pool: 'dhl-deploy-pool'
+#  jobs:
+#    - job: 'deployment_accept_k8s'
+#      displayName: 'Deploy accept to K8s'
+#      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+#      steps:
+#        - template: .pipeline/prepare-files.yaml
+#        - template: .pipeline/docker-login.yaml
+#        - template: .pipeline/deploy-aks.yaml

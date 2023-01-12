@@ -36,8 +36,10 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     protected $rateManager;
     protected $servicePointService;
     protected $storeManager;
-    protected $trackingUrl = 'https://www.dhlparcel.nl/nl/volg-uw-zending?tc={{trackerCode}}&pc={{postalCode}}';
-    protected $trackingUrlBe = 'https://www.dhlparcel.be/nl/particulieren/volg-je-zending?tc={{trackerCode}}&pc={{postalCode}}';
+    protected $trackingUrl = 'https://my.dhlparcel.nl/home/tracktrace/{{trackerCode}}?lang={{locale}}';
+    protected $alternateUrls = [
+        'BE' => 'https://www.dhlparcel.be/en/consumer/track-your-shipment?tc={{trackerCode}}&pc={{postalCode}}&lc={{locale}}'
+    ];
 
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -349,18 +351,25 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             return false;
         }
 
+        $locale = 'en-NL';
         if ($this->getConfigData('label/alternative_tracking/enabled')) {
-            $trackingUrl = $this->getConfigData('label/alternative_tracking/enabled');
+            $trackingUrl = $this->getConfigData('label/alternative_tracking/url');
         } else {
+            if ($piece->getCountryCode() === 'NL') {
+                $locale = 'nl-NL';
+            } elseif ($piece->getCountryCode() === 'BE') {
+                $locale = 'en-BE';
+            }
+
             $trackingUrl = $this->trackingUrl;
-            if ($piece->getCountryCode() && $piece->getCountryCode() === 'BE') {
-                $trackingUrl = $this->trackingUrlBe;
+            if (array_key_exists($piece->getCountryCode(), $this->alternateUrls)) {
+                $trackingUrl = $this->alternateUrls[$piece->getCountryCode()];
             }
         }
 
         $postalCode = $piece->getPostalCode();
-        $search = ['{{trackerCode}}', '{{postalCode}}'];
-        $replace = [$trackerCode, $postalCode];
+        $search = ['{{trackerCode}}', '{{postalCode}}', '{{locale}}'];
+        $replace = [$trackerCode, $postalCode, $locale];
         return str_replace($search, $replace, $trackingUrl);
     }
 
