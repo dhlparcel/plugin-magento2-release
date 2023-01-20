@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: plugin-magento2-release
+  description: plugin-magento2-release
+  annotations: 
+    github.com/project-slug: dhlparcel/plugin-magento2-release
+    backstage.io/techdocs-ref: dir:.
+    
+  links:
+    - url: https://dhlparcel.slack.com/archives/C6XSYEG1Y
+      title: Slack
+      icon: help
+    
+spec:
+  type: component
+  lifecycle: production
+  owner: plugins-users

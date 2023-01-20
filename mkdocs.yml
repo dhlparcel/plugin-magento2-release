@@ -1,0 +1,10 @@
+site_name: plugin-magento2-release Documentation
+
+repo_url: https://github.com/dhlparcel/plugin-magento2-release
+edit_uri: blob/main/docs/
+
+nav:
+    - Home: index.md
+
+plugins:
+  - techdocs-core
