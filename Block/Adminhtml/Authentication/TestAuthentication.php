@@ -2,12 +2,12 @@
 
 namespace DHLParcel\Shipping\Block\Adminhtml\Authentication;
 
-class Test extends \Magento\Config\Block\System\Config\Form\Field
+class TestAuthentication extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
      * @var string
      */
-    protected $_template = 'DHLParcel_Shipping::authentication/test.phtml';
+    protected $_template = 'DHLParcel_Shipping::authentication/test_authentication.phtml';
 
     /**
      * Return element html
@@ -30,7 +30,7 @@ class Test extends \Magento\Config\Block\System\Config\Form\Field
      */
     public function getAjaxUrl()
     {
-        return $this->getUrl('dhlparcel_shipping/authentication/test');
+        return $this->getUrl('dhlparcel_shipping/authentication/testAuthentication');
     }
 
     /**

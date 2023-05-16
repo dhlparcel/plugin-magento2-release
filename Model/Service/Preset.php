@@ -114,6 +114,10 @@ class Preset
      */
     public function getMethodKey($order)
     {
+        if ($order->getShippingMethod() === null) {
+            return null;
+        }
+
         return str_replace('dhlparcel_', '', $order->getShippingMethod());
     }
 

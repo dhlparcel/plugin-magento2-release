@@ -331,7 +331,7 @@ class Shipment
             ],
             'address'     => [
                 'countryCode' => $this->helper->getConfigData('shipper/country_code', $storeId),
-                'postalCode'  => strtoupper($this->helper->getConfigData('shipper/' . $group . 'postal_code', $storeId)),
+                'postalCode'  => strtoupper($this->helper->getConfigData('shipper/' . $group . 'postal_code', $storeId) ?? ''),
                 'city'        => $this->helper->getConfigData('shipper/' . $group . 'city', $storeId),
                 'street'      => $this->helper->getConfigData('shipper/' . $group . 'street', $storeId),
                 'number'      => $this->helper->getConfigData('shipper/' . $group . 'house_number', $storeId),

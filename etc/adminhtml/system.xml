@@ -64,7 +64,7 @@
                     </field>
                     <field id="test_authentication" translate="label comment" type="button" sortOrder="300"
                            showInDefault="1" showInWebsite="1" showInStore="1">
-                        <frontend_model>DHLParcel\Shipping\Block\Adminhtml\Authentication\Test</frontend_model>
+                        <frontend_model>DHLParcel\Shipping\Block\Adminhtml\Authentication\TestAuthentication</frontend_model>
                         <comment>Make sure to test your filled credentials. We will search for your account ID and
                             Organization ID
                         </comment>
@@ -120,7 +120,7 @@
                            showInWebsite="1" showInStore="1">
                         <label>Auto-enable: Shipment insurance</label>
                         <source_model>DHLParcel\Shipping\Model\Config\Source\ShipmentInsurance</source_model>
-                        <comment>Additional transport insurance.</comment>
+                        <comment>Applicable to both consumer and business shipments, not available for mailbox delivery. When enabled, the selected insurance option is added to your shipments (when available).</comment>
                     </field>
                     <field id="default_shipment_insurance_custom" translate="label" type="text" sortOrder="312"
                            showInDefault="1" showInWebsite="1" showInStore="1">
@@ -1041,7 +1041,12 @@
                         </field>
                         <field id="create_mailbox" translate="label" sortOrder="200" type="select" showInDefault="1"
                                showInWebsite="1" showInStore="1">
-                            <label>Create mailbox labels</label>
+                            <label>Create mailbox labels (0.5-2kg)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_envelope" translate="label" sortOrder="210" type="select" showInDefault="1"
+                               showInWebsite="1" showInStore="1">
+                            <label>Create envelope labels (50-500g)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="create_dhl_only" translate="label" sortOrder="300" type="select" showInDefault="1"
@@ -1051,7 +1056,12 @@
                         </field>
                         <field id="create_mailbox_dhl_only" translate="label" sortOrder="400" type="select"
                                showInDefault="1" showInWebsite="1" showInStore="1">
-                            <label>Create mailbox labels (only for DHL shipping methods)</label>
+                            <label>Create mailbox labels (0.5-2kg, only for DHL shipping methods)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_envelope_dhl_only" translate="label" sortOrder="410" type="select"
+                               showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create envelope labels (50-500g, only for DHL shipping methods)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="create_service_saturday" translate="label" sortOrder="500" type="select"

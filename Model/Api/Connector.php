@@ -172,9 +172,17 @@ class Connector
         $cacheKey = $this->apiCache->createKey(0, 'accessToken');
         $accessToken = $this->apiCache->load($cacheKey);
         if ($accessToken === false || $refresh === true) {
+            $apiUser = $this->helper->getConfigData('api/user');
+            $key = $this->helper->getConfigData('api/key');
+
+            if ($apiUser === null || $key === null) {
+                $this->failedAuthentication = true;
+                return;
+            }
+
             $response = $this->post(self::AUTH_API, [
-                'userId' => trim($this->helper->getConfigData('api/user')),
-                'key'    => trim($this->helper->getConfigData('api/key')),
+                'userId' => trim($apiUser),
+                'key'    => trim($key),
             ]);
             if (!empty($response['accessToken'])) {
                 $this->apiCache->save($response['accessToken'], $cacheKey, [], 720);
@@ -195,6 +203,10 @@ class Connector
      */
     public function testAuthenticate($userId, $key)
     {
+        if (!isset($userId, $key)) {
+            return false;
+        }
+
         $response = $this->post(self::AUTH_API, [
             'userId' => trim($userId),
             'key'    => trim($key),

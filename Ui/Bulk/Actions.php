@@ -50,9 +50,20 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $this->addOptionStack(
                 $options,
                 'create_mailbox',
-                __('Create mailbox labels'),
+                __('Create mailbox labels (0.5-2kg)'),
                 $this->urlPath . 'create',
-                ['method_override' => 'mailbox']
+                ['method_override' => 'mailbox', 'mailbox_type' => 'no_envelope']
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_envelope');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_envelope',
+                __('Create envelope labels (50-500g)'),
+                $this->urlPath . 'create',
+                ['method_override' => 'mailbox', 'mailbox_type' => 'envelope']
             );
         }
 
@@ -72,9 +83,20 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $this->addOptionStack(
                 $options,
                 'create_mailbox_dhl_only',
-                __('Create mailbox labels (only for DHL shipping methods)'),
+                __('Create mailbox labels (0.5-2kg, only for DHL shipping methods)'),
                 $this->urlPath . 'create',
-                ['method_override' => 'mailbox', 'dhlparcel_only' => 'true']
+                ['method_override' => 'mailbox', 'dhlparcel_only' => 'true', 'mailbox_type' => 'no_envelope']
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_envelope_dhl_only');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_envelope_dhl_only',
+                __('Create envelope labels (50-500g, only for DHL shipping methods)'),
+                $this->urlPath . 'create',
+                ['method_override' => 'envelope', 'dhlparcel_only' => 'true', 'mailbox_type' => 'envelope']
             );
         }
 

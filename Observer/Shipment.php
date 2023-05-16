@@ -108,6 +108,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $defaultOptions = $this->additionalServices($defaultOptions);
 
         $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
+        $sizes = $this->overwriteMailboxType($sizes);
 
         if (empty($sizes) || !is_array($sizes)) {
             $skippableOptions = $this->presetService->filterSkippableDefaults($defaultOptions, $storeId);
@@ -126,6 +127,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
             $defaultOptions = array_merge($requiredOptions, $allowedOptions);
             $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
+            $sizes = $this->overwriteMailboxType($sizes);
 
             if (empty($sizes) || !is_array($sizes)) {
                 $translations = $this->presetService->getTranslations();
@@ -136,6 +138,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         $packageKey = '';
         $packageWeight = 1000000;
+
         foreach ($sizes as $key => $package) {
             if (isset($package['minWeightKg']) && isset($package['maxWeightKg'])) {
                 $packageSum = intval($package['minWeightKg']) + intval($package['maxWeightKg']);
@@ -147,7 +150,6 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
                 $packageWeight = $packageSum;
             }
         }
-
         $pieces = [$this->createPiece($packageKey)];
 
         $options = [];
@@ -212,6 +214,29 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         return $tracks;
     }
 
+    protected function overwriteMailboxType($sizes)
+    {
+        if ($this->request->getParam('method_override') !== 'mailbox' || !$this->request->getParam('mailbox_type')) {
+            return $sizes;
+        }
+
+        $mailboxType = $this->request->getParam('mailbox_type');
+        return array_filter($sizes, function ($size) use ($mailboxType) {
+            if (!isset($size['key'])) {
+                return true;
+            }
+
+            if ($mailboxType === 'envelop' && strtolower($size['key']) !== 'envelope') {
+                return false;
+            }
+
+            if ($mailboxType === 'no_envelope' && strtolower($size['key']) === 'envelope') {
+                return false;
+            }
+
+            return true;
+        });
+    }
     protected function checkMailboxOverride($options)
     {
         if ($this->request->getParam('method_override') == 'mailbox' && array_key_exists('DOOR', $options)) {

@@ -92,9 +92,11 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
             // Build service options text
             $serviceOptions = [];
             $serviceCounter = 0;
-            foreach (explode(',', $piece->getServiceOptions()) as $serviceOption) {
-                if ($this->presetService->getTranslation($serviceOption) !== null) {
-                    $serviceOptions[] = sprintf('<span data-key="%s" class="dhlparcel-shipping-service-option-chip">%s</span>', strtoupper($serviceOption), $this->presetService->getTranslation($serviceOption)) . (++$serviceCounter % 4 ? '' : '<br/>');
+            if ($piece->getServiceOptions() !== null) {
+                foreach (explode(',', $piece->getServiceOptions()) as $serviceOption) {
+                    if ($this->presetService->getTranslation($serviceOption) !== null) {
+                        $serviceOptions[] = sprintf('<span data-key="%s" class="dhlparcel-shipping-service-option-chip">%s</span>', strtoupper($serviceOption), $this->presetService->getTranslation($serviceOption)) . (++$serviceCounter % 4 ? '' : '<br/>');
+                    }
                 }
             }
             $serviceOptionsText = '';

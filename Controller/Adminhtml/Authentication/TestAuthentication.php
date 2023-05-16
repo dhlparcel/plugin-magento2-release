@@ -24,7 +24,7 @@ use DHLParcel\Shipping\Model\Service\Authentication as AuthenticationService;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
 
-class Test extends \Magento\Backend\App\Action
+class TestAuthentication extends \Magento\Backend\App\Action
 {
     /**
      * Authorization level of a basic admin session
