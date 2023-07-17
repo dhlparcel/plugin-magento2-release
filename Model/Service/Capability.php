@@ -6,9 +6,10 @@ use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Api\Connector;
 use DHLParcel\Shipping\Model\Cache\Api as ApiCache;
 use DHLParcel\Shipping\Model\Data\Api\Request\CapabilityCheckFactory;
+use DHLParcel\Shipping\Model\Data\Api\Response\Capability\ParcelType;
 use DHLParcel\Shipping\Model\Data\Api\Response\CapabilityFactory;
 use DHLParcel\Shipping\Model\Data\Capability\OptionFactory;
-use DHLParcel\Shipping\Model\Data\Capability\ProductFactory;
+use DHLParcel\Shipping\Model\Data\Api\Response\Capability\ParcelTypeFactory;
 
 class Capability
 {
@@ -16,7 +17,7 @@ class Capability
     protected $apiCache;
     protected $connector;
     protected $optionFactory;
-    protected $productFactory;
+    protected $parcelTypeFactory;
     protected $capabilityCheckFactory;
     protected $capabilityFactory;
 
@@ -25,7 +26,7 @@ class Capability
         ApiCache $apiCache,
         Connector $connector,
         OptionFactory $optionFactory,
-        ProductFactory $productFactory,
+        ParcelTypeFactory $parcelTypeFactory,
         CapabilityCheckFactory $capabilityCheckFactory,
         CapabilityFactory $capabilityFactory
     ) {
@@ -33,7 +34,7 @@ class Capability
         $this->apiCache = $apiCache;
         $this->connector = $connector;
         $this->optionFactory = $optionFactory;
-        $this->productFactory = $productFactory;
+        $this->parcelTypeFactory = $parcelTypeFactory;
         $this->capabilityCheckFactory = $capabilityCheckFactory;
         $this->capabilityFactory = $capabilityFactory;
     }
@@ -95,7 +96,7 @@ class Capability
         $capabilityCheck = $this->createCapabilityCheck($storeId, $toCountry, $toPostalCode, $toBusiness, $requestOptions, $returnProduct);
         $capabilities = $this->sendRequest($storeId, $capabilityCheck);
 
-        $products = [];
+        $parcelTypes = [];
         foreach ($capabilities as $capability) {
             if (!isset($capability->parcelType->key)) {
                 continue;
@@ -106,20 +107,37 @@ class Capability
             }
 
             // Skip if already parsed
-            if (isset($products[$capability->parcelType->key])) {
+            if (isset($parcelTypes[$capability->parcelType->key])) {
                 continue;
             }
 
-            /** @var \DHLParcel\Shipping\Model\Data\Capability\Product $product */
-            $product = $this->productFactory->create(['automap' => $capability->parcelType->toArray()]);
-            $product->productKey = $capability->product->key;
+            /** @var ParcelType $parcelType */
+            $parcelType = $this->parcelTypeFactory->create(['automap' => $capability->parcelType->toArray()]);
+            $parcelType->productKey = $capability->product->key;
 
-            $products[$capability->parcelType->key] = $product->toArray();
+            $parcelTypes[$capability->parcelType->key] = $parcelType->toArray();
         }
 
-        array_multisort(array_column($products, 'maxWeightKg'), SORT_ASC, $products);
+        array_multisort(array_column($parcelTypes, 'maxWeightKg'), SORT_ASC, $parcelTypes);
 
-        return $products;
+        return $parcelTypes;
+    }
+
+    public function setDisplayWeight($sizes)
+    {
+        foreach ($sizes as &$size) {
+            $unit = 'kg';
+            $displayMinWeight = round($size['minWeightGrams'] / 1000, 3);
+            $displayMaxWeight = round($size['maxWeightGrams'] / 1000, 3);
+            if ($size['maxWeightGrams'] < 1000) {
+                $size['displayWeight'] = sprintf('min %s %s, max %s %s', $displayMinWeight, $unit, $displayMaxWeight, $unit);
+                continue;
+            }
+
+            $size['displayWeight'] = sprintf('max %s %s', $displayMaxWeight, $unit);
+        }
+
+        return $sizes;
     }
 
     /**

@@ -1036,7 +1036,7 @@
                         <label>Bulk Operations</label>
                         <field id="create" translate="label" sortOrder="100" type="select" showInDefault="1"
                                showInWebsite="1" showInStore="1">
-                            <label>Create labels</label>
+                            <label>Create labels (excluding mailbox and envelope)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="create_mailbox" translate="label" sortOrder="200" type="select" showInDefault="1"
@@ -1051,7 +1051,7 @@
                         </field>
                         <field id="create_dhl_only" translate="label" sortOrder="300" type="select" showInDefault="1"
                                showInWebsite="1" showInStore="1">
-                            <label>Create labels (only for DHL shipping methods)</label>
+                            <label>Create labels (only for DHL shipping methods, excluding mailbox and envelope)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="create_mailbox_dhl_only" translate="label" sortOrder="400" type="select"

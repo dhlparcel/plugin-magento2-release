@@ -40,7 +40,7 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $this->addOptionStack(
                 $options,
                 'create',
-                __('Create labels'),
+                __('Create labels (excluding mailbox and envelope)'),
                 $this->urlPath . 'create'
             );
         }
@@ -72,7 +72,7 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $this->addOptionStack(
                 $options,
                 'create_dhl_only',
-                __('Create labels (only for DHL shipping methods)'),
+                __('Create labels (only for DHL shipping methods, excluding mailbox and envelope)'),
                 $this->urlPath . 'create',
                 ['dhlparcel_only' => 'true']
             );

@@ -141,8 +141,8 @@ require([
         _updatePackages: function () {
             let options = '';
             $.each(this._capabilities('products'), function (key, product) {
-                options += '<option value="' + product.key + '">' +
-                    product.key + ' ' + product.minWeightKg + 'KG - ' + product.maxWeightKg + 'KG (max L' +
+                options += '<option value="' + product.key + '" ' + (product.selected ? 'selected' : '') + '>' +
+                    product.key + ' (' + product.displayWeight + ', L' +
                     product.dimensions.maxLengthCm + ' W' + product.dimensions.maxWidthCm + ' H' + product.dimensions.maxHeightCm +
                     ' cm)</option>'
             })

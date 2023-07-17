@@ -2,6 +2,7 @@
 
 namespace DHLParcel\Shipping\Observer;
 
+use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Exception\FaultyServiceOptionException;
 use DHLParcel\Shipping\Model\Exception\NoTrackException;
 use DHLParcel\Shipping\Model\Service\Capability as CapabilityService;
@@ -28,6 +29,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
     protected $presetService;
     protected $request;
     protected $shipmentService;
+    protected $helper;
 
     public function __construct(
         OrderRepositoryInterface $orderRepository,
@@ -37,7 +39,8 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         PieceFactory $pieceFactory,
         PresetService $presetService,
         RequestInterface $request,
-        ShipmentService $shipmentService
+        ShipmentService $shipmentService,
+        Data $helper
     ) {
         $this->capabilityService = $capabilityService;
         $this->labelService = $labelService;
@@ -47,6 +50,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $this->presetService = $presetService;
         $this->request = $request;
         $this->shipmentService = $shipmentService;
+        $this->helper = $helper;
     }
 
     /**
@@ -140,6 +144,10 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $packageWeight = 1000000;
 
         foreach ($sizes as $key => $package) {
+            if ($this->shouldSkipSize($key, $sizes)) {
+                continue;
+            }
+
             if (isset($package['minWeightKg']) && isset($package['maxWeightKg'])) {
                 $packageSum = intval($package['minWeightKg']) + intval($package['maxWeightKg']);
             } else {
@@ -159,6 +167,26 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         $tracks = $this->shipmentService->create($order, $options, $pieces, $toBusiness);
         return $tracks;
+    }
+
+    protected function shouldSkipSize($key, $sizes)
+    {
+        if (in_array($this->request->getParam('method_override'), ['envelope', 'mailbox'])) {
+            return false;
+        }
+
+        $ignoredSizes = explode(',', $this->helper->getConfigData('label/ignored_sizes'));
+
+        // Passing this statement would mean there wouldn't be any size left, in this unlikely case we skip the checks
+        if (empty(array_diff_key($sizes, array_flip($ignoredSizes)))) {
+            return false;
+        }
+
+        if (!in_array($key, $ignoredSizes)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

@@ -116,7 +116,7 @@ class Shipment
 
         if ($hideShipper) {
             if ((empty($shipmentRequest->onBehalfOf->name->firstName) || empty($shipmentRequest->onBehalfOf->name->lastName))
-                && empty($shipmentRequest->onBehalfOf->name->companyName) ) {
+                && empty($shipmentRequest->onBehalfOf->name->companyName)) {
                 throw new LabelCreationException(__('Failed to create label, missing hide shipper company name'));
             }
 
