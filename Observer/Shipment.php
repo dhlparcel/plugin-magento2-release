@@ -175,7 +175,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             return false;
         }
 
-        $ignoredSizes = explode(',', $this->helper->getConfigData('label/ignored_sizes'));
+        $ignoredSizes = explode(',', $this->helper->getConfigData('label/ignored_sizes') ?? '');
 
         // Passing this statement would mean there wouldn't be any size left, in this unlikely case we skip the checks
         if (empty(array_diff_key($sizes, array_flip($ignoredSizes)))) {

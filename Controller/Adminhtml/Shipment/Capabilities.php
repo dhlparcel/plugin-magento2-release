@@ -48,7 +48,7 @@ class Capabilities extends \Magento\Backend\App\Action
 
     protected function setDefaultSize(&$sizes)
     {
-        $ignoredSizes = explode(',', $this->helper->getConfigData('label/ignored_sizes'));
+        $ignoredSizes = explode(',', $this->helper->getConfigData('label/ignored_sizes') ?? '');
         foreach ($sizes as &$size) {
             if (!in_array($size['key'], $ignoredSizes)) {
                 $size['selected'] = true;

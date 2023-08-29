@@ -299,7 +299,7 @@ class DeliveryServices
         if (is_array($array) && count($array) > 0) {
             foreach ($array as $item) {
                 if (in_array($item, $this->availableOptions)) {
-                    $sanitized[] = strtoupper($item);
+                    $sanitized[] = strtoupper($item ?? '');
                 }
             }
         }

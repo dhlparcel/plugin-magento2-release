@@ -4,6 +4,7 @@ namespace DHLParcel\Shipping\Model\Service;
 
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Api\Connector;
+use DHLParcel\Shipping\Model\Data\DeliveryTime;
 use DHLParcel\Shipping\Model\Data\DeliveryTimeFactory;
 use DHLParcel\Shipping\Model\Data\Api\Response\TimeWindowFactory;
 use DHLParcel\Shipping\Model\Data\TimeSelectionFactory;
@@ -198,6 +199,7 @@ class DeliveryTimes
         $timezoneString = $this->timezone->getConfigTimezone();
         $timezone = new \DateTimeZone($timezoneString);
 
+        /** @var DeliveryTime $deliveryTime */
         foreach ($deliveryTimes as $deliveryTime) {
             $datetime = date_create_from_format('d-m-Y Hi', $deliveryTime->source->deliveryDate . ' ' . $deliveryTime->source->startTime, $timezone);
             $timestamp = $datetime->getTimestamp();
@@ -245,7 +247,7 @@ class DeliveryTimes
 
         /** @var \DateTime $currentDateTime */
         $currentDateTime = $this->timezone->date();
-        $shippingDays    = explode(',', $this->helper->getConfigData('delivery_times/shipping_days'));
+        $shippingDays    = explode(',', $this->helper->getConfigData('delivery_times/shipping_days') ?? '');
 
         if (!in_array($currentDateTime->format('w'), $shippingDays)) {
             return false;
@@ -280,7 +282,7 @@ class DeliveryTimes
         /** @var \DateTime $tomorrowDateTime */
         $tomorrowDateTime = $this->timezone->date();
         $tomorrowDateTime->modify('+1 day');
-        $shippingDays    = explode(',', $this->helper->getConfigData('delivery_times/shipping_days'));
+        $shippingDays    = explode(',', $this->helper->getConfigData('delivery_times/shipping_days') ?? '');
 
         if (!in_array($tomorrowDateTime->format('w'), $shippingDays)) {
             return false;
@@ -511,7 +513,7 @@ class DeliveryTimes
     protected function getShippingDays()
     {
         $shippingDaysSetting = $this->helper->getConfigData('delivery_times/shipping_days');
-        $shippingDaysArray = array_map('trim', explode(',', $shippingDaysSetting));
+        $shippingDaysArray = array_map('trim', explode(',', $shippingDaysSetting ?? ''));
 
         $weekdays = $this->weekdays->toOptionArray();
 
@@ -545,6 +547,7 @@ class DeliveryTimes
         }
 
         $currentDateTime = $this->timezone->date();
+        $currentDateTime->setTime(0, 0);
         $timestampTodayCheck = $currentDateTime->getTimestamp() - 1;
         $timestampDifference = $timestamp - $timestampTodayCheck;
         if ($timestampDifference < 0) {
@@ -561,7 +564,9 @@ class DeliveryTimes
         }
 
         $additionalDays = 0;
-        for ($dayCheck = 0; $dayCheck < $daysBetween; $dayCheck++) {
+        // If the day before the delivery day is sunday, add 1 extra day
+        // TODO Note, See previous note about hardcoded check for Sundays
+        for ($dayCheck = $dateBeforeCode === 7 ? 0 : 1; $dayCheck < $daysBetween; $dayCheck++) {
             $currentDateTime = $this->timezone->date();
             $theDay = intval($currentDateTime->modify('+' . $dayCheck . ' day')->format('N'));
             if ($shippingDays[$theDay] !== true) {

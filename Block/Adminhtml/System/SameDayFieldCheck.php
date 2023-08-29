@@ -22,7 +22,7 @@ class SameDayFieldCheck extends \Magento\Framework\Data\Form\Element\AbstractEle
     public function getElementHtml()
     {
         $message = __('No shipping days have been set, for sameday to function this field is required');
-        $shippingDays = explode(',', $this->helper->getConfigData('delivery_times/shipping_days'));
+        $shippingDays = explode(',', $this->helper->getConfigData('delivery_times/shipping_days') ?? '');
         if (is_array($shippingDays) && count($shippingDays) > 0) {
             $message = '<span class="dhlparcel-sameday-check valid-shipping-days">' . $message . '</span>';
         } else {

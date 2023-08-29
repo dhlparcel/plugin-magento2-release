@@ -42,7 +42,7 @@ class ColumnResolver
     /**
      * @param string $column
      * @param array $values
-     * @return string|int|float|null
+     * @return string|int|float
      * @throws ColumnNotFoundException
      */
     public function getColumnValue($column, array $values)
@@ -61,6 +61,6 @@ class ColumnResolver
             throw new ColumnNotFoundException(__('Value for column "%1" not found', $column));
         }
 
-        return trim($values[$columnIndex]);
+        return trim($values[$columnIndex] ?? '');
     }
 }

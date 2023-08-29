@@ -85,7 +85,7 @@ class Preset
         if ($this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
             || $this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
             && !$requiredOnly) {
-            $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_extra_assured_min'));
+            $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_extra_assured_min') ?? '0');
             if (!is_numeric($minimumOrderAmount) || $order->getSubtotal() >= floatval($minimumOrderAmount)) {
                 $options['EA'] = '';
             }
@@ -98,7 +98,7 @@ class Preset
             }
 
             if (is_numeric($insuranceValue)) {
-                $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_shipment_insurance_min'));
+                $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_shipment_insurance_min') ?? '0');
                 if (!is_numeric($minimumOrderAmount) || $order->getSubtotal() >= floatval($minimumOrderAmount)) {
                     $options['INS'] = $insuranceValue;
                 }

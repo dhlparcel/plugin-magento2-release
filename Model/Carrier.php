@@ -370,7 +370,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         $postalCode = $piece->getPostalCode();
         $search = ['{{trackerCode}}', '{{postalCode}}', '{{locale}}'];
         $replace = [$trackerCode, $postalCode, $locale];
-        return str_replace($search, $replace, $trackingUrl);
+        return str_replace($search, $replace, $trackingUrl ?? '');
     }
 
     /**
