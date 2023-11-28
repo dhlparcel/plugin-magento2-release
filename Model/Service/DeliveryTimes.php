@@ -24,6 +24,7 @@ class DeliveryTimes
     protected $connector;
     protected $deliveryTimeFactory;
     protected $timeWindowFactory;
+    protected $timeSelectionFactory;
     protected $stockRegistry;
     protected $checkoutSession;
     /** @var \Magento\Config\Model\Config\Source\Locale\Weekdays */
