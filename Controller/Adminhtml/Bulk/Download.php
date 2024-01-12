@@ -56,7 +56,7 @@ class Download extends \Magento\Backend\App\Action
             $redirectPath = 'sales/shipment/';
             $labels = $this->getSelectedShipmentLabels($success, $errors);
         } else {
-            $this->notificationService->error(__('DHL Parcel bulk action called from an invalid page'));
+            $this->notificationService->error(__('DHL eCommerce bulk action called from an invalid page'));
             return $this->resultRedirectFactory->create()->setPath('sales/order/');
         }
 
@@ -65,7 +65,7 @@ class Download extends \Magento\Backend\App\Action
         $labelCount = count($labels);
 
         if ($labelCount === 0) {
-            $this->notificationService->error(__('None of the selected order(s) have DHL Parcel labels'));
+            $this->notificationService->error(__('None of the selected order(s) have DHL eCommerce labels'));
             return $this->resultRedirectFactory->create()->setPath($redirectPath);
         }
 

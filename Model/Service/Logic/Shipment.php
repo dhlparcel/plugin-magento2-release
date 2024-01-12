@@ -186,6 +186,35 @@ class Shipment
         return $shipmentResponse;
     }
 
+    public function fakeRequest($shipmentRequest)
+    {
+        $response = [
+            'shipmentId' => $shipmentRequest->shipmentId,
+            'product' => 'DFY-B2C',
+            'pieces' => array(array(
+                'labelId' => uniqid('TEST-LABEL-ID-'),
+                'trackerCode' => 'JVGL0' . rand(100000000000000000, 999999999999999999),
+                'parcelType' => 'SMALL',
+                'pieceNumber' => 1,
+                'labelType' => 'B2X_Generic_A4_Third'
+            )),
+            'orderReference' => $shipmentRequest->orderReference,
+            'deliveryArea' => [
+                'remote' => false,
+                'type' => 'NonRemote'
+            ]
+        ];
+
+        $shipmentResponse = $this->shipmentResponseFactory->create(['automap' => $response]);
+        // Enrich pieces with postalCode
+        $shipmentResponse = $this->tagPostalCode($shipmentResponse, $shipmentRequest->receiver->address->postalCode);
+        $shipmentResponse = $this->tagCountryCode($shipmentResponse, $shipmentRequest->receiver->address->countryCode);
+        $shipmentResponse = $this->tagShipmentRequest($shipmentResponse, $shipmentRequest);
+        $shipmentResponse = $this->tagServiceOptions($shipmentResponse, $shipmentRequest);
+
+        return $shipmentResponse;
+    }
+
     /**
      * @param PieceResponse[] $pieceResponses
      * @param bool $isReturn
@@ -222,7 +251,7 @@ class Shipment
             $track = $this->trackFactory->create([]);
             $track->addData([
                 'carrier_code' => 'dhlparcel',
-                'title'        => !$isReturn ? 'DHL Parcel' : 'DHL Parcel Return Label',
+                'title'        => !$isReturn ? 'DHL eCommerce' : 'DHL eCommerce Return Label',
                 'number'       => $pieceResponse->trackerCode,
             ]);
 

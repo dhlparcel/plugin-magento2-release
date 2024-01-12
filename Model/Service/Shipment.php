@@ -4,6 +4,7 @@ namespace DHLParcel\Shipping\Model\Service;
 
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Carrier;
+use DHLParcel\Shipping\Model\Config\Source\YesNoTest;
 use DHLParcel\Shipping\Model\Exception\LabelCreationException;
 use DHLParcel\Shipping\Model\Service\Logic\Shipment as ShipmentLogic;
 use DHLParcel\Shipping\Model\Data\Api\Request\Shipment\Option;
@@ -64,7 +65,12 @@ class Shipment
         }
 
         $this->validateShipmentRequest($shipmentRequest, $hideShipper);
-        $shipmentResponse = $this->shipmentLogic->sendRequest($shipmentRequest);
+        if ($this->helper->getConfigData('active') != YesNoTest::OPTION_TEST) {
+            $shipmentResponse = $this->shipmentLogic->sendRequest($shipmentRequest);
+        } else {
+            $shipmentResponse = $this->shipmentLogic->fakeRequest($shipmentRequest);
+        }
+
         if (!$shipmentResponse) {
             throw new LabelCreationException(__('Failed to create label'));
         }
@@ -77,7 +83,11 @@ class Shipment
         if ($returnEnabled) {
             $returnShipmentRequest = $this->shipmentLogic->getReturnRequestData($storeId, $shipmentRequest);
             $this->validateShipmentRequest($shipmentRequest);
-            $returnShipmentResponse = $this->shipmentLogic->sendRequest($returnShipmentRequest);
+            if ($this->helper->getConfigData('active') != YesNoTest::OPTION_TEST) {
+                $returnShipmentResponse = $this->shipmentLogic->sendRequest($returnShipmentRequest);
+            } else {
+                $returnShipmentResponse = $this->shipmentLogic->fakeRequest($returnShipmentRequest);
+            }
             $returnTracks = $this->shipmentLogic->createTracks($returnShipmentResponse->pieces, true);
             if (empty($returnTracks)) {
                 //TODO code to handle reverting the

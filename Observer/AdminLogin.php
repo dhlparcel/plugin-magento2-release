@@ -2,6 +2,7 @@
 
 namespace DHLParcel\Shipping\Observer;
 
+use DHLParcel\Shipping\Model\Config\Source\YesNoTest;
 use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Cache\Api as ApiCache;
@@ -32,8 +33,8 @@ class AdminLogin implements \Magento\Framework\Event\ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        if (!$this->helper->getConfigData('active')) {
-            // plugin not active
+        if (!$this->helper->getConfigData('active') || $this->helper->getConfigData('active') == YesNoTest::OPTION_TEST) {
+            // plugin not active or in test mode
             return;
         }
 
@@ -48,7 +49,7 @@ class AdminLogin implements \Magento\Framework\Event\ObserverInterface
         $response = $this->connector->testAuthenticate($this->helper->getConfigData('api/user'), $this->helper->getConfigData('api/key'));
         if ($response === false) {
             // invalid authentication message
-            $this->notificationService->error(__('DHL Parcel extension has been turned on but user ID and API key combination is invalid'));
+            $this->notificationService->error(__('DHL eCommerce extension has been turned on but user ID and API key combination is invalid'));
         } else {
             // cache valid authentication to reduce unnecessary load
             $this->apiCache->save('valid', $cacheKey, [], 900);

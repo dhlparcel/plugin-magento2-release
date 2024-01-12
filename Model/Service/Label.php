@@ -5,6 +5,7 @@ namespace DHLParcel\Shipping\Model\Service;
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Cache\Api as ApiCache;
 use DHLParcel\Shipping\Model\Config\Source\LabelsOnPage;
+use DHLParcel\Shipping\Model\Config\Source\YesNoTest;
 use DHLParcel\Shipping\Model\Exception\LabelNotFoundException;
 use DHLParcel\Shipping\Model\Exception\NoTrackException;
 use DHLParcel\Shipping\Model\Exception\ShipmentNoLabelsException;
@@ -12,6 +13,7 @@ use DHLParcel\Shipping\Model\Service\Logic\Label as LabelLogic;
 use DHLParcel\Shipping\Model\Service\Logic\PDFMerger;
 
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\View\Asset\Repository;
 
 class Label
 {
@@ -19,6 +21,7 @@ class Label
     protected $labelLogic;
     protected $PDFMerger;
     protected $helper;
+    protected $assetRepository;
 
     /**
      * Label constructor.
@@ -26,17 +29,20 @@ class Label
      * @param LabelLogic $labelLogic
      * @param PDFMerger $PDFMerger
      * @param Data $helper
+     * @param Repository $assetRepository
      */
     public function __construct(
         ApiCache $apiCache,
         LabelLogic $labelLogic,
         PDFMerger $PDFMerger,
-        Data $helper
+        Data $helper,
+        Repository $assetRepository
     ) {
         $this->apiCache = $apiCache;
         $this->labelLogic = $labelLogic;
         $this->PDFMerger = $PDFMerger;
         $this->helper = $helper;
+        $this->assetRepository = $assetRepository;
     }
 
     /**
@@ -68,6 +74,10 @@ class Label
         $raw = $this->apiCache->load($cacheKey);
 
         if ($raw === false) {
+            if ($this->helper->getConfigData('active') == YesNoTest::OPTION_TEST) {
+                return $this->assetRepository->createAsset('DHLParcel_Shipping::pdf/TestLabel.pdf')->getContent();
+            }
+
             if (!$labelResponse = $this->labelLogic->get($labelId)) {
                 throw new LabelNotFoundException(__('Unable to retrieve label %1', $labelId));
             }

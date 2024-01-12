@@ -21,7 +21,7 @@
         <carriers>
             <dhlparcel>
                 <active>1</active>
-                <title>DHL Parcel</title>
+                <title>DHL eCommerce</title>
                 <sallowspecific>0</sallowspecific>
                 <showmethod>0</showmethod>
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>

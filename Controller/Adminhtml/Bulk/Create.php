@@ -51,7 +51,7 @@ class Create extends \Magento\Backend\App\Action
     public function execute()
     {
         if ($this->_request->getParam('namespace') != 'sales_order_grid') {
-            $this->notificationService->error(__('DHL Parcel bulk action called from an invalid page'));
+            $this->notificationService->error(__('DHL eCommerce bulk action called from an invalid page'));
             return $this->resultRedirectFactory->create()->setPath(self::REDIRECT_PATH);
         }
 

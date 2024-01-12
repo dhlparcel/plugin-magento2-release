@@ -80,10 +80,10 @@ Customer Group,Klantgroep
 Customer Name,Naam klant
 DHL Delivery Options,DHL Bezorgopties
 DHL Labels,DHL labels
-DHL Parcel Shipping,DHL Parcel verzending
-DHL Parcel bulk action called from an invalid page,DHL Parcel bulk actie aangeroepen vanaf een ongeldige pagina
-DHL Parcel extension has been turned on but user ID and API key combination is invalid,DHL Parcel plugin staat aan maar gebruiker ID en API-sleutel combinatie is ongeldig
-DHL Parcel,DHL Parcel
+DHL eCommerce Shipping,DHL eCommerce verzending
+DHL eCommerce bulk action called from an invalid page,DHL eCommerce bulk actie aangeroepen vanaf een ongeldige pagina
+DHL eCommerce extension has been turned on but user ID and API key combination is invalid,DHL eCommerce plugin staat aan maar gebruiker ID en API-sleutel combinatie is ongeldig
+DHL eCommerce,DHL eCommerce
 DHL Same-day delivery (6 p.m. to 9.30 p.m.),DHL Vandaag (tussen 18u en 21.30u)
 DHL ServicePoint Options,DHL ServicePoint opties
 DHL ServicePoint delivery,Bezorging op een DHL ServicePoint
@@ -161,8 +161,8 @@ Make sure to test your filled credentials. We will search for your account ID an
 Morning delivery,Ochtendbezorging
 Morning,Ochtendbezorging
 Multiple labels per page,Meerdere labels per pagina
-My DHL Parcel Account ID,My DHL Parcel accountnummer
-No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.,Er is geen DHL Parcel bulk handeling ingeschakeld. Klik hier om naar Instellingen te gaan. Bulk handelingen vindt u in het scherm Toegankelijkheid
+My DHL eCommerce Account ID,My DHL eCommerce accountnummer
+No DHL eCommerce bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.,Er is geen DHL eCommerce bulk handeling ingeschakeld. Klik hier om naar Instellingen te gaan. Bulk handelingen vindt u in het scherm Toegankelijkheid
 No DHL services could be found for this order with the selected service options: %1,Er konden geen DHL services gevonden worden voor deze bestelling met gekozen bezorgopties: %1
 No delivery to neighbour,Niet bij buren
 No neighbour and evening delivery,Niet bij buren en avondbezorging
@@ -176,7 +176,7 @@ No shipping method selected,Geen verzendmethode gekozen
 No,Nee
 None of the %1 order(s) have downloaded all their labels due to errors,Voor geen van de %1 bestelling(en) konden labels worden gedownload door fouten
 None of the %1 order(s) have printed all their labels due to errors,Voor geen van de %1 bestelling(en) konden labels worden geprint door fouten
-None of the selected order(s) have DHL Parcel labels,Geen van de geselecteerde bestelling(en) hebben DHL Parcel labels
+None of the selected order(s) have DHL eCommerce labels,Geen van de geselecteerde bestelling(en) hebben DHL eCommerce labels
 Number of days,Aantal dagen
 One of the labels you are trying to print is invalid,Een van de labels die u probeert te printen is ongeldig
 Order # %1,Bestelling # %1
@@ -268,7 +268,7 @@ Unable to import data,Gegevens importen mislukt
 Unable to retrieve label %1,Label %1 niet gevonden
 Unable to use track and trace and therefore no labels available for shipment %1,Track en trace is niet beschikbaar en hierdoor zijn er geen labels voor zending %1
 Usability,Toegankelijkheid
-Use DHL Parcel label for manual shipments,Gebruik DHL Parcel label voor het handmatig aanmaken van zendingen
+Use DHL eCommerce label for manual shipments,Gebruik DHL eCommerce label voor het handmatig aanmaken van zendingen
 Variable zone pricing,Variabel tarief
 View Log,Bekijk log
 We ask for a signature on delivery.,Wij vragen om een handtekening bij bezorging
@@ -388,3 +388,4 @@ Apr,Apr
 "Auto-enable: Message to the recipient","Standaard ingeschakeld: Bericht aan de ontvanger"
 "Secure delivery by code","Veilige bezorging met code"
 "We ask for a 4 digit code/QR code on delivery, which is only known to the recipient","We vragen om een 4 cijferige code/QR-code, die alleen bekend is bij de ontvanger."
+"Setting the plugin mode to 'Test' allows you to test the plugin without API credentials. Please note that only fake labels will be created.","Wanneer de plugin mode op 'Test' staat is het mogelijk om de plugin te gebruiken zonder API credentials. Houd er rekening mee dat er voorbeeld labels gecreëerd worden."

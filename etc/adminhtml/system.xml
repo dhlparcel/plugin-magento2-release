@@ -3,15 +3,16 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="carriers">
-            <!-- DHL PARCEL -->
+            <!-- DHL eCommerce -->
             <group id="dhlparcel" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1"
                    showInStore="1">
-                <label>DHL Parcel</label>
+                <label>DHL eCommerce</label>
                 <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0"
                        showInStore="0">
                     <label>Enabled</label>
-                    <tooltip>Enable DHL Parcel Shipping</tooltip>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>Enable DHL eCommerce Shipping</tooltip>
+                    <source_model>DHLParcel\Shipping\Model\Config\Source\YesNoTest</source_model>
+                    <comment>Setting the plugin mode to 'Test' allows you to test the plugin without API credentials. Please note that only fake labels will be created.</comment>
                 </field>
                 <field id="version" translate="label" type="DHLParcel\Shipping\Block\Adminhtml\System\VersionField"
                        sortOrder="004" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -71,7 +72,7 @@
                     </field>
                     <field id="account_id" type="text" translate="label" sortOrder="400" showInDefault="1"
                            showInWebsite="1" showInStore="1">
-                        <label>My DHL Parcel Account ID</label>
+                        <label>My DHL eCommerce Account ID</label>
                         <comment>Please enter your MDP account ID</comment>
                     </field>
                 </group>
@@ -81,8 +82,8 @@
                     <label>Label Settings</label>
                     <field id="create_label_by_default" translate="label" type="select" sortOrder="100"
                            showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Use DHL Parcel label for manual shipments</label>
-                        <comment>"Create DHL Parcel Shipping Label" is turned on by default when creating a shipment
+                        <label>Use DHL eCommerce label for manual shipments</label>
+                        <comment>"Create DHL eCommerce Shipping Label" is turned on by default when creating a shipment
                         </comment>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>

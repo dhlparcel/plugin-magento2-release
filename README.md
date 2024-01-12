@@ -1,4 +1,4 @@
-# DHL Parcel for Magento 2
+# DHL eCommerce for Magento 2
 ---------------------------
 DHL offers a convenient plug-in for Magento 2 online stores. This plug-in allows you to add multiple online delivery options and to print shipping labels directly in your online store, which makes shipping packages significantly easier and a lot more fun. Please note that this plug-in is only available for online stores that ship orders from the Benelux region.
 

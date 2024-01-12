@@ -40,7 +40,7 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">dhlparcel_shipping</item>
-                        <item name="label" xsi:type="string" translate="true">DHL Parcel</item>
+                        <item name="label" xsi:type="string" translate="true">DHL eCommerce</item>
                     </item>
                 </argument>
                 <argument name="actions" xsi:type="configurableObject">

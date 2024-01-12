@@ -123,7 +123,7 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             $options = [];
             $options[] = $this->createOption(
                 'disabled',
-                __('No DHL Parcel bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.'),
+                __('No DHL eCommerce bulk operations enabled. Click here to go to the settings page. Bulk operations can be found in the Usability tab.'),
                 'admin/system_config/edit/section/carriers/#carriers_dhlparcel'
             );
         }

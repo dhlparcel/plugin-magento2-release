@@ -47,7 +47,7 @@ class AutoMail implements \Magento\Framework\Event\ObserverInterface
                 continue;
             }
 
-            // Check if there are DHL Parcel labels
+            // Check if there are DHL eCommerce labels
             try {
                 $labelIds = $this->labelService->getShipmentLabelIds($shipment);
             } catch (LocalizedException $e) {
