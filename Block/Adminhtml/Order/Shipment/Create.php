@@ -202,10 +202,6 @@ class Create extends \Magento\Backend\Block\Template
                 'label'       => $this->presetService->getTranslation('ADD_RETURN_LABEL'),
                 'description' => __('Print an extra label for return shipments')
             ],
-            'EA'               => [
-                'label'       => $this->presetService->getTranslation('EA'),
-                'description' => __('This option allows you to claim the value of your shipment in case of damage or loss (up to € 500.00).')
-            ],
             'HANDT'            => [
                 'label'       => $this->presetService->getTranslation('HANDT'),
                 'description' => __('We ask for a signature on delivery.')

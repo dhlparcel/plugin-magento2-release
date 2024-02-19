@@ -28,8 +28,6 @@
                 <label>
                     <create_label_by_default>1</create_label_by_default>
                     <default_to_business>0</default_to_business>
-                    <default_extra_assured>0</default_extra_assured>
-                    <default_extra_assured_min>0</default_extra_assured_min>
                     <default_reference_enabled>1</default_reference_enabled>
                     <default_reference_source>order_number</default_reference_source>
                     <default_reference2_enabled>0</default_reference2_enabled>

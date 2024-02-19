@@ -100,23 +100,6 @@
                         </comment>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
-                    <field id="default_extra_assured" translate="label" type="select" sortOrder="300" showInDefault="1"
-                           showInWebsite="1" showInStore="1">
-                        <label>Auto-enable: Extra assured</label>
-                        <source_model>DHLParcel\Shipping\Model\Config\Source\ServiceOptionDefault</source_model>
-                        <comment>Option for consumer shipments: claim the value of your shipment in case of damage or
-                            loss (up to € 500.00).
-                        </comment>
-                    </field>
-                    <field id="default_extra_assured_min" translate="label" type="text" sortOrder="310"
-                           showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Minimum order amount before enabling extra assured</label>
-                        <depends>
-                            <field id="default_extra_assured" separator="|">if_available|skip_not_available</field>
-                        </depends>
-                        <validate>validate-number</validate>
-                        <comment>Important: The maximum insured amount is € 500,-</comment>
-                    </field>
                     <field id="default_shipment_insurance" translate="label" type="select" sortOrder="311" showInDefault="1"
                            showInWebsite="1" showInStore="1">
                         <label>Auto-enable: Shipment insurance</label>

@@ -82,15 +82,6 @@ class Preset
             $options['HANDT'] = '';
         }
 
-        if ($this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_SKIP_NOT_AVAILABLE
-            || $this->helper->getConfigData('label/default_extra_assured', $order->getStoreId()) == ServiceOptionDefault::OPTION_IF_AVAILABLE
-            && !$requiredOnly) {
-            $minimumOrderAmount = str_replace(',', '.', $this->helper->getConfigData('label/default_extra_assured_min') ?? '0');
-            if (!is_numeric($minimumOrderAmount) || $order->getSubtotal() >= floatval($minimumOrderAmount)) {
-                $options['EA'] = '';
-            }
-        }
-
         if ($this->helper->getConfigData('label/default_shipment_insurance', $order->getStoreId()) != ShipmentInsurance::OPTION_NONE) {
             $insuranceValue = $this->helper->getConfigData('label/default_shipment_insurance', $order->getStoreId());
             if ($insuranceValue === ShipmentInsurance::OPTION_CUSTOM) {
@@ -210,12 +201,6 @@ class Preset
         foreach ($presetOptions as $key => $data) {
             if (in_array($key, ['SDD', 'EXP', 'NBB', 'EVE', 'S'])) {
                 $options[] = $key;
-            }
-        }
-
-        if (array_key_exists('EA', $presetOptions)) {
-            if ($this->helper->getConfigData('label/default_extra_assured', $storeId) == ServiceOptionDefault::OPTION_IF_AVAILABLE) {
-                $options[] = 'EA';
             }
         }
 

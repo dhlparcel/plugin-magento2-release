@@ -64,7 +64,10 @@ define([
                         limit: limit,
                         header: true,
                         resizable: true,
-                        onSelect: window.dhlparcel_shipping_select_servicepoint
+                        onSelect: window.dhlparcel_shipping_select_servicepoint,
+                        filter: {
+                            serviceType: 'pick-up'
+                        }
                     };
 
                     if (apiKey.length > 0) {
