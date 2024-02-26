@@ -317,7 +317,9 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             }
 
             // Select default servicePoint if none is selected
-            if (!$servicePointId) {
+            $selectFirstByDefault = $this->getConfigData('shipping_methods/servicepoint/default_select_first');
+
+            if (!$servicePointId && $selectFirstByDefault) {
                 $toCountry = $request->getDestCountryId();
                 $toPostalCode = $request->getDestPostcode();
                 $servicePoint = $this->servicePointService->getClosest($toPostalCode, $toCountry);

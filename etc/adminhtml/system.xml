@@ -721,6 +721,15 @@
                             <label>Title</label>
                             <comment>Leave empty to use default title</comment>
                         </field>
+                        <field id="default_select_first" translate="label" type="select" sortOrder="450" showInDefault="1"
+                               showInWebsite="1" showInStore="1">
+                            <label>Default select first servicepoint</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <comment>By enabling this option, if the customer is not selecting a service point, the most closeby service point will be selected.</comment>
+                            <depends>
+                                <field id="enabled">1</field>
+                            </depends>
+                        </field>
                         <field id="rate_method" translate="label" type="select" sortOrder="300" showInDefault="1"
                                showInWebsite="1" showInStore="1">
                             <label>Pricing method</label>
