@@ -113,7 +113,7 @@ class Capability
 
             /** @var ParcelType $parcelType */
             $parcelType = $this->parcelTypeFactory->create(['automap' => $capability->parcelType->toArray()]);
-            $parcelType->productKey = $capability->product->key;
+            $parcelType->key = $capability->product->key;
 
             $parcelTypes[$capability->parcelType->key] = $parcelType->toArray();
         }
