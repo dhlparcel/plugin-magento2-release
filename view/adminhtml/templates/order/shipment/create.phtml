@@ -114,7 +114,10 @@
                     <h4><?= __('Package') ?> <span class="package-count"/></h4>
                     <select class="dhlparcel-package-selection select admin__control-select"
                             name="dhlparcel[shipment][package][]"></select>
-
+                    <input class="dhlpwc-option-data dhlpwc-package-weight admin__control-text"
+                           type="number"
+                           placeholder="<?=__('Package weight (in kg)')?>"
+                           name="dhlparcel[shipment][package_weight][]"/>
                     <button title="Add more packages" type="button"
                             class="action-default scalable action-save action-secondary dhlparcel-add-package">
                         <span><?= __('Add more packages') ?></span>

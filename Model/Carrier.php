@@ -120,15 +120,31 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         if ($blacklist === true) {
             return $result;
         }
+
+        $ratesAdded = false;
+
         foreach ($this->getMethods() as $key => $title) {
+            if ($key === 'fallback') {
+                continue;
+            }
             $method = $this->getShippingMethod($request, $key, $blacklist);
             if ($method) {
                 $this->debugLogger->info("CARRIER successfully added method $key to RateRequest");
                 $result->append($method);
+                $ratesAdded = true;
             } else {
                 $this->debugLogger->info("CARRIER failed to add method $key to RateRequest");
             }
         }
+
+        if (!$ratesAdded) {
+            $method = $this->getShippingMethod($request, 'fallback', $blacklist);
+            if ($method) {
+                $this->debugLogger->info("Appending fallback shipping method.");
+                $result->append($method);
+            }
+        }
+
         $this->debugLogger->info('CARRIER --- collect rates finished', $result->asArray());
         return $result;
     }
@@ -173,10 +189,12 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
         $toBusiness = $this->presetService->defaultToBusiness($this->storeManager->getStore()->getId());
         $requestOptions = array_keys($presetOptions);
 
-        $sizes = $this->capabilityService->getSizes($this->storeManager->getStore()->getId(), $toCountry, $toPostalCode, $toBusiness, $requestOptions);
-        if (empty($sizes)) {
-            $this->debugLogger->info("CARRIER method $methodKey not available due to capabilities", ['options' => $requestOptions, 'response' => $sizes]);
-            return null;
+        if ($methodKey !== 'fallback') {
+            $sizes = $this->capabilityService->getSizes($this->storeManager->getStore()->getId(), $toCountry, $toPostalCode, $toBusiness, $requestOptions);
+            if (empty($sizes)) {
+                $this->debugLogger->info("CARRIER method $methodKey not available due to capabilities", ['options' => $requestOptions, 'response' => $sizes]);
+                return null;
+            }
         }
 
         // Calculate service costs
@@ -380,6 +398,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     protected function getMethods($key = null)
     {
         $methods = [
+            PresetService::SHIPPING_METHOD_STANDARD             => __('Standard delivery'),
             PresetService::SHIPPING_METHOD_DOOR                 => __('Standard delivery'),
             PresetService::SHIPPING_METHOD_EVENING              => __('Evening delivery'),
             PresetService::SHIPPING_METHOD_NO_NEIGHBOUR         => __('No neighbour delivery'),

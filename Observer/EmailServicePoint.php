@@ -20,6 +20,10 @@ class EmailServicePoint implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        if (!$this->helper->getConfigData('active')) {
+            return;
+        }
+
         /** @var \Magento\Framework\DataObject $transport */
         $transport = $observer->getData('transport');
         if (is_array($transport)) {

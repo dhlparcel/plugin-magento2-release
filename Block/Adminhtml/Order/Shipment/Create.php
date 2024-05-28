@@ -258,6 +258,10 @@ class Create extends \Magento\Backend\Block\Template
                 'label'       => $this->presetService->getTranslation('BMC'),
                 'description' => __('We ask for a 4 digit code/QR code on delivery, which is only known to the recipient')
             ],
+            'LQ'              => [
+                'label'       => $this->presetService->getTranslation('LQ'),
+                'description' => __('We will deliver Limited Quantities')
+            ],
         ];
     }
 

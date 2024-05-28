@@ -2,10 +2,12 @@
 
 namespace DHLParcel\Shipping\Ui\Column;
 
+use DHLParcel\Shipping\Model\Config\Source\YesNoTest;
 use DHLParcel\Shipping\Model\Piece as Piece;
 use DHLParcel\Shipping\Model\PieceFactory as PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
 use DHLParcel\Shipping\Model\Service\Preset as presetService;
+use DHLParcel\Shipping\Helper\Data;
 use \Magento\Framework\UrlInterface;
 use \Magento\Sales\Api\OrderRepositoryInterface;
 use \Magento\Sales\Api\ShipmentRepositoryInterface;
@@ -18,9 +20,8 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
     protected $urlBuilder;
     protected $orderRepository;
     protected $shipmentRepository;
-    /**
-     * @var presetService
-     */
+    protected $helper;
+    /** @var presetService */
     protected $presetService;
 
     public function __construct(
@@ -32,6 +33,7 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
         OrderRepositoryInterface $orderRepository,
         ShipmentRepositoryInterface $shipmentRepository,
         presetService $presetService,
+        Data $helper,
         array $components = [],
         array $data = []
     ) {
@@ -41,7 +43,17 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
         $this->orderRepository = $orderRepository;
         $this->shipmentRepository = $shipmentRepository;
         $this->presetService = $presetService;
+        $this->helper = $helper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
+    }
+
+    public function prepare()
+    {
+        parent::prepare();
+
+        if (!$this->helper->getConfigData('active')) {
+            $this->_data['config']['componentDisabled'] = true;
+        }
     }
 
     public function prepareDataSource(array $dataSource)

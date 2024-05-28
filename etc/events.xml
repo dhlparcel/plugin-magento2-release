@@ -35,6 +35,10 @@
         <observer name="dhlparcel_shipping_auto_shipment" instance="DHLParcel\Shipping\Observer\AutoShipment"/>
         <observer name="dhlparcel_shipping_auto_mail" instance="DHLParcel\Shipping\Observer\AutoMail"/>
     </event>
+    <event name="sales_order_save_commit_after">
+        <observer name="dhlparcel_shipping_auto_shipment" instance="DHLParcel\Shipping\Observer\AutoShipment"/>
+        <observer name="dhlparcel_shipping_auto_mail" instance="DHLParcel\Shipping\Observer\AutoMail"/>
+    </event>
     <event name="sales_order_shipment_save_after">
         <observer name="dhlparcel_shipping_shipment" instance="DHLParcel\Shipping\Observer\Shipment"/>
     </event>

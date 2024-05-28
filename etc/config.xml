@@ -40,6 +40,10 @@
                     <ignored_sizes>ENVELOPE,XSMALL</ignored_sizes>
                 </label>
                 <shipping_methods>
+                    <fallback>
+                        <enabled>0</enabled>
+                        <price>0.00</price>
+                    </fallback>
                     <door>
                         <enabled>0</enabled>
                         <service_no_neighbour_enabled>0</service_no_neighbour_enabled>
@@ -122,6 +126,7 @@
                         <mail>1</mail>
                         <shipment>0</shipment>
                         <print>0</print>
+                        <event_trigger>sales_order_save_after</event_trigger>
                     </automation>
                 </usability>
                 <debug>

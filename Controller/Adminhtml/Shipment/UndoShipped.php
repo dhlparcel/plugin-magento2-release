@@ -20,6 +20,7 @@ namespace DHLParcel\Shipping\Controller\Adminhtml\Shipment;
 
 use DHLParcel\Shipping\Model\Service\Order;
 use DHLParcel\Shipping\Model\Service\Order as OrderService;
+use DHLParcel\Shipping\Model\Service\Notification as NotificationService;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -28,14 +29,12 @@ use Magento\Sales\Model\Order\ShipmentRepository;
 
 class UndoShipped extends \Magento\Backend\App\Action
 {
-    /**
-     * @var OrderService
-     */
+    /** @var OrderService */
     protected $orderService;
+    /** @var NotificationService */
+    protected $notificationService;
 
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
+    /** @var \Magento\Framework\Controller\Result\JsonFactory */
     protected $jsonResultFactory;
 
     /**
@@ -48,10 +47,12 @@ class UndoShipped extends \Magento\Backend\App\Action
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory,
-        OrderService $orderService
+        OrderService $orderService,
+        NotificationService $notificationService
     ) {
         $this->jsonResultFactory = $jsonResultFactory;
         $this->orderService = $orderService;
+        $this->notificationService = $notificationService;
 
         parent::__construct($context);
     }

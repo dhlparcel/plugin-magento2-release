@@ -130,6 +130,10 @@ require([
                     } else {
                         $('input.dhlparcel-service-option', this).prop('disabled', false)
                     }
+
+                    if ($(this).attr('id') === 'dhlparcel-service-option-LQ') {
+                        $('.dhlpwc-package-weight').toggle($(this).prop('checked'))
+                    }
                 })
                 $('input, select','.dhlparcel-step-container .dhlparcel-delivery-options-data').hide();
                 $.each($('.dhlparcel-step-container .dhlparcel-delivery-options input[type="radio"]:checked'),function (key,element) {
