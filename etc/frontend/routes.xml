@@ -13,7 +13,7 @@
   ~ @package   DHLParcel\Shipping
   ~ @author    Ron Oerlemans <ron.oerlemans@dhl.com>
   ~ @copyright 2017 DHLParcel
-  ~ @link      https://www.dhlparcel.nl/
+  ~ @link      https://www.dhlecommerce.nl/
   -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">

@@ -51,7 +51,7 @@ define([
 
                 // Disable getScript from adding a custom timestamp
                 // $.ajaxSetup({cache: true});
-                $.getScript("https://static.dhlparcel.nl/components/servicepoint-locator-component@latest/servicepoint-locator-component.js").done(function() {
+                $.getScript("https://static.dhlecommerce.nl/components/servicepoint-locator-component@latest/servicepoint-locator-component.js").done(function() {
                     // Load ServicePoint Locator
                     var configElement = $('#dhl-servicepoint-locator-component');
                     var limit = $(configElement).attr('data-limit');

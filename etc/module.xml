@@ -13,12 +13,12 @@
   ~ @package   DHLParcel\Shipping
   ~ @author    Ron Oerlemans <ron.oerlemans@dhl.com>
   ~ @copyright 2017 DHLParcel
-  ~ @link      https://www.dhlparcel.nl/
+  ~ @link      https://www.dhlecommerce.nl/
   -->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="DHLParcel_Shipping" setup_version="1.0.47">
+    <module name="DHLParcel_Shipping" setup_version="1.0.49">
         <sequence>
             <module name="Magento_Shipping"/>
             <module name="Magento_Checkout"/>

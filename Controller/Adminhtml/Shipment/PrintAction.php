@@ -13,7 +13,7 @@
  * @package   DHLParcel\Shipping
  * @author    Ron Oerlemans <ron.oerlemans@dhl.com>
  * @copyright 2017 DHLParcel
- * @link      https://www.dhlparcel.nl/
+ * @link      https://www.dhlecommerce.nl/
  */
 
 namespace DHLParcel\Shipping\Controller\Adminhtml\Shipment;
