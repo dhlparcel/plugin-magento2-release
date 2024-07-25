@@ -2,6 +2,7 @@
 
 namespace DHLParcel\Shipping\Ui\Column;
 
+use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
 use Magento\Sales\Api\OrderRepositoryInterface;
 
@@ -9,18 +10,36 @@ class DeliveryTimesPriority extends \Magento\Ui\Component\Listing\Columns\Column
 {
     protected $deliveryTimesService;
     protected $orderRepository;
+    protected $helper;
 
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
         \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory,
         DeliveryTimesService $deliveryTimesService,
         OrderRepositoryInterface $orderRepository,
+        Data $helper,
         array $components = [],
         array $data = []
     ) {
         $this->deliveryTimesService = $deliveryTimesService;
         $this->orderRepository = $orderRepository;
+        $this->helper = $helper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
+    }
+
+    public function prepare()
+    {
+        parent::prepare();
+
+        if (!$this->helper->getConfigData('active')) {
+            $this->_data['config']['componentDisabled'] = true;
+            return;
+        }
+
+        $showPriority = $this->deliveryTimesService->showPriority();
+        if (!$showPriority) {
+            $this->_data['config']['componentDisabled'] = true;
+        }
     }
 
     public function prepareDataSource(array $dataSource)
@@ -72,15 +91,5 @@ class DeliveryTimesPriority extends \Magento\Ui\Component\Listing\Columns\Column
             ->setArea(\Magento\Framework\App\Area::AREA_ADMINHTML)
             ->setIsSecureMode(true)
             ->toHtml();
-    }
-
-    public function prepare()
-    {
-        parent::prepare();
-
-        $showPriority = $this->deliveryTimesService->showPriority();
-        if (!$showPriority) {
-            $this->_data['config']['componentDisabled'] = true;
-        }
     }
 }

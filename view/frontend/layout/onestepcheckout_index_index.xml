@@ -2,7 +2,7 @@
     <head>
         <css src="DHLParcel_Shipping::css/deliveryoptions.css" />
         <css src="DHLParcel_Shipping::css/servicepoint.modal.css" />
-        <css src="https://static.dhlparcel.nl/fonts/Delivery.css" src_type="url" />
+        <css src="https://static.dhlecommerce.nl/fonts/Delivery.css" src_type="url" />
     </head>
     <body>
         <referenceContainer name="after.body.start">

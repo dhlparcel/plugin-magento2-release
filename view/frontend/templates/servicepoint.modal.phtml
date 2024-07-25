@@ -3,9 +3,9 @@
         <div id="dhl-servicepoint-locator-component"
          data-query=""
          data-limit="7"
-         data-locale="<?=$block->getLanguage()?>"
+         data-locale="<?=$block->escapeHtml($block->getLanguage())?>"
          data-setup="dhlparcel_shipping_reset_servicepoint"
-         data-maps-key="<?=$block->getGoogleMapsKey()?>"
+         data-maps-key="<?=$block->escapeHtml($block->getGoogleMapsKey())?>"
         ></div>
     </div>
 </div>

@@ -13,7 +13,7 @@
   ~ @package   DHLParcel\Shipping
   ~ @author    Ron Oerlemans <ron.oerlemans@dhl.com>
   ~ @copyright 2017 DHLParcel
-  ~ @link      https://www.dhlparcel.nl/
+  ~ @link      https://www.dhlecommerce.nl/
   -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="sales_model_service_quote_submit_before">
@@ -32,6 +32,10 @@
         <observer name="dhlparcel_shipping_email_servicepoint" instance="DHLParcel\Shipping\Observer\EmailServicePoint" />
     </event>
     <event name="sales_order_save_after">
+        <observer name="dhlparcel_shipping_auto_shipment" instance="DHLParcel\Shipping\Observer\AutoShipment"/>
+        <observer name="dhlparcel_shipping_auto_mail" instance="DHLParcel\Shipping\Observer\AutoMail"/>
+    </event>
+    <event name="sales_order_save_commit_after">
         <observer name="dhlparcel_shipping_auto_shipment" instance="DHLParcel\Shipping\Observer\AutoShipment"/>
         <observer name="dhlparcel_shipping_auto_mail" instance="DHLParcel\Shipping\Observer\AutoMail"/>
     </event>

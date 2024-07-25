@@ -53,18 +53,31 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        // Don't do anything when auto shipment is disabled.
-        if (!boolval($this->helper->getConfigData('usability/automation/shipment'))
-            || strval($this->helper->getConfigData('usability/automation/on_order_status')) === '') {
-            return;
-        }
-
+        /** @var Order $observerOrder */
         $observerOrder = $observer->getEvent()->getOrder();
         if (!$observerOrder || !$observerOrder->getId()) {
             return;
         }
 
-        if ($observerOrder->getStatus() !== $this->helper->getConfigData('usability/automation/on_order_status')) {
+        $storeId = $observerOrder->getStoreId();
+
+        if (!$this->helper->getConfigData('active', $storeId)) {
+            return;
+        }
+
+        // Don't do anything when auto shipment is disabled.
+        if (!boolval($this->helper->getConfigData('usability/automation/shipment', $storeId))
+            || strval($this->helper->getConfigData('usability/automation/on_order_status', $storeId)) === '') {
+            return;
+        }
+
+        // Only continue if the event trigger name matches
+        if ($this->helper->getConfigData('usability/automation/event_trigger', $storeId) !== $observer->getEvent()->getName()) {
+            return;
+        }
+
+
+        if ($observerOrder->getStatus() !== $this->helper->getConfigData('usability/automation/on_order_status', $storeId)) {
             return;
         }
         if (!$observerOrder->canShip() || $observerOrder->hasShipments() || $observerOrder->getShipmentsCollection()->count() > 0) {
@@ -81,7 +94,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
             return;
         }
 
-        if (intval($this->helper->getConfigData('usability/automation/shipment')) === YesNoDHL::OPTION_DHL && !$this->presetService->exists($order)) {
+        if (intval($this->helper->getConfigData('usability/automation/shipment', $storeId)) === YesNoDHL::OPTION_DHL && !$this->presetService->exists($order)) {
             return;
         }
 
@@ -95,7 +108,7 @@ class AutoShipment implements \Magento\Framework\Event\ObserverInterface
 
         $shipment = $this->orderService->createShipment($order->getId());
 
-        if (boolval($this->helper->getConfigData('usability/automation/print'))) {
+        if (boolval($this->helper->getConfigData('usability/automation/print', $storeId))) {
             // Reload shipment (not the shipment data in memory but from database with the newly created tracks) and send to printer
             $shipment = $this->shipmentService->getShipmentById($shipment->getId());
             $labelIds = $this->labelService->getShipmentLabelIds($shipment);

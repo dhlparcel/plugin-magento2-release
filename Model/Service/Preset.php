@@ -10,6 +10,7 @@ use DHLParcel\Shipping\Model\Service\DeliveryServices as DeliveryServicesService
 
 class Preset
 {
+    const SHIPPING_METHOD_STANDARD = 'fallback';
     const SHIPPING_METHOD_DOOR = 'door';
     const SHIPPING_METHOD_EVENING = 'evening';
     const SHIPPING_METHOD_SERVICE_POINT = 'servicepoint';
@@ -161,7 +162,8 @@ class Preset
             self::SHIPPING_METHOD_NO_NEIGHBOUR_EVENING => ['DOOR' => '', 'EVE' => '', 'NBB' => ''],
             self::SHIPPING_METHOD_SATURDAY             => ['DOOR' => '', 'S' => ''],
             self::SHIPPING_METHOD_SERVICE_POINT        => ['PS' => ''],
-            self::SHIPPING_METHOD_DOOR                 => ['DOOR' => '']
+            self::SHIPPING_METHOD_DOOR                 => ['DOOR' => ''],
+            self::SHIPPING_METHOD_STANDARD             => ['DOOR' => '']
         ];
     }
 
@@ -253,7 +255,8 @@ class Preset
             'SSN'              => __('Hide Shipper'),
             'SDD'              => __('DHL Same-day delivery (6 p.m. to 9.30 p.m.)'),
             'AGE_CHECK'        => __('Age check (18+)'),
-            'BMC'              => __('Secure delivery by code')
+            'BMC'              => __('Secure delivery by code'),
+            'LQ'               => __('Limited Quantities')
         ];
     }
 

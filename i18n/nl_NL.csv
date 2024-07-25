@@ -306,6 +306,7 @@ Print DHL Labels,Print DHL Labels
 Home delivery,Thuisbezorging
 Connection to API failed.,Verbinding met de API niet mogelijk.
 Standard delivery,Standaard bezorging
+Standard DHL delivery method, Standaard DHL verzendmethode
 Do not drop off at neighbours,Niet bij buren bezorgen
 Delivery in the evening,Avondbezorging
 Package will also be delivered on Saturdays,We bezorgen ook op zaterdag
@@ -389,3 +390,5 @@ Apr,Apr
 "Secure delivery by code","Veilige bezorging met code"
 "We ask for a 4 digit code/QR code on delivery, which is only known to the recipient","We vragen om een 4 cijferige code/QR-code, die alleen bekend is bij de ontvanger."
 "Setting the plugin mode to 'Test' allows you to test the plugin without API credentials. Please note that only fake labels will be created.","Wanneer de plugin mode op 'Test' staat is het mogelijk om de plugin te gebruiken zonder API credentials. Houd er rekening mee dat er voorbeeld labels gecreëerd worden."
+"Allow fallback","Sta fallback toe"
+"Allow DHL eCommerce to show a fallback when there's an invalid configuration or when the DHL eCommerce API is unreachable.","Sta DHL eCommerce toe om een fallback te tonen wanneer er een invalide configuratie is of wanneer de DHL eCommerce API onbereikbaar is."

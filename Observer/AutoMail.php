@@ -30,8 +30,17 @@ class AutoMail implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        if (!$this->helper->getConfigData('active')) {
+            return;
+        }
+
         // Don't do anything when auto mail is disabled.
         if (boolval($this->helper->getConfigData('usability/automation/mail')) === false) {
+            return;
+        }
+
+        // Only continue if the event trigger name matches
+        if ($this->helper->getConfigData('usability/automation/event_trigger') !== $observer->getEvent()->getName()) {
             return;
         }
 

@@ -8,4 +8,5 @@ class Piece extends AbstractData
 {
     public $parcelType;
     public $quantity;
+    public $weight;
 }

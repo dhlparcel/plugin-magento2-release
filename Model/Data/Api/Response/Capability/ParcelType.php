@@ -13,6 +13,7 @@ class ParcelType extends AbstractData
     public $maxWeightGrams;
     /** @var \DHLParcel\Shipping\Model\Data\Api\Response\Capability\ParcelType\Dimension */
     public $dimensions;
+    public $productKey;
 
     protected function getClassMap()
     {

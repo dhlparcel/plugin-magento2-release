@@ -359,3 +359,5 @@ Automation,Automation
 "Secure delivery by code","Secure delivery by code"
 "We ask for a 4 digit code/QR code on delivery, which is only known to the recipient","We ask for a 4 digit code/QR code on delivery, which is only known to the recipient"
 "Setting the plugin mode to 'Test' allows you to test the plugin without API credentials. Please note that only fake labels will be created.","Setting the plugin mode to 'Test' allows you to test the plugin without API credentials. Please note that only fake labels will be created."
+"Allow fallback","Allow fallback"
+"Allow DHL eCommerce to show a fallback when there's an invalid configuration or when the DHL eCommerce API is unreachable.","Allow DHL eCommerce to show a fallback when there's an invalid configuration or when the DHL eCommerce API is unreachable."

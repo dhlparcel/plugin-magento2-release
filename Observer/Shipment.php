@@ -65,6 +65,10 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        if (!$this->helper->getConfigData('active')) {
+            return;
+        }
+
         /** @var \Magento\Sales\Model\Order\Shipment $shipment */
         $shipment = $observer->getEvent()->getData('shipment');
 
@@ -232,7 +236,8 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         if (isset($shipmentFormData['package'])) {
             foreach ($shipmentFormData['package'] as $key => $value) {
-                $pieces[] = $this->createPiece($value);
+                $weight = $shipmentFormData['package_weight'][$key] ?? 0;
+                $pieces[] = $this->createPiece($value, 1, $weight);
             }
         }
 
@@ -307,12 +312,14 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
      * @param int $quantity
      * @return Piece
      */
-    protected function createPiece($parcelType, $quantity = 1)
+    protected function createPiece($parcelType, $quantity = 1, $weight = 0)
     {
         /** @var Piece $piece */
         $piece = $this->pieceFactory->create();
         $piece->parcelType = $parcelType;
         $piece->quantity = $quantity;
+        $piece->weight = $weight;
+
         return $piece;
     }
 }
