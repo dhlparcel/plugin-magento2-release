@@ -35,7 +35,7 @@
                     <default_hide_shipper>0</default_hide_shipper>
                     <alternative_tracking>
                         <enabled>0</enabled>
-                        <url><![CDATA[https://www.dhlparcel.nl/nl/volg-uw-zending?tc={{trackerCode}}&pc={{postalCode}}]]></url>
+                        <url><![CDATA[https://www.dhlecommerce.nl/nl/volg-uw-zending?tc={{trackerCode}}&pc={{postalCode}}]]></url>
                     </alternative_tracking>
                     <ignored_sizes>ENVELOPE,XSMALL</ignored_sizes>
                 </label>

@@ -67,6 +67,39 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
             );
         }
 
+        $enabled = $this->helper->getConfigData('usability/bulk/create_small');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_small',
+                __('Create small labels (max 10 kg)'),
+                $this->urlPath . 'create',
+                ['size_override' => 'SMALL']
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_small_medium');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_small_medium',
+                __('Create small-medium labels (max 20 kg)'),
+                $this->urlPath . 'create',
+                ['size_override' => 'SMALL_MEDIUM']
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_medium');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_medium',
+                __('Create medium labels (max 31 kg)'),
+                $this->urlPath . 'create',
+                ['size_override' => 'MEDIUM']
+            );
+        }
+
         $enabled = $this->helper->getConfigData('usability/bulk/create_dhl_only');
         if ($enabled && !$skipCreate) {
             $this->addOptionStack(
@@ -97,6 +130,39 @@ class Actions extends \Magento\Ui\DataProvider\AbstractDataProvider implements \
                 __('Create envelope labels (50-500g, only for DHL shipping methods)'),
                 $this->urlPath . 'create',
                 ['method_override' => 'envelope', 'dhlparcel_only' => 'true', 'mailbox_type' => 'envelope']
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_small_dhl_only');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_small_dhl_only',
+                __('Create small labels (max 10 kg, only for DHL shipping methods)'),
+                $this->urlPath . 'create',
+                ['size_override' => 'SMALL', 'dhlparcel_only' => 'true']
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_small_medium_dhl_only');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_small_medium_dhl_only',
+                __('Create small-medium labels (max 20 kg, only for DHL shipping methods)'),
+                $this->urlPath . 'create',
+                ['size_override' => 'SMALL_MEDIUM', 'dhlparcel_only' => 'true']
+            );
+        }
+
+        $enabled = $this->helper->getConfigData('usability/bulk/create_medium_dhl_only');
+        if ($enabled && !$skipCreate) {
+            $this->addOptionStack(
+                $options,
+                'create_medium_dhl_only',
+                __('Create medium labels (max 31 kg, only for DHL shipping methods)'),
+                $this->urlPath . 'create',
+                ['size_override' => 'MEDIUM', 'dhlparcel_only' => 'true']
             );
         }
 

@@ -71,6 +71,13 @@ class Capability
                             $option->exclusions[] = $exclusion->key;
                         }
                     }
+                    // Manually add LQ vs PS exclusion
+                    if ($option->key === 'PS' && !in_array('LQ', $option->exclusions)) {
+                        $option->exclusions[] = 'LQ';
+                    }
+                    if ($option->key === 'LQ' && !in_array('PS', $option->exclusions)) {
+                        $option->exclusions[] = 'PS';
+                    }
                     $options[$responseOption->key] = $option;
                 } else {
                     /** @var \DHLParcel\Shipping\Model\Data\Capability\Option $option */

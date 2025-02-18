@@ -190,6 +190,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                         </field>
                     </group>
                     <group id="door" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -208,6 +209,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -325,6 +327,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -366,6 +369,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -407,6 +411,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -448,6 +453,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -491,6 +497,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -545,6 +552,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -607,6 +615,7 @@
                         </field>
                         <field id="price" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Flat price</label>
+                            <validate>validate-number validate-zero-or-greater</validate>
                             <depends>
                                 <field id="rate_method">0</field>
                             </depends>
@@ -856,6 +865,18 @@
                             <label>Create envelope labels (50-500g)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
+                        <field id="create_small" translate="label" sortOrder="220" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create small labels (max 10 kg)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_small_medium" translate="label" sortOrder="230" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create small-medium labels (max 20 kg)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_medium" translate="label" sortOrder="240" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create medium labels (max 31 kg)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
                         <field id="create_dhl_only" translate="label" sortOrder="300" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Create labels (only for DHL shipping methods, excluding mailbox and envelope)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -866,6 +887,18 @@
                         </field>
                         <field id="create_envelope_dhl_only" translate="label" sortOrder="410" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Create envelope labels (50-500g, only for DHL shipping methods)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_small_dhl_only" translate="label" sortOrder="420" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create small labels (max 10 kg, only for DHL shipping methods)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_small_medium_dhl_only" translate="label" sortOrder="430" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create small-medium labels (max 20 kg, only for DHL shipping methods)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="create_medium_dhl_only" translate="label" sortOrder="440" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Create medium labels (max 31 kg, only for DHL shipping methods)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                         <field id="create_service_saturday" translate="label" sortOrder="500" type="select" showInDefault="1" showInWebsite="1" showInStore="1">

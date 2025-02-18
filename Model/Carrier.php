@@ -36,7 +36,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     protected $rateManager;
     protected $servicePointService;
     protected $storeManager;
-    protected $trackingUrl = 'https://my.dhlparcel.nl/home/tracktrace/{{trackerCode}}?lang={{locale}}';
+    protected $trackingUrl = 'https://my.dhlecommerce.nl/home/tracktrace/{{trackerCode}}?lang={{locale}}';
     protected $alternateUrls = [
         'BE' => 'https://www.dhlparcel.be/en/consumer/track-your-shipment?tc={{trackerCode}}&pc={{postalCode}}&lc={{locale}}'
     ];
@@ -229,7 +229,7 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
             $method->setPrice($this->getConfigData('shipping_methods/' . $methodKey . '/price') + $serviceCost);
         }
 
-        if ($request->getFreeShipping() === true || $request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
+        if ($request->getFreeShipping() || $request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
             if (boolval($this->getConfigData('usability/discount_after_coupon/always_charge_servicecosts'))) {
                 $method->setPrice($serviceCost);
             } else {

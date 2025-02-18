@@ -114,10 +114,12 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
         $defaultOptions = $this->presetService->getDefaultOptions($order);
         $defaultOptions = $this->checkMailboxOverride($defaultOptions);
         $defaultOptions = $this->additionalServices($defaultOptions);
-
+        // Get all available sizes with all services selected
         $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
         $sizes = $this->overwriteMailboxType($sizes);
+        $sizes = $this->overwriteSizes($sizes);
 
+        // If no sizes are available, try to search capability again with optional services removed from the filter, then re-add whatever is allowed
         if (empty($sizes) || !is_array($sizes)) {
             $skippableOptions = $this->presetService->filterSkippableDefaults($defaultOptions, $storeId);
             $requiredOptions = $this->presetService->getDefaultOptions($order, true);
@@ -136,6 +138,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             $defaultOptions = array_merge($requiredOptions, $allowedOptions);
             $sizes = $this->capabilityService->getSizes($storeId, $toCountry, $toPostalCode, $toBusiness, array_keys($defaultOptions));
             $sizes = $this->overwriteMailboxType($sizes);
+            $sizes = $this->overwriteSizes($sizes);
 
             if (empty($sizes) || !is_array($sizes)) {
                 $translations = $this->presetService->getTranslations();
@@ -146,7 +149,7 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
 
         $packageKey = '';
         $packageWeight = 1000000;
-
+        // Select the biggest available size available that matches the weight
         foreach ($sizes as $key => $package) {
             if ($this->shouldSkipSize($key, $sizes)) {
                 continue;
@@ -270,6 +273,27 @@ class Shipment implements \Magento\Framework\Event\ObserverInterface
             return true;
         });
     }
+
+    /**
+     * @param $sizes
+     *
+     * @return array
+     */
+    protected function overwriteSizes($sizes)
+    {
+        if (!$this->request->getParam('size_override')) {
+            return $sizes;
+        }
+
+        foreach ($sizes as $key => $size) {
+            if ($key !== $this->request->getParam('size_override')) {
+                unset($sizes[$key]);
+            }
+        }
+
+        return $sizes;
+    }
+
     protected function checkMailboxOverride($options)
     {
         if ($this->request->getParam('method_override') == 'mailbox' && array_key_exists('DOOR', $options)) {

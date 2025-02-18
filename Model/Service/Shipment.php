@@ -110,7 +110,11 @@ class Shipment
             throw new LabelCreationException(__('Failed to create label, missing shipper street'));
         }
 
-        if (empty($shipmentRequest->shipper->address->number)) {
+        $disableHousenumberValidationCountries = explode(',', strval($this->helper->getConfigData('usability/disable_housenumber_validation/countries')));
+        $validateShipperHousenumber = (bool) !in_array($shipmentRequest->shipper->address->countryCode, $disableHousenumberValidationCountries);
+
+
+        if ($validateShipperHousenumber && empty($shipmentRequest->shipper->address->number)) {
             throw new LabelCreationException(__('Failed to create label, missing shipper street number'));
         }
 
@@ -118,9 +122,8 @@ class Shipment
             throw new LabelCreationException(__('Failed to create label, missing receiver street'));
         }
 
-        $disableHousenumberValidationCountries = explode(',', strval($this->helper->getConfigData('usability/disable_housenumber_validation/countries')));
-        $validateHousenumber = (bool) !in_array($shipmentRequest->receiver->address->countryCode, $disableHousenumberValidationCountries);
-        if ($validateHousenumber && empty($shipmentRequest->receiver->address->number)) {
+        $validateReceiverHousenumber = (bool) !in_array($shipmentRequest->receiver->address->countryCode, $disableHousenumberValidationCountries);
+        if ($validateReceiverHousenumber && empty($shipmentRequest->receiver->address->number)) {
             throw new LabelCreationException(__('Failed to create label, missing receiver street number'));
         }
 
