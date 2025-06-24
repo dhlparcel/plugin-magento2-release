@@ -42,18 +42,18 @@ class Shipment
     protected $capabilityService;
 
     public function __construct(
-        Connector $connector,
-        PieceFactory $pieceFactory,
-        UUIDFactory $uuidFactory,
-        ShipmentRequestFactory $shipmentRequestFactory,
-        AddresseeFactory $addresseeFactory,
-        OptionFactory $optionFactory,
-        ShipmentResponseFactory $shipmentResponseFactory,
-        PieceResource $pieceResource,
+        Connector                $connector,
+        PieceFactory             $pieceFactory,
+        UUIDFactory              $uuidFactory,
+        ShipmentRequestFactory   $shipmentRequestFactory,
+        AddresseeFactory         $addresseeFactory,
+        OptionFactory            $optionFactory,
+        ShipmentResponseFactory  $shipmentResponseFactory,
+        PieceResource            $pieceResource,
         OrderRepositoryInterface $orderRepository,
-        TrackFactory $trackFactory,
-        Data $helper,
-        Capability $capabilityService
+        TrackFactory             $trackFactory,
+        Data                     $helper,
+        Capability               $capabilityService
     ) {
         $this->connector = $connector;
         $this->pieceFactory = $pieceFactory;
@@ -142,7 +142,7 @@ class Shipment
         );
 
         // Return labels are at least DOOR
-        $options = [ $this->optionFactory->create(['automap' => ['key' => 'DOOR']])];
+        $options = [$this->optionFactory->create(['automap' => ['key' => 'DOOR']])];
         $copyOptions = ['REFERENCE', 'REFERENCE2'];
 
         foreach ($shipmentRequest->options as $option) {
@@ -189,19 +189,19 @@ class Shipment
     public function fakeRequest($shipmentRequest)
     {
         $response = [
-            'shipmentId' => $shipmentRequest->shipmentId,
-            'product' => 'DFY-B2C',
-            'pieces' => array(array(
-                'labelId' => uniqid('TEST-LABEL-ID-'),
-                'trackerCode' => 'JVGL0' . rand(100000000000000000, 999999999999999999),
-                'parcelType' => 'SMALL',
-                'pieceNumber' => 1,
-                'labelType' => 'B2X_Generic_A4_Third'
-            )),
+            'shipmentId'     => $shipmentRequest->shipmentId,
+            'product'        => 'DFY-B2C',
+            'pieces'         => array(array(
+                                          'labelId'     => uniqid('TEST-LABEL-ID-'),
+                                          'trackerCode' => 'JVGL0' . rand(100000000000000000, 999999999999999999),
+                                          'parcelType'  => 'SMALL',
+                                          'pieceNumber' => 1,
+                                          'labelType'   => 'B2X_Generic_A4_Third'
+                                      )),
             'orderReference' => $shipmentRequest->orderReference,
-            'deliveryArea' => [
+            'deliveryArea'   => [
                 'remote' => false,
-                'type' => 'NonRemote'
+                'type'   => 'NonRemote'
             ]
         ];
 
@@ -233,16 +233,16 @@ class Shipment
             /** @var Piece $piece */
             $piece = $this->pieceFactory->create();
             $piece->addData([
-                'label_id'          => $pieceResponse->labelId,
-                'tracker_code'      => $pieceResponse->trackerCode,
-                'postal_code'       => $pieceResponse->postalCode,
-                'parcel_type'       => $pieceResponse->parcelType,
-                'piece_number'      => $pieceResponse->pieceNumber,
-                'label_type'        => $pieceResponse->labelType,
-                'is_return'         => $isReturn,
-                'shipment_request'  => $pieceResponse->shipmentRequest,
-                'service_options'   => $pieceResponse->serviceOptions,
-                'country_code'      => $pieceResponse->countryCode
+                'label_id'         => $pieceResponse->labelId,
+                'tracker_code'     => $pieceResponse->trackerCode,
+                'postal_code'      => $pieceResponse->postalCode,
+                'parcel_type'      => $pieceResponse->parcelType,
+                'piece_number'     => $pieceResponse->pieceNumber,
+                'label_type'       => $pieceResponse->labelType,
+                'is_return'        => $isReturn,
+                'shipment_request' => $pieceResponse->shipmentRequest,
+                'service_options'  => $pieceResponse->serviceOptions,
+                'country_code'     => $pieceResponse->countryCode
             ]);
 
             $this->pieceResource->save($piece);
@@ -274,6 +274,25 @@ class Shipment
         $shipmentRequest->options[] = ['key' => 'REFERENCE', 'input' => $reference];
 
         return $shipmentRequest;
+    }
+
+    /**
+     * Check if an address string array, when joined, should be split into street, houseNumber and addition.
+     * It should only be split if it starts or ends (but not both) with a digit. And only if the array contains only one number.
+     *
+     * @param array $strings
+     * @return bool
+     */
+    public function shouldSplitAddress(array $strings): bool
+    {
+        $joined = trim(implode(' ', $strings));
+        preg_match_all('/\d+/', $joined, $numberMatches);
+
+        $hasExactlyOneNumber = count($numberMatches[0]) === 1;
+        $hasNumberAtStart = preg_match('/^(\d+)\s+(.+)$/', $joined) === 1;
+        $hasNumberAtEnd = preg_match('/^(.+?)\s+(\d+)$/', $joined) === 1;
+
+        return $hasExactlyOneNumber && ($hasNumberAtStart xor $hasNumberAtEnd);
     }
 
     protected function tagShipmentRequest(ShipmentResponse $shipmentResponse, $shipmentRequest)
@@ -419,10 +438,16 @@ class Shipment
     {
         $fullStreet = implode(' ', $street);
 
-        $data = $this->parseStreetData($fullStreet);
-        $address->street = $data['street'];
-        $address->number = $data['number'];
-        $address->addition = $data['addition'];
+        if ($this->shouldSplitAddress($street)) {
+            $data = $this->parseStreetData($fullStreet);
+            $address->street = $data['street'];
+            $address->number = $data['number'];
+            $address->addition = $data['addition'];
+        } else {
+            $address->street = $fullStreet;
+            $address->number = '';
+            $address->addition = '';
+        }
 
         return $address;
     }
@@ -474,8 +499,8 @@ class Shipment
 
         preg_match('/([^0-9]*)\s*(.*)/', trim($parsableStreet), $streetParts);
         $address = [
-            'street' => isset($streetParts[1]) ? trim($streetParts[1]) : '',
-            'number' => isset($streetParts[2]) ? trim($streetParts[2]) : '',
+            'street'   => isset($streetParts[1]) ? trim($streetParts[1]) : '',
+            'number'   => isset($streetParts[2]) ? trim($streetParts[2]) : '',
             'addition' => '',
         ];
 

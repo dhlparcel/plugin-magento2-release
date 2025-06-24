@@ -25,8 +25,8 @@ class Shipment
 
     public function __construct(
         \Magento\Sales\Api\ShipmentRepositoryInterface $shipmentRepository,
-        ShipmentLogic $shipmentLogic,
-        Data $helper
+        ShipmentLogic                                  $shipmentLogic,
+        Data                                           $helper
     ) {
         $this->shipmentLogic = $shipmentLogic;
         $this->shipmentRepository = $shipmentRepository;
@@ -82,7 +82,6 @@ class Shipment
 
         if ($returnEnabled) {
             $returnShipmentRequest = $this->shipmentLogic->getReturnRequestData($storeId, $shipmentRequest);
-            $this->validateShipmentRequest($shipmentRequest);
             if ($this->helper->getConfigData('active') != YesNoTest::OPTION_TEST) {
                 $returnShipmentResponse = $this->shipmentLogic->sendRequest($returnShipmentRequest);
             } else {
@@ -122,8 +121,9 @@ class Shipment
             throw new LabelCreationException(__('Failed to create label, missing receiver street'));
         }
 
+        $shouldSplitAddress = $this->shipmentLogic->shouldSplitAddress([$shipmentRequest->receiver->address->street, $shipmentRequest->receiver->address->number, $shipmentRequest->receiver->address->addition]);
         $validateReceiverHousenumber = (bool) !in_array($shipmentRequest->receiver->address->countryCode, $disableHousenumberValidationCountries);
-        if ($validateReceiverHousenumber && empty($shipmentRequest->receiver->address->number)) {
+        if ($validateReceiverHousenumber && empty($shipmentRequest->receiver->address->number) && $shouldSplitAddress) {
             throw new LabelCreationException(__('Failed to create label, missing receiver street number'));
         }
 
