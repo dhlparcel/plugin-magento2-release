@@ -5,6 +5,7 @@ namespace DHLParcel\Shipping\Model\Service;
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Data\DeliveryServicesAvailabilityFactory;
 use DHLParcel\Shipping\Model\Data\Capability\OptionFactory;
+use Psr\Log\LoggerInterface;
 
 class DeliveryServices
 {
@@ -19,6 +20,7 @@ class DeliveryServices
     protected $helper;
     protected $availabilityFactory;
     protected $optionFactory;
+    protected LoggerInterface $logger;
 
     protected $availableOptions = [
         self::NO_NEIGHBOUR,
@@ -29,11 +31,12 @@ class DeliveryServices
 
     public function __construct(
         \Magento\Framework\View\Asset\Repository $assetRepository,
-        \Magento\Framework\Pricing\Helper\Data $priceHelper,
-        \Magento\Tax\Helper\Data $taxHelper,
-        Data $helper,
-        DeliveryServicesAvailabilityFactory $availabilityFactory,
-        OptionFactory $optionFactory
+        \Magento\Framework\Pricing\Helper\Data   $priceHelper,
+        \Magento\Tax\Helper\Data                 $taxHelper,
+        Data                                     $helper,
+        DeliveryServicesAvailabilityFactory      $availabilityFactory,
+        OptionFactory                            $optionFactory,
+        LoggerInterface                          $logger
     ) {
         $this->assetRepository = $assetRepository;
         $this->priceHelper = $priceHelper;
@@ -41,6 +44,7 @@ class DeliveryServices
         $this->helper = $helper;
         $this->availabilityFactory = $availabilityFactory;
         $this->optionFactory = $optionFactory;
+        $this->logger = $logger;
     }
 
     public function getToBusiness()
@@ -106,7 +110,17 @@ class DeliveryServices
         $availability->enabled = boolval(count($availability->serviceData) > 0);
 
         // Selections
-        $availability->selectedServices = $this->sanitizeData($selections);
+        $selectableServices = array_column($availability->serviceData, 'value');
+        $selectedServicesSanitized = $this->sanitizeData($selections);
+        $availability->selectedServices = array_values(
+            array_intersect($selectedServicesSanitized, $selectableServices)
+        );
+
+        $this->logger->info('DeliveryServices getAvailability', [
+            'selectableServices'        => $selectableServices,
+            'selectedServicesSanitized' => $selectedServicesSanitized,
+            'selectedServices'          => $availability->selectedServices,
+        ]);
 
         // Exclusions
         $exclusions = [];
@@ -277,20 +291,10 @@ class DeliveryServices
     protected function getTaxPrice($serviceCost, $store = null)
     {
         if ($this->taxHelper->getShippingPriceDisplayType($store) === \Magento\Tax\Model\Config::DISPLAY_TYPE_EXCLUDING_TAX) {
-            return '+ ' . $this->priceHelper->currencyByStore(
-                $serviceCost,
-                $store,
-                true,
-                false
-            );
+            return '+ ' . $this->priceHelper->currencyByStore($serviceCost, $store, true, false);
         }
 
-        return '+ ' . $this->priceHelper->currencyByStore(
-            $this->taxHelper->getShippingPrice($serviceCost, true, null, null, $store),
-            $store,
-            true,
-            false
-        );
+        return '+ ' . $this->priceHelper->currencyByStore($this->taxHelper->getShippingPrice($serviceCost, true, null, null, $store), $store, true, false);
     }
 
     protected function sanitizeData($array)

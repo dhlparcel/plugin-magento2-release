@@ -96,11 +96,16 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     /**
      * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
      * @param $method
-     * @return array
+     * @return array|false
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getRate(\Magento\Quote\Model\Quote\Address\RateRequest $request, $method)
     {
+        // Validate that the request has items to prevent stale session data issues
+        if (!$request->getAllItems() || count($request->getAllItems()) === 0) {
+            return false;
+        }
+
         $connection = $this->getConnection();
 
         $websiteId = 0;

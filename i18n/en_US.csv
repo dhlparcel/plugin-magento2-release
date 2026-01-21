@@ -241,6 +241,8 @@ Email,Email
 "You have selected","You have selected"
 "Please choose a DHL ServicePoint.","Please choose a DHL ServicePoint."
 "Please choose a DHL ServicePoint","Please choose a DHL ServicePoint"
+"Please select at least one delivery service.","Please select at least one delivery service."
+"Please check your DHL selections.","Please check your DHL selections."
 "Choose a different DHL ServicePoint","Choose a different DHL ServicePoint"
 "Field ","Field "
 " is required."," is required."

@@ -194,6 +194,8 @@ Phonenumber,Telefoonnummer
 Placed from IP,Geplaatst vanaf IP
 "Please choose a DHL ServicePoint.","Kies een DHL punt."
 "Please choose a DHL ServicePoint","Kies een DHL punt"
+Please select at least one delivery service.,Selecteer minimaal een extra dienst.
+Please check your DHL selections.,Controleer je DHL keuzes.
 Please choose the moment of delivery,Kies bezorgmoment
 Please correct Table Rates File Format.,Corrigeer het Table Rates bestandformaat
 Please correct Table Rates format in the Row #%1.,Corrigeer het Table Rates format in rij #%1
@@ -219,6 +221,7 @@ Same-day delivery,DHL Vandaag
 Same-day delivery,Vandaag bezorgen
 Saturday delivery (9 AM to 3 PM),Zaterdagbezorging (tussen 9u en 15u)
 Saturday delivery,Zaterdagbezorging
+Select a different DHL point,Selecteer een ander DHL punt
 Select this ServicePoint,Kies dit DHL punt
 Selected date has passed,Gekozen datum ligt in het verleden
 Send in\n%s days,Verzend\n%s dagen

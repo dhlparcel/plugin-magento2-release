@@ -106,6 +106,24 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
     }
 
     /**
+     * Ensure that the RateRequest always has store and website IDs set. Hyvä is way stricter compared to Luma in this
+     * regard.
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     * @return \Magento\Quote\Model\Quote\Address\RateRequest
+     */
+    protected function ensureRequestScope(\Magento\Quote\Model\Quote\Address\RateRequest $request)
+    {
+        $storeId = (int) $request->getStoreId();
+        $websiteId = (int) $request->getWebsiteId();
+        if ($storeId === 0 || $websiteId === 0) {
+            $store = $this->storeManager->getStore();
+            $request->setStoreId((int) $store->getId());
+            $request->setWebsiteId((int) $store->getWebsiteId());
+        }
+        return $request;
+    }
+
+    /**
      * The DHL Shipping shipping carrier does not calculate rates.
      * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
      * @return bool|\Magento\Framework\DataObject|\Magento\Shipping\Model\Rate\Result|null
@@ -113,6 +131,9 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
      */
     public function collectRates(\Magento\Quote\Model\Quote\Address\RateRequest $request)
     {
+
+        $this->ensureRequestScope($request);
+
         $this->debugLogger->info('CARRIER ### initiating collect rates', $request->toArray());
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->_rateFactory->create();
@@ -223,17 +244,50 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
                 return null;
             }
 
-            $method->setPrice($rate['price'] + $serviceCost);
+            $finalPrice = $rate['price'] + $serviceCost;
+            $method->setPrice($finalPrice);
             $method->setCost($rate['cost']);
+            $this->debugLogger->info("CARRIER method $methodKey variable rate price set", [
+                'ratePrice' => $rate['price'],
+                'serviceCost' => $serviceCost,
+                'finalPrice' => $finalPrice,
+            ]);
         } else {
-            $method->setPrice($this->getConfigData('shipping_methods/' . $methodKey . '/price') + $serviceCost);
+            $configPrice = $this->getConfigData('shipping_methods/' . $methodKey . '/price');
+            $finalPrice = $configPrice + $serviceCost;
+            $method->setPrice($finalPrice);
+            $this->debugLogger->info("CARRIER method $methodKey fixed price set", [
+                'configPrice' => $configPrice,
+                'serviceCost' => $serviceCost,
+                'finalPrice' => $finalPrice,
+            ]);
         }
 
-        if ($request->getFreeShipping() || $request->getPackageQty() == $this->cartService->getFreeBoxesCount($request)) {
+        $freeShippingFlag = $request->getFreeShipping();
+        $packageQty = $request->getPackageQty();
+        $freeBoxesCount = $this->cartService->getFreeBoxesCount($request);
+
+        // Only consider it free shipping if:
+        // 1. The free shipping flag is explicitly set, OR
+        // 2. packageQty equals freeBoxesCount AND both are greater than 0
+        //    (prevents false positive when both are 0 due to empty/stale request data)
+        $isFreeShipping = $freeShippingFlag || ($packageQty > 0 && $packageQty == $freeBoxesCount);
+
+        $this->debugLogger->info("CARRIER method $methodKey free shipping check", [
+            'freeShippingFlag' => $freeShippingFlag,
+            'packageQty' => $packageQty,
+            'freeBoxesCount' => $freeBoxesCount,
+            'isFreeShipping' => $isFreeShipping,
+            'priceBeforeFreeShippingCheck' => $method->getPrice(),
+        ]);
+
+        if ($isFreeShipping) {
             if (boolval($this->getConfigData('usability/discount_after_coupon/always_charge_servicecosts'))) {
                 $method->setPrice($serviceCost);
+                $this->debugLogger->info("CARRIER method $methodKey set to service cost only due to free shipping", ['serviceCost' => $serviceCost]);
             } else {
                 $method->setPrice('0.00');
+                $this->debugLogger->info("CARRIER method $methodKey set to 0.00 due to free shipping");
             }
         }
 
@@ -283,6 +337,8 @@ class Carrier extends \Magento\Shipping\Model\Carrier\AbstractCarrierOnline impl
 
     protected function getMethodTitle(\Magento\Quote\Model\Quote\Address\RateRequest $request, $key, $titleKey = 'title')
     {
+        $this->ensureRequestScope($request);
+
         // Default
         $title = $this->getConfigData('shipping_methods/' . $key . '/' . $titleKey);
         if ($titleKey !== 'title' && empty($title)) {
