@@ -22,6 +22,7 @@ use DHLParcel\Shipping\Model\Data\Api\Response\ShipmentFactory as ShipmentRespon
 use DHLParcel\Shipping\Model\Data\Api\Response\Shipment\Piece as PieceResponse;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
 
+use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Shipment\TrackFactory;
 use Magento\Sales\Model\Order\Shipment\Track;
@@ -40,6 +41,7 @@ class Shipment
     protected $trackFactory;
     protected $helper;
     protected $capabilityService;
+    protected $moduleManager;
 
     public function __construct(
         Connector                $connector,
@@ -53,7 +55,8 @@ class Shipment
         OrderRepositoryInterface $orderRepository,
         TrackFactory             $trackFactory,
         Data                     $helper,
-        Capability               $capabilityService
+        Capability               $capabilityService,
+        ModuleManager            $moduleManager
     ) {
         $this->connector = $connector;
         $this->pieceFactory = $pieceFactory;
@@ -67,6 +70,7 @@ class Shipment
         $this->trackFactory = $trackFactory;
         $this->helper = $helper;
         $this->capabilityService = $capabilityService;
+        $this->moduleManager = $moduleManager;
     }
 
     /**
@@ -97,7 +101,9 @@ class Shipment
         $shipmentRequest->accountId = $accountId;
         $shipmentRequest->options = $options;
         $shipmentRequest->pieces = $pieces;
-        $shipmentRequest->application = 'Magento2';
+        $shipmentRequest->application = $this->moduleManager->isEnabled('DHLParcel_ShippingHyva')
+            ? 'Magento2-Hyva'
+            : 'Magento2';
 
         return $shipmentRequest;
     }
