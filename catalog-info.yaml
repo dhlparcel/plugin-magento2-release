@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: plugin-magento2-release
+  title: Plugin Magento 2 Release
+  annotations:
+    github.com/project-slug: dhlparcel/plugin-magento2-release
+spec:
+  type: library
+  lifecycle: production
+  owner: shipper
+  system: connector
