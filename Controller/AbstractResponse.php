@@ -16,9 +16,11 @@ abstract class AbstractResponse extends \Magento\Framework\App\Action\Action
     {
         return $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_LAYOUT)
             ->getLayout()
-            ->createBlock('DHLParcel\Shipping\Block\Ajax', $id)
-            ->setData($data)
-            ->setTemplate($id . '.phtml')
+            ->createBlock(
+                'DHLParcel\Shipping\Block\Ajax',
+                $id,
+                ['data' => array_merge($data, ['template' => $id . '.phtml'])]
+            )
             ->setArea(\Magento\Framework\App\Area::AREA_FRONTEND)
             ->setIsSecureMode(true)
             ->toHtml();
