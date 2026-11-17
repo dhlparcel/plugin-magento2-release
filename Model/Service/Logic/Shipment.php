@@ -306,7 +306,7 @@ class Shipment
         if ($this->helper->getConfigData('debug/enabled')
             && $this->helper->getConfigData('debug/save_label_requests')
         ) {
-            if (!empty($shipmentResponse) && !empty($shipmentResponse->pieces)) {
+            if (!empty($shipmentResponse->pieces)) {
                 $updatedPieces = [];
                 foreach ($shipmentResponse->pieces as $piece) {
                     $piece->shipmentRequest = json_encode($shipmentRequest->toArray());
@@ -320,7 +320,7 @@ class Shipment
 
     protected function tagServiceOptions(ShipmentResponse $shipmentResponse, $shipmentRequest)
     {
-        if (!empty($shipmentResponse) && !empty($shipmentResponse->pieces)) {
+        if (!empty($shipmentResponse->pieces)) {
             $serviceOptions = [];
             foreach ($shipmentRequest->options as $option) {
                 $serviceOptions[] = $option->key;
@@ -341,7 +341,7 @@ class Shipment
 
     protected function tagPostalCode(ShipmentResponse $shipmentResponse, $postalCode)
     {
-        if (!empty($shipmentResponse) && !empty($shipmentResponse->pieces)) {
+        if (!empty($shipmentResponse->pieces)) {
             $updatedPieces = [];
             foreach ($shipmentResponse->pieces as $piece) {
                 $piece->postalCode = strtoupper(trim($postalCode));
@@ -354,7 +354,7 @@ class Shipment
 
     protected function tagCountryCode(ShipmentResponse $shipmentResponse, $countryCode)
     {
-        if (!empty($shipmentResponse) && !empty($shipmentResponse->pieces)) {
+        if (!empty($shipmentResponse->pieces)) {
             $updatedPieces = [];
             foreach ($shipmentResponse->pieces as $piece) {
                 $piece->countryCode = strtoupper(trim($countryCode));

@@ -8,6 +8,7 @@ use DHLParcel\Shipping\Model\Exception\NoTrackException;
 use DHLParcel\Shipping\Model\Exception\NotShippableException;
 use Magento\Framework\DB\TransactionFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
 use Magento\Sales\Model\Order\ShipmentRepository;
 use Magento\Sales\Model\ResourceModel\Order\Shipment as ShipmentResource;

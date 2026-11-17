@@ -190,7 +190,7 @@ class RateManager extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
     /**
      * @param \Magento\Framework\DataObject $object
-     * @return $this
+     * @return $this|null
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function uploadAndImport(\Magento\Framework\DataObject $object)

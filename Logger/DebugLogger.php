@@ -4,7 +4,7 @@ namespace DHLParcel\Shipping\Logger;
 
 use DHLParcel\Shipping\Helper\Data;
 
-class DebugLogger extends \Monolog\Logger
+class DebugLogger extends \Magento\Framework\Logger\Monolog
 {
     const LOG_LOCATION = '/var/log/dhlparcel_shipping.log';
     protected $helper;
