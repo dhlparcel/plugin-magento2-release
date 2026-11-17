@@ -20,11 +20,21 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    }
   },
   "authors": [
     {
       "name": "DHL Parcel"
     }
-  ]
+  ],
+  "require-dev": {
+    "bitexpert/phpstan-magento": "^0.44",
+    "magento/magento-coding-standard": "^41",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.1"
+  }
 }
