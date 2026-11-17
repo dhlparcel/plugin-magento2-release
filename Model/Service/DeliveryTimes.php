@@ -108,7 +108,7 @@ class DeliveryTimes
             'postalCode' => strtoupper($trimmedPostalCode),
         ]);
 
-        if (!$timeWindowsResponse || !is_array($timeWindowsResponse) || empty($timeWindowsResponse)) {
+        if (!$timeWindowsResponse || !is_array($timeWindowsResponse)) {
             return [];
         }
 
