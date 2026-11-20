@@ -8,6 +8,7 @@ use DHLParcel\Shipping\Model\PieceFactory as PieceFactory;
 use DHLParcel\Shipping\Model\ResourceModel\Piece as PieceResource;
 use DHLParcel\Shipping\Model\Service\Preset as presetService;
 use DHLParcel\Shipping\Helper\Data;
+use Magento\Framework\Exception\NoSuchEntityException;
 use \Magento\Framework\UrlInterface;
 use \Magento\Sales\Api\OrderRepositoryInterface;
 use \Magento\Sales\Api\ShipmentRepositoryInterface;
@@ -126,14 +127,19 @@ class Labels extends \Magento\Ui\Component\Listing\Columns\Column
 
     protected function getShipmentById($shipmentId)
     {
-        $shipments = [];
-        $shipments[] = $this->shipmentRepository->get($shipmentId);
-        return $shipments;
+        try {
+            return [$this->shipmentRepository->get($shipmentId)];
+        } catch (NoSuchEntityException $e) {
+            return [];
+        }
     }
 
     protected function getShipmentsByOrderId($orderId)
     {
-        $order = $this->orderRepository->get($orderId);
-        return $order->getShipmentsCollection();
+        try {
+            return $this->orderRepository->get($orderId)->getShipmentsCollection();
+        } catch (NoSuchEntityException $e) {
+            return [];
+        }
     }
 }

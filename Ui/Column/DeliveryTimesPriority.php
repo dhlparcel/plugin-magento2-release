@@ -4,6 +4,7 @@ namespace DHLParcel\Shipping\Ui\Column;
 
 use DHLParcel\Shipping\Helper\Data;
 use DHLParcel\Shipping\Model\Service\DeliveryTimes as DeliveryTimesService;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Framework\Controller\ResultFactory;
 
@@ -53,7 +54,12 @@ class DeliveryTimesPriority extends \Magento\Ui\Component\Listing\Columns\Column
         }
 
         foreach ($dataSource['data']['items'] as &$item) {
-            $order = $this->orderRepository->get($item['entity_id']);
+            try {
+                $order = $this->orderRepository->get($item['entity_id']);
+            } catch (NoSuchEntityException $e) {
+                $item[$this->getData('name')] = '';
+                continue;
+            }
             $isSDD = $order->getShippingMethod() === 'dhlparcel_sameday';
 
             $timeSelection = $this->deliveryTimesService->getTimeSelection($order);
